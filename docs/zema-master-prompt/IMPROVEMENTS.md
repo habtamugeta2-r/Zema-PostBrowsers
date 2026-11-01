@@ -95,3 +95,42 @@ than silently resolved:
    choice affects Phases 5, 6, and 8 and should ideally be recorded at
    Gate 0, not at the end.
 5. **No license** is stated for the project or this document yet.
+
+---
+
+## 6. Addendum (2026-11-01): `00-Core-Concerns.md` recorded
+
+The companion synthesis **"0. Core Concerns"** was improved and
+recorded as [`00-Core-Concerns.md`](./00-Core-Concerns.md) v1.1 on the
+same day. Its own full editorial record lives in its **Appendix C**;
+this addendum only records how it changes the notes above. Per the
+tracker rule — *never edit history* — §§1–5 above stand as written.
+
+**Resolved by the new document:**
+
+- **§2, item 2 (the "(16–19)" mystery) is now explained.** The
+  numbers in the original drafts' one-line summary were the *concern
+  IDs* 1–19 from Core Concerns. That summary is correct in its home
+  document (Core Concerns, "One-Line Summary") and remains rewritten
+  with phase numbers in the Master Prompt, where phases are the
+  operative units. Both forms now cross-reference each other.
+- **§2, item 1 (dual gate numbering) is now fully reconciled.**
+  Core Concerns Concern 17 confirms the book's six *milestone* gates
+  (Gate 0–5). Core Concerns Appendix B maps each book gate to the
+  Prompt phase gates that satisfy it, and prescribes writing
+  "Book Gate N" vs. "Prompt Gate N" to prevent confusion.
+- **§5, item 2 (E3) is narrowed.** Concern 3 confirms E3 exists in
+  the book (Ch. 9, hypotheses H1–H3, experiments E1–E3). Only its
+  *definition* is now missing; the tracker lists it as *Blocked —
+  awaiting book*.
+
+**Still open:** §5 items 1 (research book not yet in this repo —
+now also stated in the Core Concerns header), 3 (no "Decision C"
+attested; A, B, D only), 4 (target desktop OS unnamed), and 5 (no
+license).
+
+**Editorial consistency:** Core Concerns v1.1 uses the same document
+control, US-English normalization (the original's
+*internationalisation/authorisation/colour*), and evidence-label
+discipline as Master Prompt v1.1. The concern numbers 1–19 are
+permanent IDs and must never be renumbered.

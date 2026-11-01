@@ -30,6 +30,7 @@
 |---|---|---|---|---|
 | E1 | 2 | What does a reactive update cost vs. affected node count, compared with web-framework baselines? | Not started | — |
 | E2 | 4 | What are the allocation patterns, GC pauses (if any), and concurrent-task throughput? | Not started | — |
+| E3 | 12? | **Undefined in this repo.** `00-Core-Concerns.md` Concern 3 places E1–E3 in the Ch. 9 performance cluster (hypotheses H1–H3); E3's exact definition must be recovered when the research book is imported in Phase 0. | Blocked — awaiting book | — |
 | E4 | 7 | Does text render accurately across the full script matrix (Arabic, Hebrew, Indic, Ethiopic, CJK, …)? | Not started | — |
 | E5 | 9 | Does local data survive crashes, resolve conflicts correctly, and sync within acceptable latency? | Not started | — |
 
@@ -37,6 +38,13 @@
 > Phase 0 must confirm whether E3 (and "Decision C") exist in the
 > research book or whether the numbering should be closed up. See
 > `IMPROVEMENTS.md` §5.
+>
+> **Update (2026-11-01, on recording `00-Core-Concerns.md`):** the
+> Core Concerns synthesis confirms E3 exists in the book's Ch. 9
+> performance cluster (H1–H3, E1–E3) — so its definition, not its
+> existence, is what Phase 0 must recover. "Decision C" remains
+> unattested (Decisions A, B, D only). See `00-Core-Concerns.md`
+> Appendix A.
 
 ## Rules
 
@@ -52,3 +60,4 @@
 | Date | Change |
 |---|---|
 | 2026-11-01 | Tracker created alongside master prompt v1.1. All phases `Not started`; next action is Phase 0. |
+| 2026-11-01 | `00-Core-Concerns.md` v1.1 recorded. E3 row added as *Blocked — awaiting book* (existence confirmed by Concern 3; definition pending Phase 0 book import). Phases unchanged. |
