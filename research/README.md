@@ -27,6 +27,8 @@ that folder navigable and states the rules the records follow.
 | 0 | [`phase-00-03-coordination-cost.md`](./phase-00-03-coordination-cost.md) | How expensive is today's markup + style + code + schema + build + deploy stack, using published measurements rather than adjectives? |
 | 0 | [`phase-00-04-prior-art.md`](./phase-00-04-prior-art.md) | Who has tried to leave the browser, what did they ship, and what does their existence do to ZEMA's headline claim? |
 | 0 | [`phase-00-05-book-import-audit.md`](./phase-00-05-book-import-audit.md) | Where is the research book (Ch. 1–13)? What happens to experiments E1–E5 and Decisions A/B/D while it is missing? |
+| 1 | [`phase-01-01-language-prior-art.md`](./phase-01-01-language-prior-art.md) | What have Elm, Rust, Kotlin, Swift, Unison, and Unicode already settled about "easy" — and what must Plain refuse? |
+| 1 | [`phase-01-02-honest-limits.md`](./phase-01-02-honest-limits.md) | Which seams does one language actually remove, and which ten domains stay hard no matter what? |
 
 Phase 1 and later get their own `phase-NN-*.md` records; do not create
 them before the phase begins.

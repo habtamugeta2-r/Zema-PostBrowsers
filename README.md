@@ -31,9 +31,16 @@ success and failure would each look like.
 ## Where the work stands
 
 **Phase 0 — Historical Foundations & Problem Definition: complete.
-Gate 0 passed with conditions (C1–C5).** Phase 1 — *The Unified
-Language: "Plain"* — is next; its research tasks may start now, its
-build tasks wait on owner sign-off (C1) and the `PlainP` ruling (C5).
+Gate 0 passed with conditions (C1–C5).**
+
+**Phase 1 — The Unified Language ("Plain"): research and design done,
+build blocked.** The specification draft is written
+([`docs/plain/`](docs/plain/README.md)): 98 numbered rules, 26 derived
+ambiguities, 18 deferrals with triggers, and a ≈285-fixture conformance
+plan. There is **no interpreter and no
+conformance suite**, so **Gate 1 is deliberately not attempted** — build
+tasks wait on owner sign-off (C1) and the `PlainP` ruling (C5), with the
+research-book condition (C2) due before Gate 1.
 
 | Phase 0 artifact | What it records |
 |---|---|
@@ -45,6 +52,21 @@ build tasks wait on owner sign-off (C1) and the `PlainP` ruling (C5).
 | [Evidence register](docs/evidence-register.md) | 63 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades |
 | [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book |
 | [Gate 0 review](docs/gates/gate-00.md) | The pass, its two retractions, its stopping-condition check, and conditions C1–C5 |
+
+### Phase 1 records (draft)
+
+| Artifact | What it records |
+|---|---|
+| [Plain specification v0.1](docs/plain/README.md) | Index, non-goals, freeze policy — **draft, not frozen** |
+| [Conformance plan](docs/plain/05-conformance-plan.md) | What Gate 1 will require: coverage per rule, ≈285 fixtures, runner contract — **plan only** |
+| [Lexical structure & layout](docs/plain/00-lexical-and-layout.md) | Unicode identifiers and confusables, literals, the single layout rule, compact EBNF, sanctioned sugar, diagnostics |
+| [Types](docs/plain/01-types.md) | `let`/`mut`, structural records, nominal closed unions, `Option`/`Result`, interfaces and coherence, inference limits |
+| [Evaluation](docs/plain/02-evaluation.md) | Evaluation order, checked integers everywhere, `Float` and `Eq`, text, closures, `?`, `defer`, exhaustive matching, faults |
+| [Derived ambiguities](docs/plain/03-ambiguities.md) | 26 questions: 21 resolved, 5 deferred — the substitute for the missing §12.1 |
+| [Deferred features](docs/plain/04-deferred-features.md) | 18 deferrals (9 from the Master Prompt, 9 added), each with cost and trigger |
+| [Language prior art](research/phase-01-01-language-prior-art.md) | Elm, Rust, Kotlin, Swift, Unison, Unicode — and what Plain refuses |
+| [Honest limits](research/phase-01-02-honest-limits.md) | Five seams removed; ten domains that stay hard |
+| [Decisions 0005–0007](docs/decisions/) | Surface doctrine · type and evaluation core · deferral policy |
 
 ## Method
 
@@ -59,6 +81,8 @@ outcome.
 proof). Retracted claims stay in the register forever.
 
 **Current status (2026-11-02):** Core Concerns v1.1 and Master Prompt
-v1.1 recorded; Phase 0 executed and Gate 0 passed with conditions. No
-ZEMA code exists yet — by design. Next step: **Phase 1 — research the
-language, then (after C1/C5) build the safe executable core.**
+v1.1 recorded; Phase 0 executed and Gate 0 passed with conditions;
+Phase 1 research and specification drafting complete as **draft v0.1**.
+No ZEMA code exists yet — by design. Next step: **after C1/C5, build the
+checked interpreter and the conformance suite**, which is what Gate 1
+actually requires.

@@ -119,19 +119,34 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 062 | "Decision C exists." | H | No source names it; only A, B, and D are cited anywhere in this repository | — | 2026-11-02 | **Retracted as unattested** — reopen only if the book attests it |
 | 063 | "The 70/25/5 split refers to a defined allocation of some resource." | H | No definition found | 12 | 2026-11-02 | **Blocked** — definition unrecovered (see #007) |
 
+## G. Phase 1 language claims (all **Proposed** unless stated)
+
+| # | Claim (exact wording) | Label | Source / experiment | Phase | Date added | Status |
+|---|---|---|---|---|---|---|
+| 064 | "A language with no exception primitives and no null, carrying failure and absence in its types, can ship production applications." | E | Elm's own documentation ("no runtime exceptions") [A] | 1 | 2026-11-02 | Confirmed **for Elm**; not evidence about Plain |
+| 065 | "Kotlin's `when` has statement and expression forms, so whether a missing case is an error depends on form and version." | H | Kotlin docs for the expression form [A]; statement-form gap reported by a C-grade source [C] | 1 | 2026-11-02 | Open — **verify against Kotlin docs before Gate 1** |
+| 066 | "Plain's core can be specified completely in four documents, yielding 26 derived ambiguities and 18 recorded deferrals." | E | This repository: [`./plain/`](./plain/) | 1 | 2026-11-02 | Confirmed as an observation (not a quality claim) |
+| 067 | "Requiring NFC for identifiers prevents visually identical, byte-different names from aliasing." | P | Unicode normalization + UAX #31/UTS #39 (adopted rule L-04) | 1 | 2026-11-02 | Open — design rule, not measured |
+| 068 | "Same-scope UTS #39 skeleton collision detection catches homoglyph identifier spoofing in code review." | P | UTS #39 (adopted rule L-10); the standard says the mechanism is a floor | 1 | 2026-11-02 | Open — **bounded** claim; sequence-level spoofing is out of scope |
+| 069 | "Checking integer arithmetic in every build profile eliminates build-mode-dependent program behavior." | P | Decision 0006, rules E-05/E-36 | 1 | 2026-11-02 | Open — conformance fixture required (both profiles) |
+| 070 | "Checked arithmetic costs measurable performance in hot loops." | H | E1/E2 (Phase 2, Phase 4) | 1 | 2026-11-02 | Open — must be measured, and must not be traded for a silent semantic switch |
+| 071 | "Capturing immutable bindings by value and rejecting `mut` capture prevents late-binding closure bugs by construction." | P | Rule E-17 | 1 | 2026-11-02 | Open |
+| 072 | "Expression-only exhaustive matching prevents missing-case runtime bugs." | P | Rule E-23 (sealed unions, T-10) | 1 | 2026-11-02 | Open — conformance fixture required |
+| 073 | "IEEE 754 binary64 cannot supply a reflexive equality (NaN ≠ NaN, ±0), so `Float` must not be an `Eq` type." | E | IEEE 754 binary64 semantics as specified in rule E-08; IEEE 754-2019 [A] | 1 | 2026-11-02 | Confirmed (mathematical/standard) |
+
 ---
 
-## Register summary at creation (2026-11-02)
+## Register summary (2026-11-02)
 
 | Count | Value |
 |---|---|
-| Total rows | 63 |
-| Established (E) | 27 |
-| Proposed (P) | 10 |
-| Hypothesis (H) | 26 (two of them since retracted) |
+| Total rows | 73 (63 at Gate 0 + 10 added in Phase 1) |
+| Established (E) | 30 |
+| Proposed (P) | 15 |
+| Hypothesis (H) | 28 (two of them since retracted) |
 | Retracted | 2 — #001 and #062 |
 | Blocked | 3 — #060, #061, #063 |
-| Open headline claims that may **not** ship (Gate 12 rule) | #002, #003, #006, #007, #008, #023, #057 |
+| Open headline claims that may **not** ship (Gate 12 rule) | #002, #003, #006, #007, #008, #023, #057, #070 |
 
 ## Rules (copied from the template — do not weaken)
 
@@ -148,3 +163,4 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | Date | Change |
 |---|---|
 | 2026-11-02 | Register created at Gate 0 with 63 rows covering every claim in the founding documents, the Phase 0 research records, and the planned decisions. #001 retracted; #062 closed as unattested; #060/#061/#063 blocked pending the research book. |
+| 2026-11-02 | Phase 1 added rows #064–#073 for the language specification's claims (no-null/no-exceptions posture, identifier normalization and confusables, checked arithmetic, capture rule, exhaustiveness, `Float`/`Eq`, and the specification-completeness observation). #065 and #070 flagged as unverified. |

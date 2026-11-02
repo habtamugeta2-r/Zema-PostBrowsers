@@ -9,7 +9,7 @@
 | Phase | Title | Status | Gate | Gate result | Gate review record |
 |---|---|---|---|---|---|
 | 0 | Historical Foundations & Problem Definition | `Passed` (with conditions C1–C5) | Gate 0 | 🔁 Pass with conditions | [`../gates/gate-00.md`](../gates/gate-00.md) |
-| 1 | The Unified Language: "Plain" | Not started | Gate 1 | — | — |
+| 1 | The Unified Language: "Plain" | `Research` / `Decide` — spec draft v0.1; build blocked on C1, C5 | Gate 1 | — (not attempted: no executable core, no conformance run) | — |
 | 2 | Reactive State Model | Not started | Gate 2 | — | — |
 | 3 | Execution Model & Host Isolation | Not started | Gate 3 | — | — |
 | 4 | Memory Safety & Concurrency | Not started | Gate 4 | — | — |
@@ -63,9 +63,11 @@
 | 2026-11-01 | `00-Core-Concerns.md` v1.1 recorded. E3 row added as *Blocked — awaiting book* (existence confirmed by Concern 3; definition pending Phase 0 book import). Phases unchanged. |
 | 2026-11-02 | **Phase 0 executed; Gate 0 passed with conditions C1–C5** ([review](../gates/gate-00.md)). Produced: frozen [problem statement](../problem-statement.md), [browser-services catalog](../../research/phase-00-02-browser-services-catalog.md) (21 services), [coordination-cost research](../../research/phase-00-03-coordination-cost.md), [prior-art review](../../research/phase-00-04-prior-art.md), [book-import audit](../../research/phase-00-05-book-import-audit.md), [evidence register](../evidence-register.md) (63 rows), and decisions 0001–0004. |
 | 2026-11-02 | Claim #001 ("world's first post-browser platform") **retracted** at Gate 0; replaced by #048. Decision C **closed as unattested**. Target OS recorded as **Linux (Ubuntu 24.04 LTS)**, status *Proposed* pending owner confirmation (C3). E3 remains `Blocked`. Phase 1 is next: research tasks may start; build tasks wait on C1/C5. |
+| 2026-11-02 | **Phase 1 opened: research and decide done, build blocked.** Plain spec **draft v0.1** written (60 normative rules across four documents), **26 derived ambiguities** (21 resolved, 5 deferred), **18 deferrals** with triggers, decisions 0005–0007. No interpreter, no conformance suite → **Gate 1 deliberately not attempted**. Build waits on C1 and C5; C2 (book or retired pointers) is due before Gate 1. |
 
 ## Phase records
 
 | Phase | Records |
 |---|---|
 | 0 | [Problem statement](../problem-statement.md) · [Evidence register](../evidence-register.md) · Research: [lineage](../../research/phase-00-01-lineage.md), [browser-services catalog](../../research/phase-00-02-browser-services-catalog.md), [coordination cost](../../research/phase-00-03-coordination-cost.md), [prior art](../../research/phase-00-04-prior-art.md), [book-import audit](../../research/phase-00-05-book-import-audit.md) · Decisions: [0001](../decisions/0001-source-grading.md), [0002](../decisions/0002-target-os-linux.md), [0003](../decisions/0003-browser-service-strategy.md), [0004](../decisions/0004-research-book-missing.md) · [Gate 0 review](../gates/gate-00.md) |
+| 1 | Spec draft v0.1: [index](../plain/README.md), [lexical & layout](../plain/00-lexical-and-layout.md), [types](../plain/01-types.md), [evaluation](../plain/02-evaluation.md), [derived ambiguities](../plain/03-ambiguities.md), [deferred features](../plain/04-deferred-features.md), [conformance plan](../plain/05-conformance-plan.md) · Research: [language prior art](../../research/phase-01-01-language-prior-art.md), [honest limits](../../research/phase-01-02-honest-limits.md) · Decisions: [0005](../decisions/0005-language-surface-doctrine.md), [0006](../decisions/0006-type-and-evaluation-core.md), [0007](../decisions/0007-deferred-features.md) · **No gate review yet** |
