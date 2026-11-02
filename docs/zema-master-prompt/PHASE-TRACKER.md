@@ -8,7 +8,7 @@
 
 | Phase | Title | Status | Gate | Gate result | Gate review record |
 |---|---|---|---|---|---|
-| 0 | Historical Foundations & Problem Definition | Not started | Gate 0 | — | — |
+| 0 | Historical Foundations & Problem Definition | `Passed` (with conditions C1–C5) | Gate 0 | 🔁 Pass with conditions | [`../gates/gate-00.md`](../gates/gate-00.md) |
 | 1 | The Unified Language: "Plain" | Not started | Gate 1 | — | — |
 | 2 | Reactive State Model | Not started | Gate 2 | — | — |
 | 3 | Execution Model & Host Isolation | Not started | Gate 3 | — | — |
@@ -30,7 +30,7 @@
 |---|---|---|---|---|
 | E1 | 2 | What does a reactive update cost vs. affected node count, compared with web-framework baselines? | Not started | — |
 | E2 | 4 | What are the allocation patterns, GC pauses (if any), and concurrent-task throughput? | Not started | — |
-| E3 | 12? | **Undefined in this repo.** `00-Core-Concerns.md` Concern 3 places E1–E3 in the Ch. 9 performance cluster (hypotheses H1–H3); E3's exact definition must be recovered when the research book is imported in Phase 0. | Blocked — awaiting book | — |
+| E3 | 12? | **Undefined in this repo.** `00-Core-Concerns.md` Concern 3 places E1–E3 in the Ch. 9 performance cluster (hypotheses H1–H3). Phase 0 searched the repository and the owner's 10 public repositories and did not find the book, so the definition remains unrecovered. | **Blocked** — book not found (Phase 0 audit) | [`../../research/phase-00-05-book-import-audit.md`](../../research/phase-00-05-book-import-audit.md) |
 | E4 | 7 | Does text render accurately across the full script matrix (Arabic, Hebrew, Indic, Ethiopic, CJK, …)? | Not started | — |
 | E5 | 9 | Does local data survive crashes, resolve conflicts correctly, and sync within acceptable latency? | Not started | — |
 
@@ -61,3 +61,11 @@
 |---|---|
 | 2026-11-01 | Tracker created alongside master prompt v1.1. All phases `Not started`; next action is Phase 0. |
 | 2026-11-01 | `00-Core-Concerns.md` v1.1 recorded. E3 row added as *Blocked — awaiting book* (existence confirmed by Concern 3; definition pending Phase 0 book import). Phases unchanged. |
+| 2026-11-02 | **Phase 0 executed; Gate 0 passed with conditions C1–C5** ([review](../gates/gate-00.md)). Produced: frozen [problem statement](../problem-statement.md), [browser-services catalog](../../research/phase-00-02-browser-services-catalog.md) (21 services), [coordination-cost research](../../research/phase-00-03-coordination-cost.md), [prior-art review](../../research/phase-00-04-prior-art.md), [book-import audit](../../research/phase-00-05-book-import-audit.md), [evidence register](../evidence-register.md) (63 rows), and decisions 0001–0004. |
+| 2026-11-02 | Claim #001 ("world's first post-browser platform") **retracted** at Gate 0; replaced by #048. Decision C **closed as unattested**. Target OS recorded as **Linux (Ubuntu 24.04 LTS)**, status *Proposed* pending owner confirmation (C3). E3 remains `Blocked`. Phase 1 is next: research tasks may start; build tasks wait on C1/C5. |
+
+## Phase records
+
+| Phase | Records |
+|---|---|
+| 0 | [Problem statement](../problem-statement.md) · [Evidence register](../evidence-register.md) · Research: [lineage](../../research/phase-00-01-lineage.md), [browser-services catalog](../../research/phase-00-02-browser-services-catalog.md), [coordination cost](../../research/phase-00-03-coordination-cost.md), [prior art](../../research/phase-00-04-prior-art.md), [book-import audit](../../research/phase-00-05-book-import-audit.md) · Decisions: [0001](../decisions/0001-source-grading.md), [0002](../decisions/0002-target-os-linux.md), [0003](../decisions/0003-browser-service-strategy.md), [0004](../decisions/0004-research-book-missing.md) · [Gate 0 review](../gates/gate-00.md) |
