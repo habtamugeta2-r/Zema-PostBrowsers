@@ -22,7 +22,9 @@ Build Prompt** (*in what order and how* — Phases 0–14).
 1. **Read** [`00-Core-Concerns.md`](./00-Core-Concerns.md) first (the
    19 concerns), then §1–§3 of the master prompt (vision, the
    five-step loop, evidence labels, principles).
-2. **Begin Phase 0.** Work the loop for that phase only:
+2. **Begin with Phase 0 — already completed** (Gate 0 passed with
+   conditions on 2026-11-02; see [`../gates/gate-00.md`](../gates/gate-00.md)).
+   Then work the loop for the current phase only:
    *Research → Decide → Build → Measure → Gate.*
 3. **Record as you go**, using the templates in [`templates/`](./templates/)
    and the location map in Appendix B of the master prompt.
@@ -65,6 +67,23 @@ docs/zema-master-prompt/
     ├── experiment-record.md
     └── gate-review.md
 ```
+
+## Where the phase records live
+
+This folder holds the two **controlled documents** and their editorial
+record. Work produced *by* the phases lives outside it, per Appendix B of
+the master prompt:
+
+| Record | Location |
+|---|---|
+| Research findings | [`../../research/`](../../research/) — index in [`../../research/README.md`](../../research/README.md) |
+| The frozen problem statement | [`../problem-statement.md`](../problem-statement.md) |
+| Evidence register | [`../evidence-register.md`](../evidence-register.md) |
+| Decisions (build / reuse / invent) | [`../decisions/`](../decisions/) |
+| Gate reviews | [`../gates/`](../gates/) |
+| Experiments (E1, E2, E4, E5, …) | `experiments/EN-*/` — created when each experiment begins |
+
+Phase 0's records are indexed in [`PHASE-TRACKER.md`](./PHASE-TRACKER.md#phase-records).
 
 ## Editing rules
 
