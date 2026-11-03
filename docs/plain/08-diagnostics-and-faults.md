@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.3.1 (draft) |
+| **Version** | 0.3.2 (draft) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | **Proposal.** Identifiers and severities only. No message text, span, or fix is ratified |
@@ -36,6 +36,7 @@
 
 | Kind | Pattern | Severity | Namespace state |
 |---|---|---|---|
+| **Parse** | `PL00nn` | error | **new in this catalog**; `PL0001` is the generic syntax error |
 | **Lexical / layout / identifier** | `PL01nn` | error | closed; `PL0199` is the cascade summary (L-32) |
 | **Type / declaration** | `PL02nn` | error | extended here to `PL0236`; next free is `PL0237` |
 | **Runtime fault** | `PLFLnn` | **fault** (terminating, uncatchable) | **new in this catalog** |
@@ -60,6 +61,7 @@ Rules for the scheme (Proposed):
 
 | Code | Owner rule | Condition | New? |
 |---|---|---|---|
+| `PL0001` | L-28 (owner) | **Generic syntax error** — the parser reached a token no production accepts (chained comparison, unclosed delimiter, misplaced `->`). The only code for a malformed program, and the one L-32 suppresses in cascade | |
 | `PL0101` | L-01 | Source is not valid UTF-8, or a BOM is rejected | |
 | `PL0102` | L-03 | Tab character in indentation (fix: spaces) | |
 | `PL0103` | L-04 | Identifier is not NFC (fix: the NFC form) | |
@@ -179,10 +181,12 @@ something that must simply *happen*.
 | T-05 | `Bool` is an ordinary union | Nothing is refused | type fixture |
 | T-10 | Unions are closed | Its violation is `PL0233` | behavior fixture |
 | T-12 | Faults are not catchable | No `catch` syntax parses at all | rejection fixture |
-| T-18 (rule 3) | No blanket implementations, so overlap cannot arise | The construct is not expressible (D-14) | parser fixture |
+| T-18 (rule 3 only) | No blanket implementations, so overlap cannot arise | The construct is not expressible (D-14); **rules 1, 2, 4 raise `PL0210`/`PL0211`/`PL0212`** and are not in this list | parser fixture |
 | T-30 | No implicit entry point | Nothing is refused; a fixture names its function | runner fixture |
-| E-01…E-04, E-07, E-09, E-14…E-16, E-19, E-20, E-25, E-27, E-29, E-31, E-35 | Order, numeric semantics, closures, `?`/`defer`, matching, fault propagation, determinism | Behavior, not rejection | behavior fixtures |
-| **E-10, E-22, E-32, E-33, E-36** | Compiler/implementation constraints (no fast-math; `defer` not guaranteed on fault; no partial state; determinism; no profile-dependent meaning) | No *user program* can violate these; a violating **implementation** is non-conforming | `SR` — structured review + the dual-profile run |
+| E-01…E-04, E-07, E-09, E-14…E-16, E-20, E-25, E-27, E-29, E-31, E-35 | Order, numeric semantics, closures, `?`/`defer`, matching, fault propagation, determinism | Behavior, not rejection | behavior fixtures |
+| E-19 (except its last clause) | `?` evaluates its operand once and unwinds to the nearest activation | Behavior — **but the final clause, "`?` inside `defer` is rejected", raises `PL0228`** and is not codeless | behavior + rejection fixture |
+| **E-10, E-22, E-32, E-36** | Compiler/implementation constraints (no fast-math; `defer` not guaranteed on fault; no partial state; no profile-dependent meaning) | No *user program* can violate these; a violating **implementation** is non-conforming | `SR` — structured review + the dual-profile run |
+| E-33 (except its fuel clause) | Faults are deterministic given the same inputs | Implementation constraint. **Its fuel clause is not codeless: quota exhaustion is the fault `PLFL05`** | `SR` + the fuel fixture |
 
 ## 7. Skeleton message shape (illustrative, not ratified)
 
@@ -213,17 +217,17 @@ the files themselves. If prose and tool disagree, the tool is right.
 
 | Quantity | Before | After |
 |---|---:|---:|
-| Codes in the registry (`diagnostic_codes`) | 53 | **72** |
-| — error | 49 | **63** (+14) |
+| Codes in the registry (`diagnostic_codes`) | 53 | **73** |
+| — error | 49 | **64** (+15) |
 | — fault | 0 | **5** (+5, new namespace) |
 | — warning | 4 | 4 |
 | — historical | 1 | 1 (`PL0106`) |
-| **Active codes (L-34 fixtures)** | **52** | **71** — 66 error/warning + 5 fault |
-| New identifiers introduced here | 0 | **19** (14 errors + 5 faults) |
+| **Active codes (L-34 fixtures)** | **52** | **72** — 67 error/warning + 5 fault |
+| New identifiers introduced here | 0 | **20** (15 errors + 5 faults) |
 | Codes with no owning rule | — | **0** |
 | Rules requiring rejection that name no code | 12 | **0** |
 | Fault identifiers reserved for later phases | 0 | 3 (`PLFL06`–`PLFL08`) |
-| Total conformance budget | 341 | **355** |
+| Total conformance budget | 341 | **356** |
 
 > **This section's first two drafts were wrong, and both are recorded.**
 > Draft one claimed +16 error codes, +8 fault codes, 68 active codes. Draft two
@@ -238,7 +242,7 @@ the files themselves. If prose and tool disagree, the tool is right.
 
 | # | Item | Why |
 |---|---|---|
-| 1 | Exact wording for all 71 codes | Editorial; L-30/L-33 constrain it and fixtures will pin it |
+| 1 | Exact wording for all 72 codes | Editorial; L-30/L-33 constrain it and fixtures will pin it |
 | 2 | Span convention for multi-token diagnostics (where a caret starts) | Needs the lexer; `line:column` alone does not decide a judgement call |
 | 3 | Whether `PL0105` and `PL1101` may both fire on one identifier | Depends on A-47's suppression mechanism, deferred to tooling |
 | 4 | Review of every name in this catalog | **Owner ratification pending.** Names are the cheapest thing to change now and the most expensive once fixtures cite them |
@@ -254,7 +258,9 @@ Three mechanisms, because this document's own history shows prose drifting:
    and records which rule cites it. This catalog is checked *against* that
    registry; it does not maintain a parallel list that could drift from it.
 2. **`--check` fails** if a rule demands a refusal without a code and without an
-   entry in §6, or if the registry gains a code with no owning rule.
+   entry in §6; if the registry gains a code with no owning rule; if a §6 row
+   claims a rule is codeless while the registry records it as owning one; and if
+   a code is introduced as *the fault* outside the `PLFL` namespace.
 3. **Every count in §8 is printed by `--verify`.** No figure here may be typed
    from memory — that is exactly how its first two drafts went wrong.
 
@@ -262,5 +268,6 @@ Three mechanisms, because this document's own history shows prose drifting:
 
 | Date | Version | Change |
 |---|---|---|
+| 2026-11-03 | 0.3.2 | Added `PL0001`, the generic syntax error the spec twice referred to without naming. §6 audited against the registry: five rules were listed as codeless while owning a code, and are now marked as *partially* coded with the code named. Counts 73 codes / 72 active / budget 356. |
 | 2026-11-03 | 0.3.1 | Corrected §8 to measured values after two wrong hand-counted drafts: 72 registry codes (63 error / 5 fault / 4 warning), 71 active, 19 new identifiers, budget 341 → 355. Added §10. |
 | 2026-11-03 | 0.3.0 | Created. Records the two gaps (E-30 had no fault identifiers; 12 rules required rejection with no code), defines the `PLFL` fault namespace, proposes 14 new error codes and 5 Gate 1 fault codes, lists the 38 rules that correctly need no code, corrects its own first-draft counts downward, and leaves 6 items open for owner ratification. |

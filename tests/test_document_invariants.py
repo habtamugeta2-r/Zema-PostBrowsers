@@ -26,6 +26,7 @@ registry = audit.diagnostic_registry
 uncoded_obligation_check = audit.uncoded_obligation_check
 conformance_area_coverage = audit.conformance_area_coverage
 fault_namespace_check = audit.fault_namespace_check
+codeless_claim_check = audit.codeless_claim_check
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -191,6 +192,23 @@ class UncodedObligationTest(unittest.TestCase):
         self.assertEqual(
             result["offenders"], [], "a code is named as a fault outside the PLFL namespace"
         )
+
+    def test_a_codeless_claim_is_not_silently_contradicted(self):
+        """Regression: five rules were listed as needing no code while owning one.
+
+        The registry attributes a code to every rule mentioned on its line, so a
+        rule named in an enumeration inherits it. §6 rows may therefore list a
+        rule that does own a code, but only if the row says which and why.
+        """
+        result = codeless_claim_check()
+        self.assertEqual(result["silent"], [], "a §6 row contradicts the registry")
+
+    def test_a_generic_parse_error_code_exists(self):
+        """The spec says "syntax error" in two places and had no code for it."""
+        codes = {e["code"] for e in registry()}
+        self.assertIn("PL0001", codes, "no generic syntax-error code exists")
+        rules = {r for e in registry() if e["code"] == "PL0001" for r in e["rules"]}
+        self.assertTrue(rules, "PL0001 has no owning rule")
 
     def test_every_registry_code_has_an_owning_rule(self):
         orphans = [e["code"] for e in registry() if not e["rules"]]

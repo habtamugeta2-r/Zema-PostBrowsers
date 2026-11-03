@@ -47,9 +47,9 @@
 
 - **T-06** A record type is written `{ field: Type, … }` and is **structural**: two record types with identical field names and types are the same type, and there is no record declaration form. Records **MUST** have at least one field (`{}` is `PL0107`; use `()`).
 - **T-07** A record value is written `{ field: expr, … }`; every field of the type **MUST** be present exactly once (`PL0203`). Field order in a literal **MUST NOT** matter for typing; it does determine evaluation order (E-02).
-- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types — and **closed**: a value is one of the declared variants, permanently (T-10). Violations are `PL0233`.
+- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types, and using one where the other is expected is `PL0203` (T-07) — and **closed**: a value is one of the declared variants, permanently (`PL0233`, T-10).
 - **T-09** A variant carries **at most one** value: either a single type (`Some(a)`) or a record when more than one field is needed (`Archived({ reason: Text })`). There is **no positional field list**, so there is no field-order/field-swap hazard, and matching reuses record patterns rather than inventing a second one (A-05). Violations are `PL0234`.
-- **T-10** A union **MUST NOT** be extended after declaration. Modelling "one more case" requires a new union; this is what makes exhaustive matching (E-14) a real guarantee.
+- **T-10** A union **MUST NOT** be extended after declaration (`PL0233`). Modelling "one more case" requires a new union; this is what makes exhaustive matching (E-14) a real guarantee.
 
 ## 4. Absence, failure, and errors
 

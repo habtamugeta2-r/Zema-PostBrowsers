@@ -408,6 +408,50 @@ def fault_namespace_check() -> dict:
     return {"ok": not offenders, "offenders": offenders}
 
 
+def codeless_claim_check() -> dict:
+    """A rule listed as needing no code must not silently own one.
+
+    Section 6 lists rules whose correct fixture is behavior, not a diagnostic.
+    A rule can legitimately appear there *and* own a code when only part of it
+    is a rejection — `?` evaluates once (behavior) but `?` inside `defer` is
+    rejected (PL0228). That partial case is allowed only if the §6 row names the
+    code, so the catalog acknowledges it instead of contradicting itself.
+
+    Found by audit: five rules were listed as codeless while the registry
+    recorded them as owning a code, because the registry attributes a code to
+    every rule mentioned on its line, including enumerations.
+    """
+    catalog = ROOT / CATALOG_REL
+    if not catalog.exists():
+        return {"ok": False, "silent": [{"rule": "*", "why": "catalog missing"}]}
+    text = catalog.read_text(encoding="utf-8")
+    section = text.split("## 6.", 1)
+    if len(section) != 2:
+        return {"ok": False, "silent": [{"rule": "*", "why": "no §6"}]}
+    body = section[1].split("## 7.", 1)[0]
+
+    rows: dict[str, str] = {}
+    for line in body.splitlines():
+        if not line.startswith("|"):
+            continue
+        cell = line.split("|")[1]
+        ids = set(re.findall(r"[LTE]-\d{2}", cell))
+        for span in re.finditer(r"([LTE])-(\d{2})\s*…\s*(?:[LTE]-)?(\d{2})", cell):
+            ids.update(f"{span.group(1)}-{i:02d}" for i in range(int(span.group(2)), int(span.group(3)) + 1))
+        for rule in ids:
+            rows[rule] = rows.get(rule, "") + " " + line
+
+    silent = []
+    for entry in diagnostic_registry():
+        for rule in entry["rules"]:
+            if rule not in rows:
+                continue
+            if entry["code"] in rows[rule]:
+                continue
+            silent.append({"rule": rule, "owns": entry["code"]})
+    return {"ok": not silent, "silent": silent, "listed": len(rows)}
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -603,6 +647,7 @@ def main() -> int:
     fact_clashes = duplicated_fact_check()
     uncoded = uncoded_obligation_check()
     fault_ns = fault_namespace_check()
+    codeless = codeless_claim_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -623,6 +668,7 @@ def main() -> int:
         "duplicated_facts": fact_clashes,
         "uncoded_obligations": uncoded,
         "fault_namespace": fault_ns,
+        "codeless_claims": codeless,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -680,6 +726,11 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not codeless["ok"]:
+        problems.append(
+            "rules are listed in the catalog as needing no code but the registry records "
+            f"them as owning one, and the row does not say so: {codeless['silent']}"
+        )
     if not fault_ns["ok"]:
         problems.append(
             "a code is introduced as a fault but is not in the PLFL namespace: "
@@ -704,6 +755,8 @@ def main() -> int:
             sorted(Counter(e["severity"] for e in registry).items())
         ),
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
+        "fault_namespace": report["fault_namespace"],
+        "codeless_claims": report["codeless_claims"],
         "traceability": {
             "rows": traceability["rows"],
             "covered": traceability["covered"],

@@ -115,7 +115,7 @@ if the environment differs, record the difference and revisit WP-1.
 | Node v22.22.3 present; **no Rust toolchain** (`rustc`, `cargo`, `rustup` absent) | `command -v` checks | A Rust implementation cannot be built or tested here without a toolchain this sandbox cannot reach (`static.rust-lang.org` is outside the network allowlist) |
 | Network allowlist: `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | Environment constraint | `unicode.org` is unreachable from the sandbox; the pinned GitHub mirror is the data source |
 | The pinned Unicode data commit is reachable | `api.github.com` returned HTTP 200 for blob `21a79503…` and commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c` (`unicode-org/unicodetools`) | WP-2 fetch-and-verify is feasible here |
-| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 355 fixture targets, 106/106 rules traced to a verification method and an area, 120 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 72 diagnostic codes (63 error / 5 fault / 4 warning) + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
+| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 356 fixture targets, 106/106 rules traced to a verification method and an area, 123 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 73 diagnostic codes (64 error / 5 fault / 4 warning) + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
 
 **Recommendation (Proposed — to be recorded as decision 0013):** the
 Gate 1 vehicle is a **Python 3.11 standard-library-only reference
@@ -325,7 +325,7 @@ fuel tests are repeatable across runs.
 ### WP-7 — BUILD: diagnostics and source locations
 
 **Inputs:** L-30…L-34; [`../plain/08-diagnostics-and-faults.md`](../plain/08-diagnostics-and-faults.md)
-(the authoritative catalog: 71 active codes — 66 error/warning, 5 fault — plus
+(the authoritative catalog: 72 active codes — 67 error/warning, 5 fault — plus
 `PLFL06`–`PLFL08` reserved for later phases, and PL0106 historical); the derived
 `diagnostic_registry` in `research/data/phase-01-document-audit.json`; all
 errors/warnings surfaced by WP-3…WP-6. Fault codes use the `PLFL` namespace and

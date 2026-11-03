@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.2 |
+| **Version** | 1.3 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result. Version 1.2 adds §3.9 and revises §4: the deeper finding is not only missing artifact governance but an **unspecified failure vocabulary** |
@@ -348,15 +348,15 @@ owned the namespace, so:
 
 `docs/plain/08-diagnostics-and-faults.md` (v0.3.1) now owns all four namespaces:
 `PL01nn` lexical, `PL02nn` types, **`PLFLnn` faults (new)**, `PL11nn` warnings.
-It assigns 19 new identifiers — 14 errors, 5 Gate 1 faults — and adds §6, the
+It assigns 20 new identifiers — 15 errors (including the previously unnamed generic syntax error `PL0001`), 5 Gate 1 faults — and adds §6, the
 explicit list of rules that correctly need no code.
 
 The repair itself reproduced the disease three times, and all three are recorded
 rather than quietly fixed:
 
 1. **Two hand-counted drafts of §8 were wrong.** Draft one claimed +16 error
-   codes and 68 active; draft two claimed 62. The measured answer is 19 new
-   identifiers and 71 active. A count typed into prose is a *claim*; only a
+   codes and 68 active; draft two claimed 62. The measured answer is 20 new
+   identifiers and 72 active. A count typed into prose is a *claim*; only a
    computed number is a *fact*. This is PR-01, demonstrated on the audit itself.
 2. **A fault code renamed out of its namespace passed every test.** Changing
    `PLFL03` to `PL0399` broke no check, because the same rule still cited
@@ -366,11 +366,27 @@ rather than quietly fixed:
 3. **The conformance budget was arithmetically inconsistent with its own
    rows.** Raising the total to 360 without repricing the areas tripped the audit
    tool, correctly. The diagnostics row had been "52+" — a floor written to avoid
-   committing to a number. Repriced to 66; total 355.
+   committing to a number. Repriced to 67; total 356.
 
-The pattern in all three: **a check that only verifies existence will pass while
-the substance is wrong.** The mutation test is what converted each from a silent
-defect into a failing test.
+4. **The catalog's own §6 contradicted its own registry in five places.** T-18,
+   E-19 and E-33 were published as "needs no code" while the registry recorded
+   them as owning `PL0210`–`PL0212`, `PL0228` and `PLFL05`. Cause: the registry
+   attributes a code to every rule named on a line, so a rule inside an
+   enumeration inherits the code. And this list was itself an open item —
+   §8a.8 said the classification was unverified — so the document shipped a
+   known-unverified claim and the claim turned out to be partly wrong.
+5. **The first pass searched only for rules that *refuse* something, and so
+   missed the generic syntax error entirely.** `PL0001` did not exist, although
+   the grammar note for non-associative comparison and L-32's cascade rule both
+   said "syntax error". A grammar note is not a rule bullet, so a scan of rule
+   bullets could not see it.
+
+The pattern in all five: **a check that only verifies existence will pass while
+the substance is wrong**, and a scan keyed to one syntactic shape will miss the
+same obligation written in another shape. The mutation test converted the first
+three from silent defects into failing tests; the last two were found only by
+cross-checking two artifacts against each other, which is why `--check` now does
+that rather than trusting either one.
 
 ## 4. The root cause
 
@@ -434,7 +450,7 @@ the right shape; it was simply checking only the claims layer.
 | `docs/problem-statement.md` | Typed word count replaced by the measured one (519 prose / 828 total). v1.2 excludes the Length row from its own count, because the row quotes the number and counting it made the figure self-referential |
 | `tools/audit_phase01.py` `--verify` | Prints the quantities prose may quote (PR-01 in executable form) |
 | `tools/audit_phase01.py` `duplicated_fact_check` | Overlap-based, not equality-based; §3.6 explains why the first version failed. v1.2 narrowed it to tables with **matching headers**, because comparing rule-ID sets flagged two tables that list the same rules about different things |
-| `docs/plain/08-diagnostics-and-faults.md` | **New (v1.2).** Owns all four code namespaces, assigns 19 new identifiers, defines the `PLFL` fault namespace, and lists the 38 rules that correctly need no code |
+| `docs/plain/08-diagnostics-and-faults.md` | **New (v1.2, extended in v1.3).** Owns all five code namespaces, assigns 20 new identifiers, defines the `PLFL` fault namespace, and lists the 38 rules that correctly need no code |
 | `docs/plain/00-lexical-and-layout.md`, `01-types.md`, `02-evaluation.md` | **Changed (v1.2).** 14 new codes and 5 fault codes inserted into the normative rule text, so a fixture can name what it tests |
 
 ### 5.2 The checks were mutation-tested
@@ -457,7 +473,7 @@ audit found.
 ### 5.3 What the repair deliberately did **not** do
 
 - **It did not write a fixture.** Every rule is *allocated*, none is *verified*.
-  Writing 355 fixtures is the Phase 1 build, and pretending a matrix is progress
+  Writing 356 fixtures is the Phase 1 build, and pretending a matrix is progress
   would repeat the exact error this audit is about.
 - **It did not renumber a rule ID.** `T-28` still sits between `T-03` and `T-04`,
   with a note instead of a renumber. IDs are cited by decisions, evidence rows,
@@ -509,7 +525,7 @@ its own gate and still be wrong.
   they pass their pinned corpora. No lexer, parser, type checker, evaluator, or
   runner exists.
 - **Gate 1** — **not attempted**, and cannot be attempted until C2 is recorded,
-  the seven A-* proposals are ratified or revised, and 355 fixtures exist and
+  the seven A-* proposals are ratified or revised, and 356 fixtures exist and
   pass in both profiles under an independent reviewer.
 
 ## 8a. Open gaps this pass did **not** close
@@ -524,8 +540,8 @@ Stated so the next reader does not assume the repair is total.
 | 4 | The 11 stale-status findings were found by reading, not by a check | Detecting "this sentence contradicts that file" needs a claim-level link, which is a bigger design than this pass | Consider a status-owner field in the tracker |
 | 5 | Phase 2–14 records do not exist, so none of these checks has been exercised past Phase 1 | Out of scope by the directory guide's rule 4 | Each phase, before its gate |
 | 6 | **The catalog's 19 new identifiers are a proposal; none has owner ratification** | Naming is the most visible part of a compiler and the cheapest thing to change before fixtures exist | Owner reviews `08-diagnostics-and-faults.md` §9 |
-| 7 | **No message text, span convention, or fix exists for any of the 72 codes** | L-30 fixes the fields and L-34 demands a fixture per code, but writing 72 messages is implementation work | Phase 1 build |
-| 8 | 38 rules are recorded as needing no code, and that classification is unverified | Telling a *rejection* from an *implementation constraint* is a judgement; a wrong call either invents a pointless code or hides a missing one | Re-read §6 against the rule text at Gate 1 |
+| 7 | **No message text, span convention, or fix exists for any of the 73 codes** | L-30 fixes the fields and L-34 demands a fixture per code, but writing 73 messages is implementation work | Phase 1 build |
+| 8 | 38 rules are recorded as needing no code. The five *self-contradictions* are fixed and machine-checked (evidence #121), but whether each remaining classification is correct is a judgement no tool makes | Telling a *rejection* from an *implementation constraint* needs a human read of the rule text; a wrong call either invents a pointless code or hides a missing one | Re-read §6 against the rule text at Gate 1 |
 | 9 | `PLFL05` (fuel exhaustion) sits in the fault namespace but may read better as a diagnostic | Either choice is defensible and the rule text does not decide it | Owner decision, §9 item 6 |
 | 10 | Three codes are cited by two rules each (`PL0107`, `PL0114`, `PL0219`, `PL0228`) with no recorded owner | The catalog names an owner in prose; the registry structure does not carry one | Add an `owner` field to `diagnostic_registry()` when the compiler starts consuming it |
 
@@ -554,5 +570,6 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-03 | 1.3 | Self-audit of the catalog against its own registry. Found five §6 rows that called a rule codeless while it owned a code (T-18, E-19, E-33), and found that no generic syntax-error code existed although the spec twice said "syntax error"; `PL0001` added in a new `PL00nn` range. Two mistakes appended to §3.9.2 (now five). Counts 73 codes / 72 active / budget 356 / evidence 123. Two new checks: `codeless_claim_check`, `fault_namespace_check` |
 | 2026-11-03 | 1.2 | Added §3.9 (the specification could not be built because its failure modes were unnamed) and revised §4 to the sharper root cause: an identifier is an artifact, and nothing governed the identifier namespaces. Created `docs/plain/08-diagnostics-and-faults.md`; assigned 19 identifiers into normative rule text; added 13 tests; recorded three mistakes made during the repair. Open gaps 8a.6–8a.10 added |
 | 2026-11-03 | 1.1 | Second pass. §3.6 records that this audit's own repair duplicated the exclusion table and that the first duplicate-detection check was too weak to catch it — found by mutation-testing the check, not by review. §3.7 corrects three typed numbers in v1.0 (including the problem statement's "580 words" → 519 measured) and adds `--verify`. §3.8 completes PR-06 across all 16 decision records and fixes the "seven documents" count. §8a lists five gaps deliberately left open. Duplication check rewritten from set-equality to overlap. |

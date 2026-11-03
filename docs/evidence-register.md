@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.2 (Phase 1 audit) |
+| **Version** | 1.3 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -185,14 +185,17 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 118 | "The specification required fault fixtures to assert an exact fault code, but no fault-code namespace existed anywhere in the documents; E-30 enumerated the core faults without naming one." | E | `docs/plain/05-conformance-plan.md` §3.3; `docs/plain/02-evaluation.md` E-30; exhaustive search of `docs/` and `research/` for a fault identifier scheme | 0 | 2026-11-03 | Confirmed. The `PLFL` namespace was introduced and `PLFL01`–`PLFL05` assigned to E-05/E-06/E-33; three further numbers are reserved so later phases do not renumber |
 | 119 | "Renaming a fault code out of the fault namespace (`PLFL03` → `PL0399`) passed every existing document test, because the same rule still cited another `PLFL` code." | E | Mutation applied to `docs/plain/02-evaluation.md` against `tests/test_document_invariants.py` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by mutation. A sentence-level check was added; a coarse version produced five false positives before being narrowed to the "the fault `X`" appositive |
 | 120 | "Hand-counted figures in this project were wrong three times in one document: the catalog's first two drafts both overstated the number of new codes, and draft two understated the conformance budget's arithmetic." | E | `docs/plain/08-diagnostics-and-faults.md` §8; `python3 tools/audit_phase01.py --verify` | 1 | 2026-11-03 | Confirmed by recomputation. Every count is now printed by `--verify`; both wrong drafts are retained in the document rather than overwritten |
+| 121 | "The catalog's own §6 list of rules needing no diagnostic code contradicted the derived registry in five places: T-18, E-19 and E-33 were listed as codeless while the registry recorded them as owning `PL0210`–`PL0212`, `PL0228` and `PLFL05`." | E | `docs/plain/08-diagnostics-and-faults.md` §6 against `tools/audit_phase01.py` `diagnostic_registry()` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by cross-checking the two artifacts. Cause: the registry attributes a code to every rule named on its line, so a rule inside an enumeration inherits the code. All five rows now name the code that is *not* codeless; a check fails if a §6 row silently contradicts the registry |
+| 122 | "The specification said \"a syntax error\" in two places (chained comparison, L-32's cascade rule) but no generic parse-error code existed in the registry or any document." | E | `docs/plain/00-lexical-and-layout.md` L-28 grammar note and L-32; exhaustive code registry | 0 | 2026-11-03 | Confirmed. `PL0001` was added in a new `PL00nn` parse range. The first identity pass missed it because it searched for rules that *refuse* something, and a grammar note is not a rule bullet |
+| 123 | "The catalog's claim that 38 rules need no code was itself unverified — a wrong call either invents a pointless code or hides a missing one." | P | `docs/plain/08-diagnostics-and-faults.md` §6; audit record §8a item 8 | 0 | 2026-11-03 | Partially closed: the five self-contradictions were found and fixed by machine cross-check. Whether each remaining classification is *correct* still needs a human read against the rule text, and stays open as §8a.8 |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 120 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap) |
-| Established (E) | 64 |
-| Proposed (P) | 26 |
+| Total rows | 123 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit) |
+| Established (E) | 66 |
+| Proposed (P) | 27 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
 | Superseded | 4 — #065, #066, #068, #080 |

@@ -493,23 +493,23 @@
       },
       {
         "area": "Diagnostics quality",
-        "target": 66
+        "target": 67
       }
     ],
-    "sum": 355
+    "sum": 356
   },
   "evidence": {
-    "count": 120,
+    "count": 123,
     "labels": {
       "H": 30,
-      "P": 26,
-      "E": 64
+      "P": 27,
+      "E": 66
     },
     "declared_summary": {
-      "total": 120,
+      "total": 123,
       "labels": {
-        "E": 64,
-        "P": 26,
+        "E": 66,
+        "P": 27,
         "H": 30
       }
     },
@@ -521,6 +521,17 @@
     ]
   },
   "diagnostic_registry": [
+    {
+      "code": "PL0001",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-32"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
     {
       "code": "PL0101",
       "severity": "error",
@@ -850,7 +861,8 @@
       "severity": "error",
       "historical": false,
       "rules": [
-        "T-07"
+        "T-07",
+        "T-08"
       ],
       "documents": [
         "docs/plain/01-types.md"
@@ -1186,7 +1198,8 @@
       "severity": "error",
       "historical": false,
       "rules": [
-        "T-08"
+        "T-08",
+        "T-10"
       ],
       "documents": [
         "docs/plain/01-types.md"
@@ -1368,6 +1381,11 @@
     "ok": true,
     "offenders": []
   },
+  "codeless_claims": {
+    "ok": true,
+    "silent": [],
+    "listed": 38
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1392,21 +1410,20 @@
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 120,
+    "evidence_rows": 123,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,
     "problem_statement_total_words": 828,
     "conformance_fixtures_written": 0,
     "code_accounting": {
-      "codes_cited_by_rules": 71,
+      "codes_cited_by_rules": 72,
       "historical_codes": 1,
       "fault_codes_defined": 5,
-      "all_active_codes": 76
+      "all_active_codes": 77
     },
     "rules_requiring_rejection_without_a_code": [
       "L-23",
-      "T-10",
       "E-10",
       "E-22",
       "E-32",

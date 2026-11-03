@@ -156,7 +156,7 @@ Notes that the grammar alone does not express, and which **MUST** be checked by 
 
 ## 7. Operator precedence and associativity
 
-Highest to lowest; all binary operators are left-associative except `<`, `<=`, `>`, `>=`, `==`, `!=`, which are **non-associative** (a chained comparison is a syntax error rather than a silent boolean).
+Highest to lowest; all binary operators are left-associative except `<`, `<=`, `>`, `>=`, `==`, `!=`, which are **non-associative** — a chained comparison is a syntax error (`PL0001`) rather than a silent boolean.
 
 | Level | Operators | Associativity |
 |---|---|---|
@@ -193,7 +193,7 @@ Phase 1 requires "readable diagnostics with error spans". These rules make that 
 
 - **L-30** Every diagnostic **MUST** carry: a stable code (`PLnnnn` / `PL1nnn` for warnings), a severity, a primary span with `line:column` start and end, a one-line message, a cause paragraph, and — where a fix is mechanical — one or more machine-applicable fixes.
 - **L-31** Every diagnostic **MUST** quote the offending source line with a caret underline. Directional/bidi control characters and other invisible format controls in quoted source **MUST** be escaped or visibly marked so diagnostic output cannot reorder executable code misleadingly ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html) §§4–5).
-- **L-32** The compiler **MUST NOT** cascade: after an unrecoverable parse or type error in a declaration, subsequent errors in that declaration **MUST** be suppressed and summarized (`PL0199`).
+- **L-32** The compiler **MUST NOT** cascade: after an unrecoverable parse or type error (`PL0001`) in a declaration, subsequent errors in that declaration **MUST** be suppressed and summarized (`PL0199`).
 - **L-33** Diagnostic wording **MUST** use the language's own terms ("a block", "a case arm", "a record field"), never internal AST or IR names.
 - **L-34** The conformance suite **MUST** include a diagnostics section: for every active diagnostic code in the generated registry, a fixture asserting code, span, and the presence of a fix where required. The registry is derived from the rules, not a hand-maintained range; retired codes are marked historical.
 

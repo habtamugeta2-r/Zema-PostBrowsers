@@ -182,14 +182,14 @@ verification that must exist before Gate 1 can be attempted.
 | Rules attributable to a conformance-plan area | 106 | plan §2, after the gap repair |
 | Rules with **no** Gate 1 fixture (`NV`) | 2 | `E-31`, `E-34` — see §4 |
 | Rules only **partly** verifiable at Gate 1 | 2 | `E-12`, `L-33` — see §4 |
-| Planned fixture budget | 355 | conformance plan §2; recomputed when the diagnostic registry grew from 52 to 71 active codes |
+| Planned fixture budget | 356 | conformance plan §2; recomputed when the diagnostic registry grew from 52 to 72 active codes |
 | Fixtures written | **0** | repository observation, 2026-11-03 |
 | Rule-level coverage now provable | **0 %** | there is nothing to run |
 
 > **Read this table the right way.** 106/106 rules are *allocated*, which is
 > what a plan can achieve before code exists. 0/106 are *verified*. The distance
 > between allocation and verification is the entire remaining Phase 1 build.
-> Anyone quoting "355 fixtures" as progress is quoting a budget. The currency of this number is the diagnostic registry: when a code is added, the budget moves, and the audit tool recomputes both.
+> Anyone quoting "356 fixtures" as progress is quoting a budget. The currency of this number is the diagnostic registry: when a code is added, the budget moves, and the audit tool recomputes both.
 
 ## 4. Rules Gate 1 cannot fully verify
 
