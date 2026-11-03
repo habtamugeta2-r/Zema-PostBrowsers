@@ -3,12 +3,12 @@
 | Field | Detail |
 |---|---|
 | **Document** | Phase 1 execution prompt — the work order that turns draft v0.2.4 into an executable core and a Gate 1 result |
-| **Version** | 1.0 |
+| **Version** | 1.1 (2026-11-03: repaired internal section pointers and refreshed the verified-facts table after the traceability pass; no work package changed) |
 | **Date** | 2026-11-03 |
 | **Status** | Ready for execution — **conditional on the owner authorizations in §2**. This document is a plan, not an authorization |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner (Better-back) |
 | **Evidence label** | **Proposed** for all recommendations; **Established** for quoted repository state and the verified environment facts in §3 |
-| **Subordinate to** | [Master Prompt v1.1](./ZEMA-Master-Research-and-Build-Prompt.md), [Gate 0 conditions](../gates/gate-00.md), decisions [0004](../decisions/0004-research-book-missing.md)–[0012](../decisions/0012-directional-confusability-and-ucd-completeness.md), and the [Plain draft](../plain/README.md) |
+| **Subordinate to** | [Master Prompt v1.1](./ZEMA-Master-Research-and-Build-Prompt.md), [Gate 0 conditions](../gates/gate-00.md), decisions [0004](../decisions/0004-research-book-missing.md)–[0016](../decisions/0016-script-value-alias-input.md), and the [Plain draft](../plain/README.md) |
 | **Location** | `docs/zema-master-prompt/PHASE-01-EXECUTION-PROMPT.md` |
 
 > **Mission.** Build the smallest executable implementation of the
@@ -88,17 +88,17 @@ be made, inferred, or signed by the agent. Silence is not approval.
 
 | Check | Where to verify | If missing |
 |---|---|---|
-| **C1** — owner signed the frozen problem statement, target class, non-goals | [`gate-00.md`](../gates/gate-00.md) §8, name and date filled in | **Build blocked.** Run §10 fallback only |
-| **C5** — PlainP ruled superseded / donor / eventual home | A dated owner decision in `docs/decisions/` or the readiness packet §2 | **Build blocked.** Run §10 fallback only |
+| **C1** — owner signed the frozen problem statement, target class, non-goals | [`gate-00.md`](../gates/gate-00.md) §8 sign-off box and §10 owner response | **Build blocked.** Run **WP-11 (§5)** fallback only |
+| **C5** — PlainP ruled superseded / donor / eventual home | A dated owner decision in `docs/decisions/` or the readiness packet §2 | **Build blocked.** Run **WP-11 (§5)** fallback only |
 | **C2** — book imported or chapter references retired | Readiness packet §2; decision 0004 successor if retired | Build may proceed; **Gate 1 attempt blocked** until recorded |
 | **A-27, A-38, A-42, A-44, A-45, A-46, A-47** ratified or revised | Readiness packet §1 responses, or successor decision records | Build may proceed on the proposed text; **Gate 1 attempt blocked** until recorded. If revised: apply the revision to the rule text **and** the ambiguity register in the same commit, bump the draft version, then build |
 | **C4** — project license stated | Gate 0 §5; a license decision record | No vendoring of third-party data/code into Git (§5 WP-2); fetch-on-build with hash verification instead. Public release remains blocked |
 
-Record the preflight outcome — date, what was found, what is missing —
-in the implementation log (§8) and as a dated row in
-[`PHASE-TRACKER.md`](./PHASE-TRACKER.md)'s change log. Then proceed to
-§5 if C1/C5 are recorded, or to §10 if they are not. **Stop conditions
-are live at every step** (§7).
+Record the preflight outcome — date, what was found, what is missing — as a
+dated row in [`PHASE-TRACKER.md`](./PHASE-TRACKER.md)'s change log, and add or
+update `docs/gates/gate-01-readiness.md` §2 with the condition you checked.
+Then proceed to §5 if C1/C5 are recorded, or to **WP-11 (§5)** if they are not.
+**Stop conditions are live at every step** (§7).
 
 ---
 
@@ -114,7 +114,7 @@ if the environment differs, record the difference and revisit WP-1.
 | Node v22.22.3 present; **no Rust toolchain** (`rustc`, `cargo`, `rustup` absent) | `command -v` checks | A Rust implementation cannot be built or tested here without a toolchain this sandbox cannot reach (`static.rust-lang.org` is outside the network allowlist) |
 | Network allowlist: `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | Environment constraint | `unicode.org` is unreachable from the sandbox; the pinned GitHub mirror is the data source |
 | The pinned Unicode data commit is reachable | `api.github.com` returned HTTP 200 for blob `21a79503…` and commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c` (`unicode-org/unicodetools`) | WP-2 fetch-and-verify is feasible here |
-| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 rules, 47 ambiguities (42/5/0), 20 deferrals, 307 fixture targets, 111 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
+| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 341 fixture targets, 106/106 rules traced to a verification method and an area, 114 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
 
 **Recommendation (Proposed — to be recorded as decision 0013):** the
 Gate 1 vehicle is a **Python 3.11 standard-library-only reference
@@ -171,7 +171,7 @@ written down and priced in the same decision record.
 ### WP-1 — DECIDE: implementation, data, and runner design
 
 **Inputs:** §3 facts; Appendix A research; decisions 0005–0012; the
-conformance plan; the semantics draft.
+conformance plan; the rule traceability matrix; the semantics draft.
 
 **Tasks:**
 - Research the implementation approaches in Appendix A (test262/Wasm
@@ -193,9 +193,10 @@ conformance plan; the semantics draft.
   AST walk vs. a semantics-preserving optimized pass); a flag that
   changes nothing is a fake pass and is forbidden.
 
-**Acceptance:** three decision records using
+**Acceptance:** three decision records (0013–0015) using
 [`templates/decision-record.md`](./templates/decision-record.md), each
-with options priced, not just chosen. Research record indexed in
+with options priced, not just chosen. A fourth, decision 0016, handles the
+Script value-alias input and is an owner amendment, not an agent choice. Research record indexed in
 [`research/README.md`](../../research/README.md).
 
 ### WP-2 — BUILD: Unicode data pipeline
@@ -339,9 +340,11 @@ required to be emitted unless a recorded spec change reactivates it.
 
 ### WP-8 — MEASURE: fixtures, runner, and coverage report
 
-**Inputs:** [conformance plan](../plain/05-conformance-plan.md) and
-decision 0015. The planned budget is **307**, not a cap and not proof
-of coverage.
+**Inputs:** [conformance plan](../plain/05-conformance-plan.md),
+[rule traceability matrix](../plain/07-traceability.md), and
+decision 0015. The planned budget is **341**, not a cap and not proof of
+coverage. The matrix, not the budget, is what you close out: every one of the
+106 rule IDs must end with a real fixture path beside it.
 
 **Tasks:**
 - Write fixtures at `conformance/<area>/<id>_<slug>.plain` and adjacent
@@ -456,6 +459,7 @@ vendor or release actions until C4 is settled.
 | Implementation | `src/plain/` or a layout justified by decision 0013; standard library only unless a reviewed decision and license permit otherwise |
 | Generated Unicode tables/cache | Under a gitignored data/cache location; pin commit and manifest; do not commit source data before C4 review |
 | Conformance suite | `conformance/<area>/<id>_<slug>.plain` and `.expected`; fixture README describes format and provenance |
+| Rule→fixture traceability | [`../plain/07-traceability.md`](../plain/07-traceability.md); update the row for a rule **in the same commit** as its first fixture |
 | Runner reports/raw results | `research/data/phase-01-...`; commit compact reproducible outputs, not redundant or huge generated artifacts |
 | Gate review | `docs/gates/gate-01.md`, derived from gate-review template |
 | Norm/evidence/status updates | Update rule + ambiguity record together; evidence register + tracker + relevant README in same gate-result commit |

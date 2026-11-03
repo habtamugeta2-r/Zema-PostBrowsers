@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from plain.unicode17 import Unicode17Normalizer  # noqa: E402
 
 CACHE = ROOT / "research/data/.cache/unicode17"
-OUTPUT = ROOT / "research/data/phase-01-normalization-report.json"
+OUTPUT = ROOT / "research/experiments/EN-unicode17-normalization/normalization-report.json"
 
 
 def data_file(source_id: str) -> Path:

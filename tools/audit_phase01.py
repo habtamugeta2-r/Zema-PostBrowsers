@@ -94,6 +94,116 @@ def evidence_summary(text: str) -> dict:
     return {"total": int(total.group(1)) if total else None, "labels": counts}
 
 
+def traceability_matrix() -> dict:
+    """Check docs/plain/07-traceability.md covers every normative rule.
+
+    This closes the gap where an area-level fixture budget could be met while
+    individual rules went unowned. Allocation is not coverage: this check only
+    proves that every rule has a named verification method and area.
+    """
+    path = PLAIN / "07-traceability.md"
+    if not path.exists():
+        return {"ok": False, "covered": 0, "missing": ["07-traceability.md not found"], "unknown": [], "methods": {}}
+    text = path.read_text(encoding="utf-8")
+    rows = []
+    for line in text.splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = table_cells(line)
+        if len(cells) < 3:
+            continue
+        ref = cells[0].replace("*", "").strip()
+        if not re.fullmatch(r"(?:[LTE]-\d{2}|S-\d)", ref):
+            continue
+        rows.append({"rule": ref, "method": cells[1].replace("*", "").strip(), "area": cells[2].strip()})
+    covered = {row["rule"] for row in rows}
+    defined = set()
+    defined |= set(rule_ids(read(RULE_DOC_RELS[0]), "L"))
+    defined |= set(rule_ids(read(RULE_DOC_RELS[1]), "T"))
+    defined |= set(rule_ids(read(RULE_DOC_RELS[2]), "E"))
+    defined |= set(sugar_ids(read(RULE_DOC_RELS[0])))
+    missing = sorted(defined - covered)
+    unknown = sorted(covered - defined)
+    methods = Counter()
+    for row in rows:
+        for token in re.split(r"[+,]", row["method"]):
+            token = token.strip()
+            if token:
+                methods[token] += 1
+    return {
+        "ok": not missing and not unknown,
+        "rows": len(rows),
+        "covered": len(covered & defined),
+        "defined": len(defined),
+        "missing": missing,
+        "unknown": unknown,
+        "methods": dict(sorted(methods.items())),
+    }
+
+
+def conformance_area_coverage() -> dict:
+    """Check every normative rule is attributed to a conformance-plan area.
+
+    The plan's area table names rule ranges per area. Before this check, 14
+    rules fell between the named ranges and had no area at all.
+    """
+    plan = read("docs/plain/05-conformance-plan.md")
+    areas = []
+    covered: set[str] = set()
+    for line in plan.splitlines():
+        cells = table_cells(line)
+        if len(cells) < 3 or not re.match(r"^\d+", cells[2] or ""):
+            continue
+        col = cells[1]
+        areas.append(cells[0])
+        for match in re.finditer(r"([LTE])-(\d{2})\s*…\s*(?:([LTE])-)?(\d{2})", col):
+            prefix, low, high = match.group(1), int(match.group(2)), int(match.group(4))
+            covered.update(f"{prefix}-{i:02d}" for i in range(low, high + 1))
+        for match in re.finditer(r"S-(\d)\s*…\s*(?:S-)?(\d)", col):
+            covered.update(f"S-{i}" for i in range(int(match.group(1)), int(match.group(2)) + 1))
+        for match in re.finditer(r"(?<![\w-])([LTE]S?-\d{2}|S-\d)(?![\d…])", col):
+            token = match.group(1)
+            covered.add(token)
+    defined = set()
+    for rel, prefix in zip(RULE_DOC_RELS, ("L", "T", "E")):
+        defined |= set(rule_ids(read(rel), prefix))
+    defined |= set(sugar_ids(read(RULE_DOC_RELS[0])))
+    # §5 of the plan owns rules the hermetic suite deliberately excludes;
+    # they are attributed, not forgotten.
+    excluded = read("docs/plain/05-conformance-plan.md").split("## 5.", 1)
+    if len(excluded) == 2:
+        for match in re.finditer(r"`([LTE]-\d{2}|S-\d)`", excluded[1].split("## 6.", 1)[0]):
+            covered.add(match.group(1))
+    unattributed = sorted(defined - covered)
+    return {
+        "ok": not unattributed,
+        "areas": len(areas),
+        "attributed": len(covered & defined),
+        "defined": len(defined),
+        "unattributed": unattributed,
+    }
+
+
+def duplicate_artifact_check() -> dict:
+    """Report committed result files duplicated under research/data and experiments.
+
+    The same measurement must live in one place. Two copies that differ only by
+    a timestamp is how a reader ends up quoting the wrong number.
+    """
+    canonical = ROOT / "research" / "data" / "phase-01-normalization-report.json"
+    experiment = ROOT / "research" / "experiments" / "EN-unicode17-normalization" / "normalization-report.json"
+    duplicates = []
+    if canonical.exists() and experiment.exists():
+        duplicates.append(
+            {
+                "canonical": str(canonical.relative_to(ROOT)),
+                "experiment": str(experiment.relative_to(ROOT)),
+                "reason": "normalization result stored twice; the experiment record owns it",
+            }
+        )
+    return {"ok": not duplicates, "duplicates": duplicates}
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -268,6 +378,9 @@ def main() -> int:
     declared_evidence = evidence_summary(evidence)
     deferral_ids = sorted(set(re.findall(r"^### (D-\d{2})", deferrals, re.MULTILINE)))
     registry = diagnostic_registry()
+    traceability = traceability_matrix()
+    areas = conformance_area_coverage()
+    duplicates = duplicate_artifact_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -282,6 +395,9 @@ def main() -> int:
         "conformance_fixture_targets": {"rows": fixtures, "sum": sum(r["target"] for r in fixtures)},
         "evidence": {"count": len(ev), "labels": dict(labels), "declared_summary": declared_evidence, "retracted": [r["id"] for r in ev if r["status"].lower().startswith("retracted")]},
         "diagnostic_registry": registry,
+        "traceability": traceability,
+        "conformance_area_coverage": areas,
+        "duplicate_artifacts": duplicates,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -297,8 +413,19 @@ def main() -> int:
         problems.append(f"expected 47 ambiguities (42 resolved, 5 deferred, 0 open), found {len(amb)} / {amb_status}")
     if len(deferral_ids) != 20:
         problems.append(f"expected 20 deferrals, found {len(deferral_ids)}")
-    if report["conformance_fixture_targets"]["sum"] != 307:
-        problems.append("fixture target sum is not 307")
+    fixture_sum = report["conformance_fixture_targets"]["sum"]
+    declared_total = re.search(
+        r"\|\s*\*\*Currently allocated\*\*\s*\|[^|]*\|\s*\*\*(\d+)\s*fixtures?\*\*",
+        conformance,
+    )
+    if not declared_total:
+        problems.append("conformance plan has no declared fixture total")
+    elif int(declared_total.group(1)) != fixture_sum:
+        problems.append(
+            f"conformance plan declares {declared_total.group(1)} fixtures but its areas sum to {fixture_sum}"
+        )
+    if fixture_sum < 307:
+        problems.append(f"fixture budget shrank below the recorded 307 floor: {fixture_sum}")
     if (
         declared_evidence["total"] != len(ev)
         or declared_evidence["labels"] != {key: labels.get(key, 0) for key in ("E", "P", "H")}
@@ -317,6 +444,15 @@ def main() -> int:
         problems.append(f"source manifest check failed or entry counts drifted: {manifest}")
     if any(not entry["rules"] and not entry["historical"] for entry in registry):
         problems.append("diagnostic code without an owning rule")
+    if not traceability["ok"]:
+        problems.append(
+            f"traceability matrix incomplete: missing={traceability['missing']} "
+            f"unknown={traceability['unknown']}"
+        )
+    if not areas["ok"]:
+        problems.append(f"rules with no conformance-plan area: {areas['unattributed']}")
+    if not duplicates["ok"]:
+        problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     report["check"] = {"ok": not problems, "problems": problems}
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({
@@ -326,6 +462,14 @@ def main() -> int:
         "deferrals": report["deferrals"]["count"],
         "evidence": report["evidence"]["labels"],
         "diagnostic_codes": len(registry),
+        "traceability": {
+            "rows": traceability["rows"],
+            "covered": traceability["covered"],
+            "defined": traceability["defined"],
+            "missing": traceability["missing"],
+        },
+        "conformance_area_coverage": areas,
+        "duplicate_artifacts": duplicates["duplicates"],
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,

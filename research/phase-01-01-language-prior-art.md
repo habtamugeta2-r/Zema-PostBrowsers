@@ -7,7 +7,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
-| **Status** | Complete for the research half of Phase 1; build half blocked on Gate 0 conditions C1/C5 |
+| **Status** | Complete for the research half of Phase 1. (C1/C5 were resolved on 2026-11-03, so the build half is authorized; see the Phase 1 execution prompt.) |
 | **Evidence label** | Mixed — labeled per row; grades per [`README.md` §3](./README.md#3-source-grades-annotation-not-an-extra-label) |
 
 > Phase 1's research task is to study the "easy" specification — small

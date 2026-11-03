@@ -51,7 +51,6 @@
 | A-24 | Is `{}` the unit value or an empty record? | Neither: `{}` is an error pointing at `()`; records need at least one field | Resolved | L-16, T-06 |
 | A-25 | Can `when` match on literals and non-union values? | Yes; open domains need a wildcard or binding pattern, and nested patterns are checked for coverage/reachability | Resolved | E-25, E-27, A-37 |
 | A-26 | Are record types width-polymorphic (row polymorphism)? | No in v0.1; functions take the exact record type. Deferred with trigger | **Deferred** | D-13 |
-
 | A-27 | Which Unicode/UTS #39 data version and identifier profile does Plain pin? | Initial pin: Unicode 17.0.0 / UAX #31 rev43 / UAX #15 rev57 / UAX #9 rev51 / UTS #39 rev32 / UTS #55 rev5; declared R1-2 `_` profile; upgrades require decision, data diff, fixtures, and rerun | Resolved (proposed) | L-04, L-08, L-10, decision 0009 |
 | A-28 | Are text literals normalized like identifiers? | No. Identifiers are NFC; text literals preserve scalar data. Concatenation does not normalize | Resolved | L-04, E-11 |
 | A-29 | Can naming roles depend solely on case? | No. Roles come from declaration/resolution context; case conventions are warnings and do not exclude unicameral scripts | Resolved | L-12 |

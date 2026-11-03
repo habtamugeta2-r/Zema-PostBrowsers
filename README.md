@@ -33,7 +33,7 @@ success and failure would each look like.
 **Phase 0 — Historical Foundations & Problem Definition: complete.
 Gate 0 passed with conditions (C1–C5).**
 
-**Phase 1 — The Unified Language ("Plain"): draft v0.2.4; build authorized, in progress.** Better-back signed C1 and ruled PlainP a donor only on 2026-11-03 (recorded in [`gate-00.md`](docs/gates/gate-00.md) §9); the Phase 1 build may proceed against the proposed spec. The specification ([`docs/plain/`](docs/plain/README.md)) has 100 numbered rules, 47 derived ambiguities (42 resolved proposals, 5 deferred, 0 open; ratification pending), 20 deferrals, a 307-fixture planning budget, and a **non-normative** small-step semantics draft. The Phase 1 build has fetched and verified the 16 pinned Unicode inputs and implemented a project-owned NFC/NFD normalizer that passes all 20,034 rows / 200,340 assertions in the Unicode 17 normalization corpus. The lexer/parser/typechecker/evaluator, bidiSkeleton and full identifier-security algorithms, and conformance suite remain unimplemented; Script_Extensions comparisons are deliberately guarded pending proposed decision 0016 (an A-46 input-lock amendment). **Gate 1 is not attempted**. C2 and A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratifications are required before a Gate 1 attempt.
+**Phase 1 — The Unified Language ("Plain"): draft v0.2.4; build authorized, in progress.** Better-back signed C1 and ruled PlainP a donor only on 2026-11-03 (recorded in [`gate-00.md`](docs/gates/gate-00.md) §10); the Phase 1 build may proceed against the proposed spec. The specification ([`docs/plain/`](docs/plain/README.md)) has 100 numbered rules, 47 derived ambiguities (42 resolved proposals, 5 deferred, 0 open; ratification pending), 20 deferrals, a 341-fixture planning budget, and a **non-normative** small-step semantics draft. Every one of the 106 rule IDs is allocated to a verification method and a conformance area in the [traceability matrix](docs/plain/07-traceability.md); **zero of the 341 fixtures are written.** The Phase 1 build has fetched and verified the 16 pinned Unicode inputs and implemented a project-owned NFC/NFD normalizer that passes all 20,034 rows / 200,340 assertions in the Unicode 17 normalization corpus. The lexer/parser/typechecker/evaluator, bidiSkeleton and full identifier-security algorithms, and conformance suite remain unimplemented; Script_Extensions comparisons are deliberately guarded pending proposed decision 0016 (an A-46 input-lock amendment). **Gate 1 is not attempted**. C2 and A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratifications are required before a Gate 1 attempt.
 
 | Phase 0 artifact | What it records |
 |---|---|
@@ -42,8 +42,8 @@ Gate 0 passed with conditions (C1–C5).**
 | [Coordination-cost research](research/phase-00-03-coordination-cost.md) | Published measurements of today's stack, plus what they do *not* prove |
 | [Prior-art review](research/phase-00-04-prior-art.md) | Electron, Tauri, Flutter, React Native, PWAs — and the retraction of "world's first" |
 | [Book-import audit](research/phase-00-05-book-import-audit.md) | A reproducible negative finding: the research book is not in this repo or the owner's public repos |
-| [Evidence register](docs/evidence-register.md) | 111 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
-| [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book |
+| [Evidence register](docs/evidence-register.md) | 114 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
+| [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book; index and two-field status vocabulary in [`docs/decisions/README.md`](docs/decisions/README.md) |
 | [Gate 0 review](docs/gates/gate-00.md) | The pass, its two retractions, its stopping-condition check, and conditions C1–C5 |
 | [Gate 1 readiness packet](docs/gates/gate-01-readiness.md) | Owner/reviewer response blocks for C1/C2/C5 and A-27/A-38/A-42/A-44/A-45/A-46/A-47; preparation only, not a gate attempt |
 
@@ -52,7 +52,8 @@ Gate 0 passed with conditions (C1–C5).**
 | Artifact | What it records |
 |---|---|
 | [Plain specification v0.2.4](docs/plain/README.md) | Index, non-goals, freeze policy — **draft, not frozen** |
-| [Conformance plan](docs/plain/05-conformance-plan.md) | Gate 1 core vs platform scope, per-rule coverage, 307 currently allocated fixture targets — **plan only** |
+| [Conformance plan](docs/plain/05-conformance-plan.md) | Gate 1 core vs platform scope, 341 allocated fixture targets, runner requirements — **plan only** |
+| [Rule traceability matrix](docs/plain/07-traceability.md) | All 106 rule IDs → verification method → conformance area; the 2 rules Gate 1 cannot verify, with owners — **allocation, not coverage** |
 | [Operational semantics draft](docs/plain/06-operational-semantics.md) | Non-normative small-step core model, conjectures, trace obligations |
 | [Lexical structure & layout](docs/plain/00-lexical-and-layout.md) | Unicode identifiers and confusables, literals, the single layout rule, compact EBNF, sanctioned sugar, diagnostics |
 | [Types](docs/plain/01-types.md) | `let`/`mut`, structural records, nominal closed unions, `Option`/`Result`, interfaces and coherence, inference limits |
@@ -65,6 +66,7 @@ Gate 0 passed with conditions (C1–C5).**
 | [Integrated systems & PlainP](research/phase-01-04-integrated-systems-and-plainp.md) | Newspeak/Monte/Unison/Lamdera/Dark/Skip/Flutter matrix and read-only PlainP audit |
 | [Specification audit](research/phase-01-05-specification-audit.md) | 29 findings, counterexamples, count corrections, Unicode data lock, Gate 1 readiness |
 | [Implementation feasibility](research/phase-01-06-implementation-feasibility.md) | Python reference vehicle proposal, C1/C5 authorization state, and Unicode implementation progress |
+| [Process-gap audit](research/phase-01-07-process-gap-audit.md) | The research-and-build process gap: 14 rules unlinked to any test, 3 broken invariants, 11 stale statuses — root cause, repair, and the checks that now fail on regression |
 | [Source manifest](research/data/phase-01-source-manifest.json) | 58 versioned sources including 16 hash-pinned Unicode 17.0.0 data/test inputs |
 | [Unicode input verification](research/data/phase-01-unicode-verification.json) | Fetch-time Git blob, byte-length, and SHA-256 checks for all 16 pinned files |
 | [Internal skeleton candidates](research/data/phase-01-internal-skeleton-examples.json) | Computed UTS #39 internalSkeleton only; not bidiSkeleton or final Plain results |
@@ -78,6 +80,13 @@ For every phase: **Research → Decide → Build → Measure → Gate.**
 Reuse before inventing. Prove every claim — or retract it. Every gate
 can stop the project, and "an existing solution is better" is a valid
 outcome.
+
+**Structural rules (from the 2026-11-03 process audit):** one canonical file per
+measurement; a status fact has one owning document and every other mention links
+to it; every rule ID is traced to a verification method and a fixture area; every
+number in prose is computed by the audit tool, not typed. Enforced by
+`tools/audit_phase01.py --check` and `tests/test_document_invariants.py`; see the
+[process-gap audit](research/phase-01-07-process-gap-audit.md) §6.
 
 **Evidence rules:** every claim carries exactly one label —
 **Established** (cited external source, grade A or B), **Proposed**

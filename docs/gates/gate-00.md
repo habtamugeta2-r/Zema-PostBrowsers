@@ -141,11 +141,11 @@ tasks now. Its **build** tasks start when C1 and C5 are signed.
 
 - [x] `PHASE-TRACKER.md` updated in the same commit as this review
 - [x] Evidence register updated in the same commit as this review
-- [x] **Owner sign-off (C1)** — Better-back, 2026-11-03 (Arena owner response; see §9)
+- [x] **Owner sign-off (C1)** — Better-back, 2026-11-03 (Arena owner response; see §10)
 - [ ] **Owner confirmation of target OS (C3)** — name and date: ______________________
 - [ ] **Owner license decision (C4)** — license: ______________________
 
-## 8. Dated post-gate note (2026-11-03)
+## 9. Dated post-gate note (2026-11-03)
 
 Phase 1 research added evidence relevant to the open conditions, without
 changing the Gate 0 result or signing any condition:
@@ -157,9 +157,16 @@ changing the Gate 0 result or signing any condition:
   register remains a substitute, not the book’s §12.1.
 - **C1/C3/C4:** unchanged. No owner sign-off is implied by this note.
 
-Gate 1 remains unattempted. Phase 1 build tasks remain blocked on C1/C5.
+Gate 1 remains unattempted.
 
-## 9. Owner responses recorded (2026-11-03)
+**Correction (2026-11-03, later the same day).** The sentence originally
+written here said Phase 1 build tasks "remain blocked on C1/C5". That is no
+longer true and is corrected rather than deleted: C1 was signed and C5 was
+ruled in §10 below. Phase 1 build is **authorized and under way**. What still
+blocks a Gate 1 *attempt* is **C2** and ratification of the seven proposed
+A-* decisions.
+
+## 10. Owner responses recorded (2026-11-03)
 
 - **C1 — signed by Better-back on 2026-11-03 via Arena owner response.** The owner confirms review and sign-off of the frozen problem statement, target app class, and non-goals. This resolves C1 for Phase 1 build authorization.
 - **C5 — PlainP is a donor only, selected by Better-back on 2026-11-03 via Arena owner response.** PlainP may inform design, but no code is adopted by this ruling. Any code adoption still requires the separate C4 license, provenance, and review requirements.

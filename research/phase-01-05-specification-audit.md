@@ -18,8 +18,8 @@
 > initial Unicode security diagnostics and data lock. The v0.2.4 independent
 > audit checked direction-sensitive confusability, all join-control clauses,
 > version alignment, and the 16-file data/test input inventory. The text remains a proposal. **Gate 1 is
-> still not attempted.** C1/C5 still block build tasks; C2 is still due
-> before Gate 1.
+> still not attempted.** C1/C5 were resolved on 2026-11-03, so build tasks are
+> authorized; C2 and the A-* ratifications are still due before Gate 1.
 
 ---
 
@@ -163,8 +163,8 @@ pretending the constraint is settled.
 
 | Requirement | State |
 |---|---|
-| Owner sign-off C1 | **Open** — blocks build |
-| PlainP relationship C5 | **Open** — blocks build |
+| Owner sign-off C1 | **Resolved 2026-11-03** — build authorized |
+| PlainP relationship C5 | **Resolved 2026-11-03** — donor only, build authorized |
 | Book import/retirement C2 | **Open** — due before Gate 1 |
 | Normative grammar/prose consistency | Improved in draft v0.2; still needs implementation tests |
 | Small-step semantics | Non-normative draft exists; open items and proof obligations remain |

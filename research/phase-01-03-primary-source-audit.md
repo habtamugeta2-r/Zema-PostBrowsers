@@ -7,7 +7,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) |
-| **Status** | Complete for this research pass; implementation remains blocked by C1/C5 |
+| **Status** | Complete for this research pass. (C1/C5 were resolved on 2026-11-03; implementation is authorized. C2 and the A-* ratifications still block Gate 1.) |
 | **Evidence label** | Mixed — each finding carries a label; source grades follow [decision 0001](../docs/decisions/0001-source-grading.md) |
 | **Source manifest** | [`data/phase-01-source-manifest.json`](./data/phase-01-source-manifest.json) |
 

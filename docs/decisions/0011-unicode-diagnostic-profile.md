@@ -153,8 +153,9 @@ expectation.
   and can be independently checked. Hashing data is not an implementation
   or conformance run.
 - No Unicode data, third-party code, interpreter, fixture, or gate result
-  is adopted or produced by this decision. C1/C5 still block build; C2
-  remains due before Gate 1.
+  is adopted or produced by this decision. *(Correction, same day: C1 and C5 were
+  resolved after this text was written — build is authorized. C2 and A-*
+  ratification still gate a Gate 1 attempt.)*
 
 ## Sources
 
@@ -169,3 +170,12 @@ expectation.
 | Date | Change |
 |---|---|
 | 2026-11-03 | Proposed exact UTS #55 chunk diagnostics, GSP warning, UTS #39 skeleton semantics, and the initial 15-file hash lock; decision 0012 later supersedes/refines the directional relation and adds the 16th input. |
+
+## Dated note (2026-11-03, after this record)
+
+The Consequences text above describes the state when this decision was written.
+C1 and C5 were resolved later the same day, so build is authorized; this
+decision still awaits ratification, and the diagnostic fixture floor recorded
+here (52 active codes) is now carried in
+[`../../docs/plain/07-traceability.md`](../../docs/plain/07-traceability.md) and
+[`05-conformance-plan.md`](../../docs/plain/05-conformance-plan.md).

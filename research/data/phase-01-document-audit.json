@@ -408,6 +408,10 @@
         "target": 18
       },
       {
+        "area": "Comments and doc comments",
+        "target": 6
+      },
+      {
         "area": "Identifiers: syntax, reserved words, confusables, naming",
         "target": 14
       },
@@ -417,11 +421,15 @@
       },
       {
         "area": "Grammar: every production",
-        "target": 25
+        "target": 29
       },
       {
         "area": "Sugar and forbidden sugar",
         "target": 12
+      },
+      {
+        "area": "Bindings, mutability, and prelude basics",
+        "target": 16
       },
       {
         "area": "Types: records, unions, nominality, closure of unions, top-level constants, entry point",
@@ -456,8 +464,12 @@
         "target": 10
       },
       {
+        "area": "Logic and short-circuit",
+        "target": 4
+      },
+      {
         "area": "Evaluation order and determinism",
-        "target": 10
+        "target": 14
       },
       {
         "area": "Closures and capture",
@@ -484,19 +496,19 @@
         "target": 52
       }
     ],
-    "sum": 307
+    "sum": 341
   },
   "evidence": {
-    "count": 111,
+    "count": 114,
     "labels": {
       "H": 30,
       "P": 26,
-      "E": 55
+      "E": 58
     },
     "declared_summary": {
-      "total": 111,
+      "total": 114,
       "labels": {
-        "E": 55,
+        "E": 58,
         "P": 26,
         "H": 30
       }
@@ -1104,6 +1116,35 @@
       ]
     }
   ],
+  "traceability": {
+    "ok": true,
+    "rows": 106,
+    "covered": 106,
+    "defined": 106,
+    "missing": [],
+    "unknown": [],
+    "methods": {
+      "AX": 5,
+      "DZ": 37,
+      "EM": 5,
+      "FX": 61,
+      "NV": 2,
+      "PT": 2,
+      "RT": 63,
+      "SR": 1
+    }
+  },
+  "conformance_area_coverage": {
+    "ok": true,
+    "areas": 23,
+    "attributed": 106,
+    "defined": 106,
+    "unattributed": []
+  },
+  "duplicate_artifacts": {
+    "ok": true,
+    "duplicates": []
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}

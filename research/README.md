@@ -33,8 +33,9 @@ that folder navigable and states the rules the records follow.
 | 1 | [`phase-01-04-integrated-systems-and-plainp.md`](./phase-01-04-integrated-systems-and-plainp.md) | Which integrated systems are closest to ZEMA’s intersection, and what does a read-only PlainP audit establish? |
 | 1 | [`phase-01-05-specification-audit.md`](./phase-01-05-specification-audit.md) | What blocks Plain v0.1 from being implementation-ready, what changed in v0.2, and which citation/scope/Unicode-diagnostic issues were refined through v0.2.4? |
 | 1 | [`phase-01-06-implementation-feasibility.md`](./phase-01-06-implementation-feasibility.md) | What Phase 1 implementation and Unicode-data approaches are feasible in the verified environment, and what remains unauthorized or unratified? |
+| 1 | [`phase-01-07-process-gap-audit.md`](./phase-01-07-process-gap-audit.md) | Which research-and-build process invariants had broken (rule traceability, duplicate results, stale statuses), the root cause, the repair, and the checks that now prevent recurrence |
 | 1 | [`data/phase-01-source-manifest.json`](./data/phase-01-source-manifest.json) | Pinned source bytes/URLs, versions, hashes, and retrieval method for the Phase 1 audit |
-| 1 | [`data/phase-01-document-audit.json`](./data/phase-01-document-audit.json) | Machine-recomputed counts, link check, specification cross-reference check, grammar production closure, source-manifest structure check, and generated diagnostic-code registry (`python3 tools/audit_phase01.py --check`) |
+| 1 | [`data/phase-01-document-audit.json`](./data/phase-01-document-audit.json) | Machine-recomputed counts, link check, specification cross-reference check, grammar production closure, source-manifest structure check, rule→fixture traceability check, conformance-area coverage check, and generated diagnostic-code registry (`python3 tools/audit_phase01.py --check`) |
 
 Phase 1 and later get their own `phase-NN-*.md` records; do not create
 them before the phase begins.
@@ -120,8 +121,25 @@ Stated plainly so no reader over-reads this folder:
 4. Re-check phase-0 numbers at Gate 12: page-weight and browser-share
    figures age quickly and must be refreshed before any external use.
 
-- [`../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md`](../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md) — proposed A-27/A-38 resolutions.
-- [`../docs/decisions/0010-gate-1-core-scope.md`](../docs/decisions/0010-gate-1-core-scope.md) — proposed A-42 resolution.
+## 7. Phase 1 decisions that these records support
 
-- [`../docs/decisions/0011-unicode-diagnostic-profile.md`](../docs/decisions/0011-unicode-diagnostic-profile.md) — exact UTS #55 chunk diagnostics and initial Unicode data profile (proposed).
-- [`../docs/decisions/0012-directional-confusability-and-ucd-completeness.md`](../docs/decisions/0012-directional-confusability-and-ucd-completeness.md) — proposed LTR/RTL/FS identifier relation and complete Unicode 17.0.0 input lock.
+Listed here because they are what a reader of a research record needs next.
+The decision records themselves live in [`../docs/decisions/`](../docs/decisions/).
+
+| Decision | What it proposes |
+|---|---|
+| [0009](../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md) | A-27 Unicode pin and A-38 `Eq`/`Ord` laws |
+| [0010](../docs/decisions/0010-gate-1-core-scope.md) | A-42 Gate 1 core scope |
+| [0011](../docs/decisions/0011-unicode-diagnostic-profile.md) | UTS #55 chunk diagnostics and the initial Unicode data profile |
+| [0012](../docs/decisions/0012-directional-confusability-and-ucd-completeness.md) | LTR/RTL/FS identifier relation and the completed 16-file Unicode input lock |
+| [0013](../docs/decisions/0013-phase-1-reference-interpreter.md) | Python reference-interpreter vehicle |
+| [0014](../docs/decisions/0014-unicode-data-pipeline.md) | Manifest-verified Unicode data pipeline |
+| [0015](../docs/decisions/0015-conformance-runner-and-profiles.md) | Conformance runner and checked/optimized profiles |
+| [0016](../docs/decisions/0016-script-value-alias-input.md) | Missing Script value-alias input (proposed A-46 amendment) |
+
+## 8. Status of this folder
+
+The index is current as of **2026-11-03**. Phase 0 records are complete and were
+reviewed at Gate 0. Phase 1 records 01–06 are complete for the research half;
+record 06 is updated as build work proceeds. No Phase 2 record exists and none
+may be created before Gate 1 passes.

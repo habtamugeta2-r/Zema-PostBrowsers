@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.4 (draft) — text unchanged since 0.2.3; the version follows the specification's document set, not this file's edit history |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `T-nn` |
@@ -13,10 +13,15 @@
 
 - **T-01** `let` introduces an immutable binding. It **MUST NOT** be reassigned (`PL0201`).
 - **T-02** `mut` introduces a mutable binding. Only a `mut` binding may appear on the left of `=` (`PL0202`). Mutability is a property of the *binding*, not of the value: there are no reference types in the core, so no mutable aliasing exists.
-- **T-28** **Shadowing:** a `let` or `mut` in the **same block** that redeclares an existing name in that block is an error (`PL0227`, fix: use `mut` or a new name). A **nested** block **MAY** shadow an outer name; this produces a warning (`PL1102`) and never changes which binding an earlier line referred to.
 - **T-03** `mut` bindings are **block-local**. Passing a `mut` binding to a function passes its current value. There is no borrowing, no shared mutability, and therefore no data race inside the language (concurrency safety is Phase 4's problem at task boundaries).
-- **T-29** A user top-level `let` **MUST** have an explicit type and a **constant initializer**: literals, constructors applied to constants, records/lists of constants, and `distinct` casts of constants. It **MUST NOT** call functions, read mutable state, perform host effects, or refer to a later top-level binding (`PL0230`). Prelude constants are host-provided, not user top-level effects. This removes top-level initialization order/cycles from the core (A-32).
-- **T-30** The core language has **no implicit program entry point**. A conformance fixture names the function to evaluate; an application host invokes an exported entry function under Phase 3/6 contracts. `main` is not a keyword and has no special core semantics (A-43).
+
+> **Note on ID order.** Rule IDs are permanent and records cite them, so a rule
+> added later keeps its number and is placed next to the rules it belongs with.
+> `T-28`, `T-29`, and `T-30` are therefore out of numeric order: **T-28** sits
+> in §1 (bindings, alongside T-01–T-03), **T-29** in §2 (top-level constants),
+> **T-30** in §8 (entry point). No ID has been renumbered.
+
+- **T-28** **Shadowing:** a `let` or `mut` in the **same block** that redeclares an existing name in that block is an error (`PL0227`, fix: use `mut` or a new name). A **nested** block **MAY** shadow an outer name; this produces a warning (`PL1102`) and never changes which binding an earlier line referred to.
 
 ## 2. The type universe
 
@@ -36,6 +41,7 @@
 
 - **T-04** `List` provides no indexing syntax. Bounds-safe access is `List.get(xs, i) -> Option<a>`; the out-of-bounds case is a value, not a fault.
 - **T-05** `Bool` is declared in the prelude as an ordinary union, so `if`/`when` need no special boolean type. `and`, `or`, and `not` remain **keywords with short-circuit semantics** because a strict function cannot express them (E-13).
+- **T-29** A user top-level `let` **MUST** have an explicit type and a **constant initializer**: literals, constructors applied to constants, records/lists of constants, and `distinct` casts of constants. It **MUST NOT** call functions, read mutable state, perform host effects, or refer to a later top-level binding (`PL0230`). Prelude constants are host-provided, not user top-level effects. This removes top-level initialization order/cycles from the core (A-32).
 
 ## 3. Records (structural) and unions (nominal)
 
@@ -63,7 +69,7 @@
   3. **No overlap** — blanket implementations are not expressible in v0.1 (D-14), so overlap cannot arise; if it ever does, it is an error, not a warning.
   4. **No specialization** — a more specific implementation never overrides a general one (`PL0212`).
 - **T-19** `alias Name = Type` is **transparent**: `Name` and `Type` are interchangeable everywhere (`PL0213` explains this in diagnostics when it surprises someone).
-- **T-20** `distinct Name = Type` is **nominal** and zero-cost: no implicit conversion in either direction; `expr as Name` and `name as Type` (S-4) are the only conversions (`PL0114`). Use it for identifiers that must not be confused (`User_id` vs `Order_id`), which is the target app class's most common silent bug.
+- **T-20** `distinct Name = Type` is **nominal** and zero-cost: no implicit conversion in either direction; `expr as Name` and `name as Type` (S-4) are the only conversions (`PL0114`, S-4 and T-20 define the only legal `as`). Use it for identifiers that must not be confused (`User_id` vs `Order_id`), which is the target app class's most common silent bug.
 
 ## 6. Inference and its limits
 
@@ -84,7 +90,11 @@
 - **T-26** Structural equality is derived automatically for any type whose components are all equality-capable. The sealed prelude contract is `interface Eq<a>:` with `fn equal(left: a, right: a) -> Bool`; `==`/`!=` use this operation (E-14). User `impl Eq` is rejected (`PL0231`). `Float` and function types are **not** equality-capable (E-08), so a type containing them is not `Eq` (`PL0219`). The sealed ordering contract is `interface Ord<a: Eq>:` with `fn compare(left: a, right: a) -> Ordering`; `Ord` requires `Eq` and implementations must satisfy reflexivity, totality (exactly one of `Less`, `Equal`, `Greater` for every pair), antisymmetry, transitivity, and equality consistency (`compare(a,b) == Equal` iff `a == b`). The compiler checks the `Eq` prerequisite, not user order laws. `Float` and functions are not `Ord`; `Float.compare` is an explicit operation, not an `Ord` implementation. `Map`/`Set` are deferred (D-19); when admitted, ordered keys/elements require `Ord`.
 - **T-27** A recursive type definition **MUST** be productive: every cycle in the type graph passes through a declared union variant or a prelude container (`List`, `Option`, `Result`). A cycle solely through record fields is rejected (`PL0220`). Recursive unions are fine when written with the one-payload rule: `type Tree = Leaf | Node({ left: Tree, right: Tree })`. Structural equality then terminates on finite values. Rationale and trade-off: A-14.
 
-## 8. Open items owned by this document
+## 8. Entry point
+
+- **T-30** The core language has **no implicit program entry point**. A conformance fixture names the function to evaluate; an application host invokes an exported entry function under Phase 3/6 contracts. `main` is not a keyword and has no special core semantics (A-43).
+
+## 9. Open items owned by this document
 
 | ID | Question | Status |
 |---|---|---|

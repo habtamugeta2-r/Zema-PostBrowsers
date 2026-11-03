@@ -6,7 +6,7 @@
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — ratifies the register; individual triggers are revisited at the phases named |
 | **Evidence label** | **Proposed** |
-| **Deciders** | ZEMA research agent (Arena.ai Agent Mode); owner sign-off pending (C1/C5) |
+| **Deciders** | ZEMA research agent (Arena.ai Agent Mode); owner ratification of the deferral register pending |
 | **Implements** | [`../plain/04-deferred-features.md`](../plain/04-deferred-features.md) |
 
 ## Context

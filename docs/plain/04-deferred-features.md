@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.4 (draft) — text unchanged since 0.2.3; the version follows the specification's document set, not this file's edit history |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Active register — each entry is a **decision not to build**, with a trigger |
 | **Rules** | `D-nn` |

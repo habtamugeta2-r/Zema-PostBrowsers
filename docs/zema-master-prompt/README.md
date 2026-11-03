@@ -81,7 +81,7 @@ the master prompt:
 | Research findings | [`../../research/`](../../research/) — index in [`../../research/README.md`](../../research/README.md) |
 | The frozen problem statement | [`../problem-statement.md`](../problem-statement.md) |
 | Evidence register | [`../evidence-register.md`](../evidence-register.md) |
-| Decisions (build / reuse / invent) | [`../decisions/`](../decisions/) |
+| Decisions (build / reuse / invent) | [`../decisions/`](../decisions/) — index and status vocabulary in [`../decisions/README.md`](../decisions/README.md) |
 | Gate reviews | [`../gates/`](../gates/) |
 | Experiments (E1, E2, E4, E5, …) | `experiments/EN-*/` — created when each experiment begins |
 
