@@ -144,3 +144,17 @@ tasks now. Its **build** tasks start when C1 and C5 are signed.
 - [ ] **Owner sign-off (C1)** — name and date: ______________________
 - [ ] **Owner confirmation of target OS (C3)** — name and date: ______________________
 - [ ] **Owner license decision (C4)** — license: ______________________
+
+## 8. Dated post-gate note (2026-11-03)
+
+Phase 1 research added evidence relevant to the open conditions, without
+changing the Gate 0 result or signing any condition:
+
+- **C5:** a read-only `PlainP` audit now exists
+  ([record 04](../../research/phase-01-04-integrated-systems-and-plainp.md)).
+  It establishes bounded prototype facts, not a relationship decision.
+- **C2:** the research book is still not imported; the derived ambiguity
+  register remains a substitute, not the book’s §12.1.
+- **C1/C3/C4:** unchanged. No owner sign-off is implied by this note.
+
+Gate 1 remains unattempted. Phase 1 build tasks remain blocked on C1/C5.

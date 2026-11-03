@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.1 (draft) |
+| **Version** | 0.2.3 (draft) |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Active register |
 | **Evidence label** | **Proposed** (each resolution is a design decision) |
@@ -12,7 +12,7 @@
 > book is not in this repository and was not found in the owner's public
 > repositories ([audit](../../research/phase-00-05-book-import-audit.md)),
 > so the original list is **unrecoverable**. This register is **derived**
-> from the v0.1 specification and the implementation questions it forces.
+> from the v0.1/v0.2 specification and the implementation questions it forces.
 > It is *not* the book's list and **MUST NOT** be cited as such
 > (decision [0004](../decisions/0004-research-book-missing.md)).
 >
@@ -30,7 +30,7 @@
 | A-03 | Are tuples in the language? | No. A product is a record; a tuple would be a second notation for the same concept, and positional payloads invite silent field swaps | Resolved | T-06, §10 of doc 0 |
 | A-04 | Is destructuring allowed in `let`? | Not in v0.1. Destructuring happens in `when`; records are projected by field. Deferred with trigger | **Deferred** | D-15 |
 | A-05 | Positional or named variant payloads? | At most **one** payload per variant; multi-field payloads are records (`Archived({ reason: Text })`). No positional field lists | Resolved | T-09 |
-| A-06 | Operator precedence and associativity, and can users add operators? | Fixed table; comparisons non-associative; no user-defined operators or sections | Resolved | L-22 §7, L-28 |
+| A-06 | Operator precedence and associativity, and can users add operators? | Fixed table; comparisons non-associative; no user-defined operators or sections | Resolved | §7 of doc 0, L-28 |
 | A-07 | What happens to an integer literal that does not fit? | Compile-time error, never a wrapped value | Resolved | L-18 |
 | A-08 | How are numeric literals typed and converted? | Integer literal is `Int`; no implicit `Int`↔`Float`; `Float` needs a decimal point; explicit conversions | Resolved | T-23, E-07 |
 | A-09 | Do integers wrap, saturate, or fault — and does the answer depend on build mode? | Checked in **all** profiles; overflow faults; wrapping/saturating live in explicitly named prelude functions | Resolved | E-05, E-36 |
@@ -42,24 +42,43 @@
 | A-15 | Is there a `return` or early exit? | No `return` in v0.1; `?` exits a `Result` function with an error; the keyword stays reserved | Resolved | L-09, §10 of doc 0 |
 | A-16 | Does `?` convert between error types? | No conversion; the error type must match exactly and be mapped explicitly | Resolved | T-13, E-19 |
 | A-17 | Interface coherence: orphans, duplicate impls, overlap, specialization | Orphan rule; one impl per (interface, type); no overlap expressible; no specialization | Resolved | T-18 |
-| A-18 | Must identifiers be normalized? | NFC required; non-NFC is an error with the NFC form as a fix | Resolved | L-04 |
-| A-19 | How are confusable identifiers handled, and over what scope? | Skeleton collisions among declarations **in the same scope** are errors; mixed-script identifiers warn. Cross-scope (shadowing) collisions are **not** checked — a stated limit, not an oversight | Resolved (partial) | L-10, L-11 |
+| A-18 | Must identifiers be normalized? | Identifiers: NFC required; non-NFC is an error with the NFC form as a fix. Text literals are not silently normalized | Resolved | L-04, A-28 |
+| A-19 | How are confusable identifiers handled, and over what scope? | Versioned UTS #39 skeleton collisions among visible names are errors where the relevant-name set is known; mixed-script checks use identifier chunks. Full cross-module/visible-name analysis is a stated limit | Resolved (partial) | L-10, L-11, A-41 |
 | A-20 | What is the line-continuation rule? | One rule: leading binary operator, or a trailing operator/comma/open delimiter, plus deeper indentation | Resolved | L-22 |
 | A-21 | Is there a module system, and can an app span files? | Not in v0.1: one file, no `import`; the conformance suite is single-file. Multi-file modules and packages are Phase 13 work | **Deferred** | D-10 |
 | A-22 | Is shadowing allowed? | Nested-block shadowing allowed (warning); same-block shadowing is an error with the fix "use `mut` or a new name" | Resolved | T-28 |
 | A-23 | Do interfaces carry default method bodies? | No | **Deferred** | D-12 |
 | A-24 | Is `{}` the unit value or an empty record? | Neither: `{}` is an error pointing at `()`; records need at least one field | Resolved | L-16, T-06 |
-| A-25 | Can `when` match on literals and non-union values? | Yes; such a match needs an explicit `_` arm to be exhaustive | Resolved | E-25 |
+| A-25 | Can `when` match on literals and non-union values? | Yes; open domains need a wildcard or binding pattern, and nested patterns are checked for coverage/reachability | Resolved | E-25, E-27, A-37 |
 | A-26 | Are record types width-polymorphic (row polymorphism)? | No in v0.1; functions take the exact record type. Deferred with trigger | **Deferred** | D-13 |
+
+| A-27 | Which Unicode/UTS #39 data version and identifier profile does Plain pin? | Initial pin: Unicode 17.0.0 / UAX #31 rev43 / UAX #15 rev57 / UAX #9 rev51 / UTS #39 rev32 / UTS #55 rev5; declared R1-2 `_` profile; upgrades require decision, data diff, fixtures, and rerun | Resolved (proposed) | L-04, L-08, L-10, decision 0009 |
+| A-28 | Are text literals normalized like identifiers? | No. Identifiers are NFC; text literals preserve scalar data. Concatenation does not normalize | Resolved | L-04, E-11 |
+| A-29 | Can naming roles depend solely on case? | No. Roles come from declaration/resolution context; case conventions are warnings and do not exclude unicameral scripts | Resolved | L-12 |
+| A-30 | How are type/value/constructor names resolved? | The lexer emits names; the resolver assigns roles. Types/interfaces and values/constructors occupy separate resolution categories; qualified prelude names are paths, not method calls | Resolved | L-12, L-29, grammar §6 |
+| A-31 | Does a trailing `:` continue an expression or open a block? | It opens a block. Continuations are only the closed operator/comma/open-delimiter cases | Resolved | L-19, L-22 |
+| A-32 | What is the order of top-level `let` initialization? | User top-level `let` is constant-only; no effects, calls, forward references, or cycles | Resolved | T-29 |
+| A-33 | Do local bindings generalize? | No. Local bindings and lambdas are monomorphic; explicit declaration type parameters are the rank-1 entry point | Resolved | T-21 |
+| A-34 | Is pipe side-effect order unspecified? | No. The pipe inserts its left operand as the last argument, so callee, explicit arguments, then piped operand are evaluated in that defined order; tooling may warn about host calls on both sides | Resolved | E-03, S-2 |
+| A-35 | Which function does `?` exit, and may `defer` use it? | Nearest function activation, including lambdas; `?` is forbidden in `defer` | Resolved | T-13, E-19, E-21 |
+| A-36 | What is the scope of `defer` on early return? | Block-local LIFO; `?` unwinds active blocks in the returning function only; faults do not guarantee defers | Resolved | E-20, E-22 |
+| A-37 | Are pattern bindings irrefutable, and how is coverage computed? | Matching is partial; bindings exist only after success. Coverage is variant/product/open-domain analysis; duplicate binders are rejected | Resolved | E-26, E-27 |
+| A-38 | What are the `Eq`/`Ord` laws and collection key constraints? | Eq is derived/sealed; Ord requires Eq and equality-consistent total-order laws; Float is neither Eq nor Ord; Map/Set deferred to Phase 9 | Resolved (proposed) | T-26, E-08, E-09, D-19, decision 0009 |
+| A-39 | Does fault rollback cover external effects? | No. Core rollback is task-local state only; durable/external effects need Phase 9 mediation/compensation | Resolved | E-32 |
+| A-40 | Are wall-clock timeouts part of deterministic core faults? | No. Core conformance uses deterministic fuel/step quotas; wall-clock policy is Phase 3 host scheduling | Resolved | E-30, E-33 |
+| A-41 | How are bidi/invisible controls shown in diagnostics? | Quote source with directional/invisible controls escaped or visibly marked; full editor rendering is Phase 13 | Resolved (partial) | L-02, L-31 |
+| A-42 | What exactly does Gate 1 cover? | Hermetic Plain core only; later platform obligations remain binding in their named phases and are not waived (decision 0010); owner/reviewer ratification required before Gate 1 | Resolved (proposed) | 05-conformance-plan.md, decision 0010 |
+| A-43 | Is there a `main` entry point? | No core keyword. Fixtures name the function to evaluate; application hosts define exported entry later | Resolved | T-30 |
+| A-44 | What exact Unicode security diagnostics and data sources does Plain use? | UTS #55 rev5 chunk boundaries and C4 confusing-chunk test; separate UTS #39 rev32 General Security Profile warning; exact Unicode 17.0.0 files and hashes in source manifest (decision 0011) | Resolved (proposed) | L-08…L-11, decision 0011 |
 
 ## 2. Summary
 
 | Status | Count | IDs |
 |---|---|---|
-| Resolved | 21 | A-01, A-02, A-03, A-05, A-06, A-07, A-08, A-09, A-10, A-11, A-13, A-14, A-15, A-16, A-17, A-18, A-19, A-20, A-22, A-24, A-25 |
+| Resolved | 39 | A-01, A-02, A-03, A-05, A-06, A-07, A-08, A-09, A-10, A-11, A-13, A-14, A-15, A-16, A-17, A-18, A-19, A-20, A-22, A-24, A-25, A-27, A-28, A-29, A-30, A-31, A-32, A-33, A-34, A-35, A-36, A-37, A-38, A-39, A-40, A-41, A-43, A-44 |
 | Deferred | 5 | A-04, A-12, A-21, A-23, A-26 |
 | Open — requires a decision before Gate 1 | 0 | — |
-| **Total** | **26** | A-01 … A-26 |
+| **Total** | **44** | A-01 … A-44 |
 
 > Counts are reconciled at every revision; if the table and the summary
 > disagree, the table governs and the summary is a defect.
@@ -83,13 +102,17 @@
 | Limit | Consequence |
 |---|---|
 | The original §12.1 list is unrecoverable | Phase 1 pays for re-derivation; the book may contain questions this register missed |
-| Confusable detection is character-based | Sequence-level spoofing (`rn` for `m`) is out of scope, as UTS #39 itself notes |
+| Confusable detection is a mitigation, not a guarantee | Skeletons are sequence-aware but versioned and incomplete; full visible-name analysis is Phase 13 tooling work |
 | `Eq` on recursive records is rejected rather than defined | Some legitimate data models must be reshaped; the diagnostic must explain why |
 | No subtyping (T-25) | Some reuse patterns need conversion functions instead of implicit widening — deliberate |
-| No modules (D-01) | Real apps cannot be structured in v0.1; the interpreter's demo is single-file |
+| No modules (D-10) | Real apps cannot be structured in v0.1; the interpreter's demo is single-file |
 
 ## 5. Change log
 
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-02 | 0.1 | Register derived: 26 questions, 21 resolved, 5 deferred, 0 open; provenance and limits stated. |
+| 2026-11-03 | 0.2 | Audit added A-27…A-43; corrected A-06/A-18/A-19/A-25 and limits; 43 total, 35 resolved, 5 deferred, 3 open. |
+| 2026-11-03 | 0.2.1 | Decision 0009 proposed resolutions for A-27/A-38; 43 total, 37 resolved, 5 deferred, 1 open (A-42). |
+| 2026-11-03 | 0.2.2 | Decision 0010 proposes hermetic core-only Gate 1 with later obligations unwaived; 43 total, 38 resolved, 5 deferred, 0 open. Owner/reviewer ratification remains a gate condition. |
+| 2026-11-03 | 0.2.3 | Decision 0011 specifies UTS #55 chunk diagnostics, out-of-profile warning, and hashes 15 Unicode 17.0.0 data/test inputs; 44 total, 39 resolved, 5 deferred, 0 open. |

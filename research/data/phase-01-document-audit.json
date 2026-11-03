@@ -1,0 +1,1103 @@
+{
+  "date": "2026-11-03",
+  "scope": "Read-only document audit; no Plain implementation or fixtures",
+  "rules": {
+    "L": {
+      "count": 34,
+      "ids": [
+        "L-01",
+        "L-02",
+        "L-03",
+        "L-04",
+        "L-05",
+        "L-06",
+        "L-07",
+        "L-08",
+        "L-09",
+        "L-10",
+        "L-11",
+        "L-12",
+        "L-13",
+        "L-14",
+        "L-15",
+        "L-16",
+        "L-17",
+        "L-18",
+        "L-19",
+        "L-20",
+        "L-21",
+        "L-22",
+        "L-23",
+        "L-24",
+        "L-25",
+        "L-26",
+        "L-27",
+        "L-28",
+        "L-29",
+        "L-30",
+        "L-31",
+        "L-32",
+        "L-33",
+        "L-34"
+      ]
+    },
+    "T": {
+      "count": 30,
+      "ids": [
+        "T-01",
+        "T-02",
+        "T-03",
+        "T-04",
+        "T-05",
+        "T-06",
+        "T-07",
+        "T-08",
+        "T-09",
+        "T-10",
+        "T-11",
+        "T-12",
+        "T-13",
+        "T-14",
+        "T-15",
+        "T-16",
+        "T-17",
+        "T-18",
+        "T-19",
+        "T-20",
+        "T-21",
+        "T-22",
+        "T-23",
+        "T-24",
+        "T-25",
+        "T-26",
+        "T-27",
+        "T-28",
+        "T-29",
+        "T-30"
+      ]
+    },
+    "E": {
+      "count": 36,
+      "ids": [
+        "E-01",
+        "E-02",
+        "E-03",
+        "E-04",
+        "E-05",
+        "E-06",
+        "E-07",
+        "E-08",
+        "E-09",
+        "E-10",
+        "E-11",
+        "E-12",
+        "E-13",
+        "E-14",
+        "E-15",
+        "E-16",
+        "E-17",
+        "E-18",
+        "E-19",
+        "E-20",
+        "E-21",
+        "E-22",
+        "E-23",
+        "E-24",
+        "E-25",
+        "E-26",
+        "E-27",
+        "E-28",
+        "E-29",
+        "E-30",
+        "E-31",
+        "E-32",
+        "E-33",
+        "E-34",
+        "E-35",
+        "E-36"
+      ]
+    },
+    "S": {
+      "count": 6,
+      "ids": [
+        "S-0",
+        "S-1",
+        "S-2",
+        "S-3",
+        "S-4",
+        "S-5"
+      ]
+    }
+  },
+  "normative_rule_count_L_T_E": 100,
+  "ambiguities": {
+    "count": 44,
+    "status": {
+      "resolved": 39,
+      "deferred": 5,
+      "open": 0,
+      "unknown": 0
+    },
+    "rows": [
+      {
+        "id": "A-01",
+        "status": "Resolved",
+        "spec_ref": "L-03, L-20"
+      },
+      {
+        "id": "A-02",
+        "status": "Resolved",
+        "spec_ref": "L-23"
+      },
+      {
+        "id": "A-03",
+        "status": "Resolved",
+        "spec_ref": "T-06, §10 of doc 0"
+      },
+      {
+        "id": "A-04",
+        "status": "Deferred",
+        "spec_ref": "D-15"
+      },
+      {
+        "id": "A-05",
+        "status": "Resolved",
+        "spec_ref": "T-09"
+      },
+      {
+        "id": "A-06",
+        "status": "Resolved",
+        "spec_ref": "§7 of doc 0, L-28"
+      },
+      {
+        "id": "A-07",
+        "status": "Resolved",
+        "spec_ref": "L-18"
+      },
+      {
+        "id": "A-08",
+        "status": "Resolved",
+        "spec_ref": "T-23, E-07"
+      },
+      {
+        "id": "A-09",
+        "status": "Resolved",
+        "spec_ref": "E-05, E-36"
+      },
+      {
+        "id": "A-10",
+        "status": "Resolved",
+        "spec_ref": "E-06"
+      },
+      {
+        "id": "A-11",
+        "status": "Resolved",
+        "spec_ref": "E-08, E-09"
+      },
+      {
+        "id": "A-12",
+        "status": "Deferred",
+        "spec_ref": "E-26, D-11"
+      },
+      {
+        "id": "A-13",
+        "status": "Resolved",
+        "spec_ref": "T-15"
+      },
+      {
+        "id": "A-14",
+        "status": "Resolved (risk accepted)",
+        "spec_ref": "T-27"
+      },
+      {
+        "id": "A-15",
+        "status": "Resolved",
+        "spec_ref": "L-09, §10 of doc 0"
+      },
+      {
+        "id": "A-16",
+        "status": "Resolved",
+        "spec_ref": "T-13, E-19"
+      },
+      {
+        "id": "A-17",
+        "status": "Resolved",
+        "spec_ref": "T-18"
+      },
+      {
+        "id": "A-18",
+        "status": "Resolved",
+        "spec_ref": "L-04, A-28"
+      },
+      {
+        "id": "A-19",
+        "status": "Resolved (partial)",
+        "spec_ref": "L-10, L-11, A-41"
+      },
+      {
+        "id": "A-20",
+        "status": "Resolved",
+        "spec_ref": "L-22"
+      },
+      {
+        "id": "A-21",
+        "status": "Deferred",
+        "spec_ref": "D-10"
+      },
+      {
+        "id": "A-22",
+        "status": "Resolved",
+        "spec_ref": "T-28"
+      },
+      {
+        "id": "A-23",
+        "status": "Deferred",
+        "spec_ref": "D-12"
+      },
+      {
+        "id": "A-24",
+        "status": "Resolved",
+        "spec_ref": "L-16, T-06"
+      },
+      {
+        "id": "A-25",
+        "status": "Resolved",
+        "spec_ref": "E-25, E-27, A-37"
+      },
+      {
+        "id": "A-26",
+        "status": "Deferred",
+        "spec_ref": "D-13"
+      },
+      {
+        "id": "A-27",
+        "status": "Resolved (proposed)",
+        "spec_ref": "L-04, L-08, L-10, decision 0009"
+      },
+      {
+        "id": "A-28",
+        "status": "Resolved",
+        "spec_ref": "L-04, E-11"
+      },
+      {
+        "id": "A-29",
+        "status": "Resolved",
+        "spec_ref": "L-12"
+      },
+      {
+        "id": "A-30",
+        "status": "Resolved",
+        "spec_ref": "L-12, L-29, grammar §6"
+      },
+      {
+        "id": "A-31",
+        "status": "Resolved",
+        "spec_ref": "L-19, L-22"
+      },
+      {
+        "id": "A-32",
+        "status": "Resolved",
+        "spec_ref": "T-29"
+      },
+      {
+        "id": "A-33",
+        "status": "Resolved",
+        "spec_ref": "T-21"
+      },
+      {
+        "id": "A-34",
+        "status": "Resolved",
+        "spec_ref": "E-03, S-2"
+      },
+      {
+        "id": "A-35",
+        "status": "Resolved",
+        "spec_ref": "T-13, E-19, E-21"
+      },
+      {
+        "id": "A-36",
+        "status": "Resolved",
+        "spec_ref": "E-20, E-22"
+      },
+      {
+        "id": "A-37",
+        "status": "Resolved",
+        "spec_ref": "E-26, E-27"
+      },
+      {
+        "id": "A-38",
+        "status": "Resolved (proposed)",
+        "spec_ref": "T-26, E-08, E-09, D-19, decision 0009"
+      },
+      {
+        "id": "A-39",
+        "status": "Resolved",
+        "spec_ref": "E-32"
+      },
+      {
+        "id": "A-40",
+        "status": "Resolved",
+        "spec_ref": "E-30, E-33"
+      },
+      {
+        "id": "A-41",
+        "status": "Resolved (partial)",
+        "spec_ref": "L-02, L-31"
+      },
+      {
+        "id": "A-42",
+        "status": "Resolved (proposed)",
+        "spec_ref": "05-conformance-plan.md, decision 0010"
+      },
+      {
+        "id": "A-43",
+        "status": "Resolved",
+        "spec_ref": "T-30"
+      },
+      {
+        "id": "A-44",
+        "status": "Resolved (proposed)",
+        "spec_ref": "L-08…L-11, decision 0011"
+      }
+    ]
+  },
+  "deferrals": {
+    "count": 20,
+    "ids": [
+      "D-01",
+      "D-02",
+      "D-03",
+      "D-04",
+      "D-05",
+      "D-06",
+      "D-07",
+      "D-08",
+      "D-09",
+      "D-10",
+      "D-11",
+      "D-12",
+      "D-13",
+      "D-14",
+      "D-15",
+      "D-16",
+      "D-17",
+      "D-18",
+      "D-19",
+      "D-20"
+    ]
+  },
+  "conformance_fixture_targets": {
+    "rows": [
+      {
+        "area": "Lexical: encoding, NFC, tabs, tables of literals",
+        "target": 18
+      },
+      {
+        "area": "Identifiers: syntax, reserved words, confusables, naming",
+        "target": 14
+      },
+      {
+        "area": "Layout: blocks, dedent, continuation, empty block, discard",
+        "target": 20
+      },
+      {
+        "area": "Grammar: every production",
+        "target": 25
+      },
+      {
+        "area": "Sugar and forbidden sugar",
+        "target": 12
+      },
+      {
+        "area": "Types: records, unions, nominality, closure of unions, top-level constants, entry point",
+        "target": 14
+      },
+      {
+        "area": "Absence/failure: `Option`, `Result`, `?`",
+        "target": 12
+      },
+      {
+        "area": "Generics, bounds, interfaces, coherence",
+        "target": 18
+      },
+      {
+        "area": "`alias` / `distinct` / `as`",
+        "target": 8
+      },
+      {
+        "area": "Inference limits",
+        "target": 16
+      },
+      {
+        "area": "Equality and ordering",
+        "target": 12
+      },
+      {
+        "area": "Numbers",
+        "target": 20
+      },
+      {
+        "area": "Text",
+        "target": 10
+      },
+      {
+        "area": "Evaluation order and determinism",
+        "target": 10
+      },
+      {
+        "area": "Closures and capture",
+        "target": 8
+      },
+      {
+        "area": "`defer`",
+        "target": 8
+      },
+      {
+        "area": "Matching",
+        "target": 14
+      },
+      {
+        "area": "`if`",
+        "target": 6
+      },
+      {
+        "area": "Faults and termination",
+        "target": 10
+      },
+      {
+        "area": "Diagnostics quality",
+        "target": 52
+      }
+    ],
+    "sum": 307
+  },
+  "evidence": {
+    "count": 96,
+    "labels": {
+      "H": 29,
+      "P": 21,
+      "E": 46
+    },
+    "retracted": [
+      "001",
+      "057",
+      "062",
+      "073"
+    ]
+  },
+  "diagnostic_registry": [
+    {
+      "code": "PL0101",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-01"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0102",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-03"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0103",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-04"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0104",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-07"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0105",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-10"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0106",
+      "severity": "error",
+      "historical": true,
+      "rules": [
+        "L-12"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0107",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-16",
+        "T-06"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md",
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0108",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-18"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0109",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-24"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0110",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-27"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0111",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-29"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0112",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "S-1"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0113",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "S-3"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0114",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "S-4",
+        "T-20"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md",
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0115",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "S-5"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0116",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-11"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0117",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-15"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0199",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-32"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0201",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-01"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0202",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-02"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0203",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-07"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0204",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-11"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0205",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-13"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0206",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-14"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0207",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-15"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0208",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-17"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0209",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-17"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0210",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-18"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0211",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-18"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0212",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-18"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0213",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-19"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0214",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-21"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0215",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-21"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0216",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-22"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0217",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-23"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0218",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-21",
+        "T-24"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0219",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-08",
+        "T-26"
+      ],
+      "documents": [
+        "docs/plain/01-types.md",
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0220",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-27"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0221",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-17"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0222",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-18"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0223",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-21"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0224",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-23"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0225",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-24"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0226",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-28"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0227",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-28"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0228",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-19",
+        "E-21",
+        "T-13"
+      ],
+      "documents": [
+        "docs/plain/01-types.md",
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0229",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-26"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PL0230",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-29"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0231",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-26"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL1101",
+      "severity": "warning",
+      "historical": false,
+      "rules": [
+        "L-11"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL1102",
+      "severity": "warning",
+      "historical": false,
+      "rules": [
+        "T-28"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL1103",
+      "severity": "warning",
+      "historical": false,
+      "rules": [
+        "L-12"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL1104",
+      "severity": "warning",
+      "historical": false,
+      "rules": [
+        "L-11"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    }
+  ],
+  "cross_reference_check": {
+    "defined_count": 170,
+    "undefined": {}
+  },
+  "grammar_check": {
+    "ok": true,
+    "production_count": 56,
+    "undefined_nonterminals": []
+  },
+  "source_manifest_check": {
+    "ok": true,
+    "count": 57,
+    "duplicate_ids": [],
+    "invalid_entries": []
+  },
+  "broken_relative_links": [],
+  "check": {
+    "ok": true,
+    "problems": []
+  }
+}

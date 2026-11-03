@@ -33,14 +33,15 @@ success and failure would each look like.
 **Phase 0 — Historical Foundations & Problem Definition: complete.
 Gate 0 passed with conditions (C1–C5).**
 
-**Phase 1 — The Unified Language ("Plain"): research and design done,
-build blocked.** The specification draft is written
-([`docs/plain/`](docs/plain/README.md)): 98 numbered rules, 26 derived
-ambiguities, 18 deferrals with triggers, and a ≈285-fixture conformance
-plan. There is **no interpreter and no
-conformance suite**, so **Gate 1 is deliberately not attempted** — build
-tasks wait on owner sign-off (C1) and the `PlainP` ruling (C5), with the
-research-book condition (C2) due before Gate 1.
+**Phase 1 — The Unified Language ("Plain"): research deepened, draft
+v0.2.3 written, build blocked.** The specification
+([`docs/plain/`](docs/plain/README.md)) now has 100 numbered rules, 44
+derived ambiguities (39 resolved proposals, 5 deferred, 0 open; ratification pending), 20 deferrals, a 307-fixture
+planning budget, and a **non-normative** small-step semantics draft.
+There is **no interpreter and no conformance suite**, so **Gate 1 is
+deliberately not attempted** — build tasks wait on owner sign-off (C1)
+and the `PlainP` ruling (C5), with the research-book condition (C2) due
+before Gate 1.
 
 | Phase 0 artifact | What it records |
 |---|---|
@@ -49,24 +50,30 @@ research-book condition (C2) due before Gate 1.
 | [Coordination-cost research](research/phase-00-03-coordination-cost.md) | Published measurements of today's stack, plus what they do *not* prove |
 | [Prior-art review](research/phase-00-04-prior-art.md) | Electron, Tauri, Flutter, React Native, PWAs — and the retraction of "world's first" |
 | [Book-import audit](research/phase-00-05-book-import-audit.md) | A reproducible negative finding: the research book is not in this repo or the owner's public repos |
-| [Evidence register](docs/evidence-register.md) | 63 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades |
+| [Evidence register](docs/evidence-register.md) | 96 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
 | [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book |
 | [Gate 0 review](docs/gates/gate-00.md) | The pass, its two retractions, its stopping-condition check, and conditions C1–C5 |
+| [Gate 1 readiness packet](docs/gates/gate-01-readiness.md) | Owner/reviewer response blocks for C1/C2/C5 and A-27/A-38/A-42/A-44; preparation only, not a gate attempt |
 
 ### Phase 1 records (draft)
 
 | Artifact | What it records |
 |---|---|
-| [Plain specification v0.1](docs/plain/README.md) | Index, non-goals, freeze policy — **draft, not frozen** |
-| [Conformance plan](docs/plain/05-conformance-plan.md) | What Gate 1 will require: coverage per rule, ≈285 fixtures, runner contract — **plan only** |
+| [Plain specification v0.2.3](docs/plain/README.md) | Index, non-goals, freeze policy — **draft, not frozen** |
+| [Conformance plan](docs/plain/05-conformance-plan.md) | Gate 1 core vs platform scope, per-rule coverage, 307 currently allocated fixture targets — **plan only** |
+| [Operational semantics draft](docs/plain/06-operational-semantics.md) | Non-normative small-step core model, conjectures, trace obligations |
 | [Lexical structure & layout](docs/plain/00-lexical-and-layout.md) | Unicode identifiers and confusables, literals, the single layout rule, compact EBNF, sanctioned sugar, diagnostics |
 | [Types](docs/plain/01-types.md) | `let`/`mut`, structural records, nominal closed unions, `Option`/`Result`, interfaces and coherence, inference limits |
 | [Evaluation](docs/plain/02-evaluation.md) | Evaluation order, checked integers everywhere, `Float` and `Eq`, text, closures, `?`, `defer`, exhaustive matching, faults |
-| [Derived ambiguities](docs/plain/03-ambiguities.md) | 26 questions: 21 resolved, 5 deferred — the substitute for the missing §12.1 |
-| [Deferred features](docs/plain/04-deferred-features.md) | 18 deferrals (9 from the Master Prompt, 9 added), each with cost and trigger |
+| [Derived ambiguities](docs/plain/03-ambiguities.md) | 44 questions: 39 resolved (proposed), 5 deferred, 0 open — the substitute for the missing §12.1 |
+| [Deferred features](docs/plain/04-deferred-features.md) | 20 deferrals (9 from the Master Prompt, 11 added), each with cost and trigger |
 | [Language prior art](research/phase-01-01-language-prior-art.md) | Elm, Rust, Kotlin, Swift, Unison, Unicode — and what Plain refuses |
-| [Honest limits](research/phase-01-02-honest-limits.md) | Five seams removed; ten domains that stay hard |
-| [Decisions 0005–0007](docs/decisions/) | Surface doctrine · type and evaluation core · deferral policy |
+| [Honest limits](research/phase-01-02-honest-limits.md) | Five seams removed; eleven domains that stay hard |
+| [Primary-source audit](research/phase-01-03-primary-source-audit.md) | Kotlin/Swift/Rust/Elm/Unicode corrections and UTS #55 source-handling profile |
+| [Integrated systems & PlainP](research/phase-01-04-integrated-systems-and-plainp.md) | Newspeak/Monte/Unison/Lamdera/Dark/Skip/Flutter matrix and read-only PlainP audit |
+| [Specification audit](research/phase-01-05-specification-audit.md) | 26 findings, counterexamples, count corrections, Unicode data lock, Gate 1 readiness |
+| [Source manifest](research/data/phase-01-source-manifest.json) | 57 versioned sources including 15 hash-pinned Unicode 17.0.0 data/test inputs |
+| [Decisions 0005–0011](docs/decisions/) | Surface doctrine · type/evaluation core · deferrals · v0.2 research continuation · Unicode/Eq/Ord proposal · Gate 1 scope · UTS #55 diagnostics/data profile |
 
 ## Method
 
@@ -80,9 +87,8 @@ outcome.
 (decided, not yet verified), or **Hypothesis** (needs measurement or
 proof). Retracted claims stay in the register forever.
 
-**Current status (2026-11-02):** Core Concerns v1.1 and Master Prompt
-v1.1 recorded; Phase 0 executed and Gate 0 passed with conditions;
-Phase 1 research and specification drafting complete as **draft v0.1**.
-No ZEMA code exists yet — by design. Next step: **after C1/C5, build the
-checked interpreter and the conformance suite**, which is what Gate 1
-actually requires.
+**Current status (2026-11-03):** Phase 0 passed with conditions; Phase 1
+research deepened and specification repaired as **draft v0.2.3**. No ZEMA
+code exists yet — by design. Next step: resolve C1/C5/C2 and open spec
+owner/reviewer ratification of A-27/A-38/A-42/A-44 plus C2, then build the checked core and conformance suite
+in small increments. Gate 1 is not attempted.

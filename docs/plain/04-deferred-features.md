@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.1 (draft) |
+| **Version** | 0.2.3 (draft) |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Active register — each entry is a **decision not to build**, with a trigger |
 | **Rules** | `D-nn` |
@@ -10,7 +10,7 @@
 > Master Prompt Phase 1 requires studying "the deferred features and
 > **why** each is deferred". A deferral without a reason is scope
 > erosion; a deferral without a trigger is a feature that never returns.
-> Both are recorded for all 18 entries.
+> Both are recorded for all 20 entries.
 
 **Format:** what it is · why deferred · what its absence costs · trigger
 to revisit · owning phase.
@@ -21,7 +21,7 @@ to revisit · owning phase.
 
 ### D-01 — Algebraic effect handlers
 - **What:** first-class effects with handlers (à la Koka/Eff), letting code declare "I perform effect E" and callers interpret it.
-- **Why deferred:** ZEMA already has a cheaper mechanism for the same need — **host-issued capabilities** (Phase 5). Handlers would give an in-language way to *reinterpret* effects, which is exactly the authority confusion the capability model forbids: an app must not be able to re-implement a revoked capability by handling its own effect.
+- **Why deferred:** handlers add effect typing, inference, resumption, and diagnostic complexity before the core exists. They are **orthogonal** to host authority: Unison-style handlers interpret effect requests, while a host can still require an opaque capability before performing the underlying operation. Deferral is a scope decision, not a claim that handlers inherently forge authority (research record 04).
 - **Cost of absence:** some generic control patterns (async, generators) must be written with explicit types instead of handled effects.
 - **Trigger to revisit:** Phase 5 shows a class of host services that cannot be expressed with capability parameters alone.
 - **Owner:** Phase 5 / research track.
@@ -84,7 +84,7 @@ to revisit · owning phase.
 
 ---
 
-## Part B — Nine additions this specification defers
+## Part B — Eleven additions this specification defers
 
 ### D-10 — Modules, multi-file apps, packages
 - **What:** `import`, module namespaces, package resolution.
@@ -130,7 +130,7 @@ to revisit · owning phase.
 
 ### D-16 — User-defined operators
 - **What:** custom infix/prefix operators with declared precedence.
-- **Why deferred:** unparseable-to-a-newcomer code, precedence conflicts, and a smuggling route for DSLs (D-06). The fixed table (L-22 §7) is closed.
+- **Why deferred:** unparseable-to-a-newcomer code, precedence conflicts, and a smuggling route for DSLs (D-06). The fixed table (§7 of doc 0, L-28) is closed.
 - **Cost of absence:** matrix/monadic-style code reads as function calls.
 - **Trigger:** none planned; this is the deferral most likely to stay permanent.
 - **Owner:** not scheduled.
@@ -149,6 +149,20 @@ to revisit · owning phase.
 - **Trigger:** Phase 13, or the first conformance fixture that needs embedded multi-line text.
 - **Owner:** Phase 13.
 
+### D-19 — `Map`, `Set`, and `Hash`
+- **What:** ordered/hash collections and the `Hash` interface.
+- **Why deferred:** the draft mentions `Map`/`Set` without a complete API or a settled key law set. `Float` has a specified compare order but is not `Eq` or `Ord` (decision 0009). The Gate 1 law set is settled, but collection APIs, hash laws, and performance remain Phase 9 work.
+- **Cost of absence:** Gate 1 uses `List` and records; lookup tables are explicit lists until Phase 9.
+- **Trigger:** Phase 9 storage/query work needs keyed collections, with conformance fixtures for the decision-0009 key laws and any future Hash laws.
+- **Owner:** Phase 9.
+
+### D-20 — Unicode segmentation APIs in the core prelude
+- **What:** `Text.graphemes`, `Text.scalars`, and related segmentation operations.
+- **Why deferred:** extended grapheme clusters require UAX #29 data/version pinning and Phase 7 text work; they are not needed to freeze arithmetic, matching, closures, and faults.
+- **Cost of absence:** Gate 1 text operations are concat/equal/compare only; user-visible segmentation arrives with the text phase.
+- **Trigger:** Phase 7 text layout/input work, with a pinned UAX #29 version and fixtures.
+- **Owner:** Phase 7.
+
 ---
 
 ## Register summary
@@ -156,8 +170,8 @@ to revisit · owning phase.
 | Part | Count | IDs |
 |---|---|---|
 | Named by the Master Prompt | 9 | D-01 … D-09 |
-| Added by this specification | 9 | D-10 … D-18 |
-| With a concrete owning phase | 18 | all |
+| Added by this specification | 11 | D-10 … D-20 |
+| With a concrete owning phase | 20 | all |
 | Permanently unscheduled | 1 | D-16 |
 
 ## Rules

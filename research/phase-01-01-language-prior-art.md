@@ -3,8 +3,8 @@
 | Field | Detail |
 |---|---|
 | **Document** | Research record `research/phase-01-01-language-prior-art.md` |
-| **Version** | 1.0 |
-| **Date** | 2026-11-02 |
+| **Version** | 1.1 |
+| **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
 | **Status** | Complete for the research half of Phase 1; build half blocked on Gate 0 conditions C1/C5 |
@@ -23,12 +23,12 @@
 
 | # | Language | What it proves | What it costs | What ZEMA takes | Label | Src |
 |---|---|---|---|---|---|---|
-| L1 | **Elm** | A small, purely functional core with no exception primitives can ship production apps: failure is carried by `Maybe`/`Result` in the type, and the compiler refuses to build until both branches are handled | A deliberately slow release cadence and a small hiring pool; interop with the host is a separate, untyped seam ("ports") | The no-exceptions posture, exhaustive `case`, and compiler errors written for humans | E | [S1] |
-| L2 | **Rust** | Ownership and `Option`/`Result` make absence and failure explicit; `?` propagation keeps the happy path readable | Overflow semantics depend on the **build profile** (checked with debug assertions, wrapping otherwise), so the same program can behave differently in debug and release unless the author opts into `checked_*`/`wrapping_*` explicitly | `?`, `Result`, no null; **rejects** mode-dependent overflow semantics | E | [S2], [S3] |
-| L3 | **Kotlin** | Sealed hierarchies + `when` give closed-world exhaustiveness and a compiler error when a case is missing when the result is used | `when` exists as **both** a statement and an expression, so whether a missing case is an error depends on form and language version — the guarantee is real but conditional, and a reader must know which form they are looking at (the statement-form gap is reported by a secondary source; **verify against Kotlin docs before Gate 1**) | Sealed-union exhaustiveness, but matching is **expression-only** in Plain, so the conditional cannot arise | E (expression form) / H (statement-form gap) | [S4], [S9] |
-| L4 | **Swift** | Enums with associated values make illegal states unrepresentable, and `switch` over an enum is exhaustive by default | The language carries a large surface (protocols, extensions, property wrappers, result builders) that a beginner must learn before reading real code | Associated-value unions and exhaustive matching; **not** the surface area | E | [S5] |
-| L5 | **Unison** | Content-addressed definitions make renames and dependency conflicts structurally impossible, with perfect incremental compilation | Code lives in a database, not files; a new mental model and a new toolchain for every user | Nothing in v1 — recorded as a **deferred** idea with a stated trigger | E | [S6] |
-| L6 | **Unicode UAX #31 / UTS #39** | Identifier syntax can be specified rather than improvised (`XID_Start`/`XID_Continue`), and spoofing can be bounded with skeleton comparison and mixed-script restrictions | Confusable detection is a **floor, not a ceiling**: it maps characters, not sequences, and its coverage depends on the shipped data version | The default identifier syntax, plus a scope-level skeleton-collision check | E | [S7], [S8] |
+| L1 | **Elm** | A small, purely functional core with no exception primitives can ship production apps: failure is carried by `Maybe`/`Result` in the type, and the official homepage advertises “No Runtime Exceptions” | Ports are typed in Elm as `Cmd msg` / `Sub msg`; the JavaScript implementation outside Elm is not checked by Elm’s type system. The seam is typed at the boundary, not “untyped” | The no-exceptions posture, exhaustive `case`, human-readable errors; capability-mediated authority remains ZEMA’s separate design | E | [S1], [S10], [S11] |
+| L2 | **Rust** | Ownership and `Option`/`Result` make absence and failure explicit; `?` propagation keeps the happy path readable | Overflow checks follow `debug-assertions`/`overflow-checks`; `MIN / -1` and `MIN % -1` are checked even when overflow checks are disabled. Profile-dependent wrapping remains a real difference | `?`, `Result`, no null; checked-in-all-profiles remains Plain’s choice, stated precisely | E | [S2], [S3], [S12] |
+| L3 | **Kotlin** | Sealed hierarchies + `when` give closed-world exhaustiveness | Since Kotlin 1.7, non-exhaustive `when` **statements** over enum, sealed, and Boolean subjects are errors. The old statement-form gap is historical for those subjects; other subject types still differ by form | Expression-only matching as a simplicity choice, not as a fix for a current sealed-union hole | E | [S4], [S13] |
+| L4 | **Swift** | Enums with associated values make illegal states unrepresentable; the official book says every `switch` statement must be exhaustive | The language carries a large surface (protocols, extensions, property wrappers, result builders) that a beginner must learn before reading real code | Associated-value unions and exhaustive matching; **not** the surface area | E | [S5], [S14] |
+| L5 | **Unison** | Content-addressed definitions separate names from hashes and remove some name/order conflicts; abilities provide algebraic-effect handlers | Code lives in a database, not files; handlers are not host capabilities; content addressing does not prove semantic compatibility | Nothing in v1 — deferred with a stated trigger; correct the handler/capability conflation | E | [S6], [S15] |
+| L6 | **Unicode UAX #31 / UTS #39 / UTS #55** | Identifier syntax can be specified and versioned; UTS #55 gives programming-language-specific source-handling guidance | Skeletons are sequence-aware but versioned/incomplete; mixed-script checks need identifier chunks; text literals should not be silently normalized | Declared identifier profile, NFC identifiers, preserved text data, chunk-based warnings, safe diagnostic quoting | E | [S7], [S8], [S16] |
 
 ## 2. The four lessons that shape Plain
 
@@ -55,12 +55,11 @@ program that behaves differently in two builds is a defect generator.
 
 ### Lesson 3 — Exhaustiveness only counts where the compiler enforces it
 
-Kotlin has two forms of the same construct [S4], so whether a missing
-case is an error depends on how `when` is used and on the language
-version (the statement-form gap itself is C-grade, `[S9]`, and must be
-re-verified before Gate 1). The lesson does not depend on which version
-is current: **a guarantee whose strength varies by context is hard to
-teach and hard to trust.**
+Kotlin has two forms of the same construct [S4]. Since 1.7, enum,
+sealed, and Boolean `when` statements are exhaustive too [S13], so the
+old “statement-form gap” is not a current defect for those subjects.
+The durable lesson is narrower: **one form with one rule is easier to
+specify and teach than a context-dependent surface.**
 
 > **Applied:** matching is always an expression, always checked — one
 > form, one rule. *Label: P.*
@@ -74,16 +73,18 @@ and Indic scripts, so "ASCII identifiers only" is not acceptable — and
 "any Unicode" without a confusable rule is a spoofing vector inside a
 code review.
 
-> **Applied:** default identifier syntax, NFC required, declaration-level
-> skeleton collisions rejected, mixed-script identifiers warned. *Label: P.*
+> **Applied:** declared identifier profile, NFC identifiers, text data
+> preserved, versioned skeleton collisions rejected, chunk-based
+> mixed-script warnings, and case conventions that do not exclude
+> unicameral scripts. *Label: P; see record 03.*
 
 ## 3. What Plain deliberately does **not** copy
 
 | Not copied | From | Why |
 |---|---|---|
 | Build-profile-dependent overflow | Rust | Same program, two behaviors — unacceptable for the target class |
-| Statement-form matching | Kotlin | Removes the exhaustiveness guarantee exactly where bugs hide |
-| Untyped host-interop seams | Elm ports | ZEMA's authority model is capability handles (Phase 5); the seam must be typed |
+| Statement-form matching | Kotlin | One expression form is simpler to specify; current Kotlin already closes the sealed/enum/Boolean statement gap |
+| Authority-by-convention at host seams | Elm ports | Elm ports are typed, but ZEMA additionally wants opaque host-issued capability handles (Phase 5) |
 | Content-addressed modules | Unison | Powerful, but it replaces files and tooling before the project has either |
 | Large surface (extensions, macros, operators) | Swift, Haskell-lineage languages | Directly contradicts "small core"; all are deferred with stated triggers |
 | A per-language package registry | npm/Cargo-shaped ecosystems | A public registry is an explicit non-goal (Phase 14) |
@@ -104,18 +105,26 @@ code review.
 
 | # | Source | Grade | Retrieved |
 |---|---|---|---|
-| S1 | Elm, *Syntax* reference ("a delightful language with friendly error messages … and no runtime exceptions") — <https://elm-lang.org/docs/syntax> | A | 2026-11-02 |
+| S1 | Elm, *Syntax* reference — <https://elm-lang.org/docs/syntax> | A | 2026-11-02; rechecked 2026-11-03 |
 | S2 | Rust RFC 560, *integer overflow* (checked with `debug_assert!`, wrapping otherwise; `WrappingOps`) — <https://rust-lang.github.io/rfcs/0560-integer-overflow.html> | A | 2026-11-02 |
 | S3 | Huon Wilson, *Myths and Legends about Integer Overflow in Rust* (behavior across profiles; `checked_*`, `wrapping_*`, `saturating_*`) — <https://huonw.github.io/blog/2016/04/myths-and-legends-about-integer-overflow-in-rust/> | B | 2026-11-02 |
 | S4 | Kotlin, *Sealed classes and interfaces* (exhaustive `when` over sealed hierarchies) — <https://kotlinlang.org/docs/sealed-classes.html> | A | 2026-11-02 |
-| S5 | Swift language reference material on enumerations, associated values, and exhaustive `switch` — <https://swiftgit.com/enumeration-syntax-in-swift/> (secondary; primary Swift book to be cited before Gate 1) | C | 2026-11-02 |
+| S5 | Swift.org, *The Swift Programming Language: Enumerations* — pinned `swift-book` commit; see source manifest | A | 2026-11-03 (replaces C-grade secondary) |
 | S6 | Unison repository (content-addressed definitions; names separate from hashes) — <https://github.com/unisonweb/unison> | A | 2026-11-02 |
 | S7 | Unicode Standard Annex #31, *Unicode Identifier and Pattern Syntax*, §2 Default Identifiers (UAX31-R1, XID_Start/XID_Continue) — <https://www.unicode.org/reports/tr31/> | A | 2026-11-02 |
-| S9 | Secondary write-up on Kotlin `when` exhaustiveness in statement vs expression position — <https://learn.programmingline.com/learn/kotlin/kotlin-sealed-classes> (C-grade; A-grade verification owed before Gate 1) | C | 2026-11-02 |
+| S9 | Secondary write-up on Kotlin `when` exhaustiveness — **retired**, superseded by S13 | C (historical) | 2026-11-02 |
 | S8 | Unicode Technical Standard #39, *Unicode Security Mechanisms* (confusable skeletons, mixed-script detection, restriction levels) — <https://www.unicode.org/reports/tr39/> | A | 2026-11-02 |
+| S10 | Elm homepage, “No Runtime Exceptions” — <https://elm-lang.org/> | A (official claim) | 2026-11-03 |
+| S11 | Elm, *Ports* — <https://guide.elm-lang.org/interop/ports> | A | 2026-11-03 |
+| S12 | Rust Reference, *Operator expressions — Overflow*, pinned commit | A | 2026-11-03 |
+| S13 | JetBrains, *Compatibility guide for Kotlin 1.7.0*, pinned commit | A | 2026-11-03 |
+| S14 | Swift.org, *Control Flow*, pinned commit | A | 2026-11-03 |
+| S15 | Unison, *Introduction to Abilities* — <https://www.unison-lang.org/docs/fundamentals/abilities/> | A | 2026-11-03 |
+| S16 | Unicode, UTS #55 revision 5, *Unicode Source Code Handling* | A | 2026-11-03 |
 
 ## 6. Change log
 
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-02 | 1.0 | Record created: six-language survey, four applied lessons, six non-copies, three explicit non-findings. |
+| 2026-11-03 | 1.1 | Primary-source corrections: Elm typed ports/homepage claim, Rust overflow edge cases, Kotlin 1.7 statement exhaustiveness, Swift primary book, Unison abilities, UTS #55. Details in record 03. |

@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.1 (draft) |
+| **Version** | 0.2.3 (draft) |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `L-nn` (lexical/layout), `S-nn` (sanctioned sugar) |
@@ -12,9 +12,9 @@
 ## 1. Source and encoding
 
 - **L-01** A source file **MUST** be valid UTF-8. A byte-order mark **MUST** be rejected (`PL0101`).
-- **L-02** Line endings **MUST** be accepted as LF or CRLF and **MUST** be normalized to LF before parsing.
+- **L-02** Line endings **MUST** be accepted as LF or CRLF and **MUST** be normalized to LF before parsing. Other Unicode line/paragraph separators (U+0085, U+2028, U+2029) **MUST NOT** act as source line terminators outside text literals; they are data or invalid source, not hidden layout ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Whitespace-Syntax) §3.2).
 - **L-03** The only permitted indentation characters are the space (U+0020). A tab in indentation **MUST** be an error with a fix suggestion (`PL0102`).
-- **L-04** Identifiers and text literals **MUST** be Unicode **NFC**. A non-NFC identifier **MUST** be an error that shows the NFC form and offers it as a fix (`PL0103`). Rationale: two visually identical names that differ in normalization are undeclared aliasing.
+- **L-04** Identifiers **MUST** be treated as their Unicode **NFC** form. A non-NFC identifier **MUST** be an error that shows the NFC form and offers it as a fix (`PL0103`). Text literals **MUST NOT** be silently normalized: their scalar-value contents are data, including non-NFC sequences. Tooling **MAY** show a “normalize this text” fix only when the user explicitly requests it ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Normalization-and-Case) §3.1.1; [UAX #15 revision 57](https://www.unicode.org/reports/tr15/tr15-57.html) states normalization forms are not closed under concatenation).
 
 ## 2. Comments
 
@@ -24,23 +24,26 @@
 
 ## 3. Identifiers
 
-- **L-08** An identifier **MUST** match `(_ | XID_Start) XID_Continue*` using the Unicode properties defined by [UAX #31](https://www.unicode.org/reports/tr31/) (UAX31-R1 default identifiers), with `_` additionally permitted as a start character. A lone `_` is the wildcard pattern, not an identifier.
+- **L-08** An identifier **MUST** match the declared profile `(_ | XID_Start) XID_Continue*`, using XID_Start/XID_Continue from **Unicode 17.0.0** (Unicode 17.0.0; UAX #31 rev43/C1/C2; UAX #15 rev57; UAX #9 rev51; UTS #39 rev32; UTS #55 rev5), the initial pinned profile (A-27, decision 0009). This is a UAX #31 R1-2 profile that adds `_` to Start; it is not unmodified R1-1. A lone `_` is the wildcard pattern, not an identifier. The implementation **MUST** report the Unicode data release and all algorithm revisions in the adopted profile: UAX #31, #15, and #9, plus UTS #39 and #55. Exact data-file hashes are in the source manifest. A data upgrade requires a decision record, data diff, regenerated fixtures, and a conformance rerun; no silent bump.
 - **L-09** Reserved words **MUST NOT** be identifiers. The set is closed for v0.1:
   `alias and as defer distinct else fn for if impl import in interface let mut not or return then type when with`
-  (`return` is reserved even though `return` is not used in expressions — early exit is written with `?` for `Result` and by block structure otherwise; see A-14.)
-- **L-10** **Confusable declarations are an error.** Two names declared in the same scope **MUST NOT** have equal UTS #39 skeletons ([UTS #39](https://www.unicode.org/reports/tr39/)) (`PL0105`). Example: Latin `pаypal` and Cyrillic `paypal`-shaped names in one scope is rejected, mirroring the classic homoglyph attack inside a code review.
-- **L-11** **Mixed-script identifiers produce a warning** (`PL1101`) when a single identifier mixes Latin with Cyrillic or Greek. This is a floor, not a guarantee: the confusable mechanism maps characters, not sequences (see the research note's limits).
-- **L-12** Naming conventions **MUST** be enforced as *errors* (they are syntax, not style, because the formatter and pattern syntax depend on the distinction):
-  - types, interfaces, constructors, variants, modules: `UpperCamel` (`TaskList`, `Ok`);
-  - values, parameters, fields, functions: `lower_snake` (`task_id`, `is_done`);
-  - type parameters: `lower_snake` in angle brackets (`<a>`, `<item, error>`).
-  A violation is `PL0106` with the corrected name as a fix.
+  (`return` is reserved even though `return` is not used in expressions — early exit is written with `?` for `Result` and by block structure otherwise; see A-15.)
+- **L-10** **Confusable declarations are an error.** Two distinct, simultaneously visible names whose [UTS #39 revision 32](https://www.unicode.org/reports/tr39/tr39-32.html) `skeleton(X)` values match are an error (`PL0105`). `skeleton(X)` is the versioned UTS #39 operation—defined as `bidiSkeleton(LTR, X)`—not an ad hoc per-character substitution; it can change length. Compare names that resolve to distinct declarations in the same scope or that are both visible at a use site; repeated references resolving to the same declaration are not collisions. Reserved/prelude names participate where they are visible. The skeleton is internal comparison data only, not normalized source text or display text (UTS #39 rev32 §4; UTS #55 rev5 §5.1.1; decision 0011). This is a mitigation, not an anti-spoofing guarantee.
+- **L-11** Unicode security diagnostics follow [UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html) (decision 0011):
+  - Identifier chunks use the exact CamelBoundary, HATBoundary, and snake-boundary rules in UTS #55 §5.1.2.1, including the `Mn`/`Me` handling and Greek `Lt` exception; no other boundaries are introduced.
+  - A chunk **MUST** receive a `PL1101` warning exactly when it meets the UTS #55 §5.1.2.2 confusing-chunk test: restriction level above Highly Restrictive, and a qualifying confusable `Y` with a nonempty/non-`ALL` resolved script set contained in the union of `Script_Extensions` for the chunk, where `Y` is in the UTS #39 rev32 General Security Profile. A chunk that is above that restriction level but has no such `Y` is visibly mixed-script and **MUST NOT** receive `PL1101`.
+  - An identifier outside the UTS #39 rev32 General Security Profile **MUST** receive a separate `PL1104` warning. U+200C and U+200D are treated as profile-allowed only in the contextual joining cases from UTS #39 §3.1.1. This warning does not reject the identifier and is independent of `PL1101`.
+  - These checks **MUST NOT** be replaced by a blanket “Latin plus Cyrillic/Greek” heuristic. The check is bounded mitigation, not a guarantee against spoofing.
+- **L-12** Name roles are determined by declaration context and name resolution, **not** by case alone. The grammar’s `TYPE_NAME`, `VALUE_NAME`, and `VARIANT_NAME` are resolved categories, not case-sensitive token classes.
+  - recommended style: types/interfaces/constructors/variants/modules `UpperCamel`; values/parameters/fields/functions `lower_snake`; type parameters `lower_snake`.
+  - For bicameral scripts, a style violation is a warning (`PL1103`) with a suggested fix, not a parse error. For unicameral scripts, case-based style checks are not applied. This keeps Ethiopic, Arabic, Hebrew, CJK, and other scripts usable ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Computer-Language-Specifications) §3.1.2).
+  - `PL0106` is retired as an error code; the conformance registry records it as historical, not active.
 
 ## 4. Literals
 
 - **L-13** Integer literals: decimal `0`, `1_000_000`; hexadecimal `0xFF`; binary `0b1011`. Underscores **MAY** separate digits but **MUST NOT** lead or trail.
 - **L-14** Float literals **MUST** contain a decimal point with digits on both sides (`1.5`, `0.25`) and **MAY** carry an exponent (`1.5e3`). `1.` and `.5` are errors. A literal without a decimal point is an `Int`.
-- **L-15** Text literals are `"..."` on one line with escapes `\n \t \" \\ \u{1F600}`. Multi-line strings are **deferred** (D-18); their absence is deliberate v0.1 scope.
+- **L-15** Text literals are `"..."` on one line with escapes `\n \t \" \\ \u{1F600}`. Escape values **MUST** be Unicode scalar values: surrogate code points U+D800–U+DFFF and values above U+10FFFF are errors (`PL0117`). Literal contents are not normalized (L-04). Multi-line strings are **deferred** (D-18); their absence is deliberate v0.1 scope.
 - **L-16** The unit value is `()`. There is **no empty record literal**: `{}` is an error pointing at `()` (`PL0107`). One notation per concept.
 - **L-17** List literals use `[a, b, c]` and **MAY** be empty (`[]`). Trailing commas are permitted in lists, records, argument lists, and parameter lists; the formatter removes them (S-0).
 - **L-18** Integer literals that do not fit in `Int` **MUST** be a compile-time error (`PL0108`), never a wrapped value.
@@ -54,8 +57,8 @@ Plain is indentation-delimited. There are no semicolons and no braces for blocks
 - **L-21** A **case arm** is introduced by `pattern:` and owns a block. There is no `->` in patterns: `->` appears **only** in function return types. One notation per concept.
 - **L-22** An expression **MAY** continue on the next line if, and only if, one of the following holds:
   1. the next line begins with a binary operator (`.`, `|>`, `and`, `or`, `==`, `!=`, `<`, `<=`, `>`, `>=`, `+`, `-`, `*`, `/`, `%`);
-  2. the previous line ends with a binary operator, `,`, `(`, `[`, or `{`;
-  3. the previous line ends with `:` (which introduces a block, not a continuation).
+  2. the previous line ends with a binary operator, `,`, `(`, `[`, or `{`.
+  A trailing `:` introduces a block under L-19; it is not an expression continuation. A block opener and a continuation are mutually exclusive.
 
   Such continuation lines **MUST** be indented deeper than the first token of the statement. Any other newline ends the expression. This rule is the *only* line-continuation mechanism.
 - **L-23** Blank lines and comment-only lines **MUST NOT** affect indentation analysis.
@@ -64,7 +67,7 @@ Plain is indentation-delimited. There are no semicolons and no braces for blocks
 - **L-26** A block's value is the value of its **tail expression**; if the block ends in a statement, its value is `()`.
 - **L-27** A non-final expression statement **MUST** have type `()`. Discarding a non-`()` value silently is an error (`PL0110`) — the value must be bound to a name or consumed by a function.
 
-## 6. Grammar (v0.1, compact EBNF)
+## 6. Grammar (v0.2.3, compact EBNF)
 
 ```ebnf
 program        = { declaration } EOF ;
@@ -72,19 +75,21 @@ declaration    = type_decl | alias_decl | distinct_decl | interface_decl
                | impl_decl | fn_decl | const_decl ;
 
 type_decl      = "type" TYPE_NAME [ type_params ] "=" variant { "|" variant } ;
-variant        = VARIANT_NAME [ "(" type ")" ] ;        (* at most one payload value *)
-alias_decl     = "alias" TYPE_NAME "=" type ;
-distinct_decl  = "distinct" TYPE_NAME "=" type ;
+variant        = VARIANT_NAME [ "(" type ")" ] ;       (* at most one payload value *)
+alias_decl     = "alias" TYPE_NAME [ type_params ] "=" type ;
+distinct_decl  = "distinct" TYPE_NAME [ type_params ] "=" type ;
 
 interface_decl = "interface" TYPE_NAME [ type_params ] ":" NEWLINE INDENT { sig } DEDENT ;
-sig            = "fn" VALUE_NAME "(" [ params ] ")" [ "->" type ] ;
-impl_decl      = "impl" TYPE_NAME "for" type ":" NEWLINE INDENT { fn_decl } DEDENT ;
+sig            = "fn" VALUE_NAME [ type_params ] "(" [ params ] ")" "->" type ;
+impl_decl      = "impl" [ type_params ] TYPE_NAME [ type_args ] "for" type ":" NEWLINE INDENT { fn_decl } DEDENT ;
 
-fn_decl        = "fn" VALUE_NAME [ type_params ] "(" [ params ] ")" [ "->" type ] block ;
-const_decl     = "let" VALUE_NAME ":" type "=" expr NEWLINE ;
+fn_decl        = "fn" VALUE_NAME [ type_params ] "(" [ params ] ")" "->" type block ;
+const_decl     = "let" VALUE_NAME ":" type "=" const_expr NEWLINE ;
 params         = param { "," param } [ "," ] ;
 param          = VALUE_NAME ":" type ;
-type_params    = "<" TYPE_PARAM { "," TYPE_PARAM } ">" ;
+type_params    = "<" type_param { "," type_param } ">" ;
+type_param     = TYPE_PARAM [ ":" TYPE_NAME { "+" TYPE_NAME } ] ;
+type_args      = "<" type { "," type } ">" ;
 
 block          = ":" NEWLINE INDENT { statement } [ expr NEWLINE ] DEDENT ;
 statement      = let_stmt | mut_stmt | assign_stmt | defer_stmt ;
@@ -105,30 +110,49 @@ mul_expr       = unary { ( "*" | "/" | "%" ) unary } ;
 unary          = [ "not" | "-" ] postfix ;
 postfix        = primary { "." VALUE_NAME | "(" [ args ] ")" | "?" | "as" type } ;
 args           = expr { "," expr } [ "," ] ;
-primary        = literal | VALUE_NAME | record | list
+primary        = literal | name_expr | constructor | record | list
                | "(" expr ")" | if_expr | when_expr | lambda ;
+name_expr      = VALUE_NAME { "." VALUE_NAME } ;     (* resolved path or field projection *)
+constructor    = VARIANT_NAME | TYPE_NAME "." VARIANT_NAME ; (* e.g. True, Option.None *)
 
-record         = "{" field { "," field } [ "," ] "}" ;
+record         = "{" field { "," field } [ "," ] "}"
+               | "{" expr "with" field { "," field } [ "," ] "}" ;
 field          = VALUE_NAME ":" expr ;
 list           = "[" [ expr { "," expr } [ "," ] ] "]" ;
 if_expr        = "if" expr block [ "else" block ] ;
 when_expr      = "when" expr ":" NEWLINE INDENT { arm } DEDENT ;
 arm            = pattern ":" block ;
-lambda         = "fn" "(" [ params ] ")" [ "->" type ] block ;
+lambda         = "fn" "(" [ lambda_params ] ")" [ "->" type ] block ;
+lambda_params  = lambda_param { "," lambda_param } [ "," ] ;
+lambda_param   = VALUE_NAME [ ":" type ] ;
 
 pattern        = "_" | INT | TEXT | "()"
+               | "-" INT
                | VARIANT_NAME [ "(" pattern ")" ]
                | VALUE_NAME | record_pattern ;
 record_pattern = "{" VALUE_NAME ":" pattern { "," VALUE_NAME ":" pattern } [ "," ] "}" ;
 
-type           = TYPE_NAME [ "<" type { "," type } ">" ]
+type           = TYPE_NAME [ type_args ]
+               | TYPE_PARAM
                | "fn" "(" [ type { "," type } ] ")" "->" type
                | record_type ;
 record_type    = "{" VALUE_NAME ":" type { "," VALUE_NAME ":" type } [ "," ] "}" ;
 literal        = INT | FLOAT | TEXT | "()" ;
+const_expr     = literal | const_variant | const_record | const_list | distinct_cast ;
+const_variant  = constructor [ "(" const_expr ")" ] ;
+const_record   = "{" VALUE_NAME ":" const_expr { "," VALUE_NAME ":" const_expr } [ "," ] "}" ;
+const_list     = "[" [ const_expr { "," const_expr } [ "," ] ] "]" ;
+distinct_cast  = const_expr "as" type ;
 ```
 
-Notes that the grammar alone does not express, and which **MUST** be checked by the compiler rather than the parser: exhaustiveness of `when` (E-14), the `else`-required rule for non-`()` `if` (E-15), `mut`-capture rejection (E-11), interface coherence (T-16), and inference limits (T-20).
+The parser produces names; the resolver assigns the `TYPE_NAME`,
+`VALUE_NAME`, and `VARIANT_NAME` roles from declaration context. This is
+why case conventions can be warnings without making the grammar
+ambiguous (L-12). `constructor` in expressions resolves to a value in
+the variant namespace; `Bool`’s `True`/`False`, `Option`’s `None`, and
+`Result`’s `Ok`/`Err` are ordinary prelude constructors.
+
+Notes that the grammar alone does not express, and which **MUST** be checked by the compiler rather than the parser: exhaustiveness of `when` (E-14), the `else`-required rule for non-`()` `if` (E-28), `mut`-capture rejection (E-17), interface coherence (T-18), and inference limits (T-21).
 
 ## 7. Operator precedence and associativity
 
@@ -158,7 +182,7 @@ Sugar exists only where the desugaring is total and mechanical. Each is listed h
 | **S-0** | Trailing commas | removed by the parser | Canonical form has none |
 | **S-1** | `{ r with done = True }` | a record literal listing every field of `r`, with `done` replaced. Requires deducible record type: if the record type of `r` is not known from the surrounding annotation, `PL0112` | Preserves "one way to build a record" |
 | **S-2** | `x \|> f` | `f(x)` | `x \|> f(y)` is `f(y, x)` — piping appends as the **last** argument. This is the only meaning; there is no subject-first variant |
-| **S-3** | `"Count: {count}"` | `Text.concat([Text.from("Count: "), Display.display(count)])` | Requires `Display` for the interpolated type (T-15); unknown type is `PL0113` |
+| **S-3** | `"Count: {count}"` | `Text.concat(["Count: ", Display.display(count)])` | Requires `Display` for the interpolated type (T-15); unknown type is `PL0113` |
 | **S-4** | `as` between a `distinct` type and its representation | identity at runtime; no allocation | `as` is **not** a general cast: any other use is `PL0114` (T-17) |
 
 **S-5 (forbidden sugar).** Compound assignment (`+=`), `elif`, ternaries, `do`-notation, list comprehensions, index syntax `xs[i]`, and method calls are **not** sugar and **MUST** be rejected with a message naming the canonical form (`PL0115`). Indexing is rejected outright because bounds-safe access is `List.get(xs, i) -> Option<a>` (T-04).
@@ -168,18 +192,22 @@ Sugar exists only where the desugaring is total and mechanical. Each is listed h
 Phase 1 requires "readable diagnostics with error spans". These rules make that testable.
 
 - **L-30** Every diagnostic **MUST** carry: a stable code (`PLnnnn` / `PL1nnn` for warnings), a severity, a primary span with `line:column` start and end, a one-line message, a cause paragraph, and — where a fix is mechanical — one or more machine-applicable fixes.
-- **L-31** Every diagnostic **MUST** quote the offending source line with a caret underline.
+- **L-31** Every diagnostic **MUST** quote the offending source line with a caret underline. Directional/bidi control characters and other invisible format controls in quoted source **MUST** be escaped or visibly marked so diagnostic output cannot reorder executable code misleadingly ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html) §§4–5).
 - **L-32** The compiler **MUST NOT** cascade: after an unrecoverable parse or type error in a declaration, subsequent errors in that declaration **MUST** be suppressed and summarized (`PL0199`).
 - **L-33** Diagnostic wording **MUST** use the language's own terms ("a block", "a case arm", "a record field"), never internal AST or IR names.
-- **L-34** The conformance suite **MUST** include a diagnostics section: for each of `PL0101`–`PL0116`, `PL1101`, `PL1102`, and `PL0199`, a fixture asserting code, span, and the presence of a fix where required.
+- **L-34** The conformance suite **MUST** include a diagnostics section: for every active diagnostic code in the generated registry, a fixture asserting code, span, and the presence of a fix where required. The registry is derived from the rules, not a hand-maintained range; retired codes are marked historical.
 
-## 10. Open questions owned by this document
+## 10. Questions owned by this document
 
 | ID | Question | Status |
 |---|---|---|
 | A-03 | Tuples? | **Resolved: none.** A product is a record; a tuple would be a second notation for it |
-| A-04 | Tuple/record destructuring in `let`? | **Deferred** (D-05); pattern matching in `when` is the only destructuring |
+| A-04 | Tuple/record destructuring in `let`? | **Deferred** (D-15); pattern matching in `when` is the only destructuring |
 | A-15 | `return` / early exit? | **Resolved: no `return` in v0.1.** `?` exits a `Result` function with an error; otherwise blocks are expressions. The keyword is reserved to keep the door open |
 | A-20 | Line continuation | **Resolved: L-22**, the only mechanism |
+| A-27 | Unicode/UTS #39 version pin | **Resolved (proposed):** Unicode 17.0.0 / UAX #31 rev43 / UAX #15 rev57 / UAX #9 rev51 / UTS #39 rev32 / UTS #55 rev5; upgrade policy in L-08 and decision 0009 |
+| A-29/A-30 | Case-based naming and name roles | **Resolved:** contextual roles; style warnings do not exclude unicameral scripts |
+| A-31 | Trailing `:` vs continuation | **Resolved:** block opener, not continuation |
+| A-41 | Bidi/invisible controls in diagnostics | **Resolved (partial):** safe quoting now; full editor rendering Phase 13 |
 
 See [`03-ambiguities.md`](./03-ambiguities.md) for the full register.
