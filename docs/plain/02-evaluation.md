@@ -51,7 +51,7 @@
 ## 6. Equality and ordering
 
 - **E-14** `==` and `!=` are available only on `Eq` types (T-26) and are **structural**: records by field, unions by variant and payload, `List` element-wise in order, `Text` by code-point equality. Functions are never comparable. `!=` is exactly `not (a == b)` with short-circuit on the first difference.
-- **E-15** `<`, `<=`, `>`, `>=` require `Ord`. Records and unions are **not** `Ord` by default; `Ord` must be implemented explicitly, so no accidental lexicographic ordering of app data can appear in a sort.
+- **E-15** `<`, `<=`, `>`, `>=` require `Ord`. Records and unions are **not** `Ord` by default; `Ord` must be implemented explicitly, so no accidental lexicographic ordering of app data can appear in a sort. Applying an ordering operator to a type that does not implement `Ord` is `PL0237`.
 
 ## 7. Closures
 

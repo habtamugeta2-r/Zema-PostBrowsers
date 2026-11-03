@@ -493,22 +493,22 @@
       },
       {
         "area": "Diagnostics quality",
-        "target": 67
+        "target": 68
       }
     ],
-    "sum": 356
+    "sum": 357
   },
   "evidence": {
-    "count": 128,
+    "count": 129,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 71
+      "E": 72
     },
     "declared_summary": {
-      "total": 128,
+      "total": 129,
       "labels": {
-        "E": 71,
+        "E": 72,
         "P": 27,
         "H": 30
       }
@@ -1239,6 +1239,17 @@
       ]
     },
     {
+      "code": "PL0237",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-15"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
       "code": "PL1101",
       "severity": "warning",
       "historical": false,
@@ -1424,17 +1435,17 @@
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 128,
+    "evidence_rows": 129,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,
     "problem_statement_total_words": 828,
     "conformance_fixtures_written": 0,
     "code_accounting": {
-      "codes_cited_by_rules": 72,
+      "codes_cited_by_rules": 73,
       "historical_codes": 1,
       "fault_codes_defined": 5,
-      "all_active_codes": 77
+      "all_active_codes": 78
     },
     "rules_requiring_rejection_without_a_code": [
       "L-23",

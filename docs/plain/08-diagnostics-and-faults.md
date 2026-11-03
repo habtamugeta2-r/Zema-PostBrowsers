@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.3.2 (draft) |
+| **Version** | 0.3.3 (draft) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | **Proposal.** Identifiers and severities only. No message text, span, or fix is ratified |
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **Parse** | `PL00nn` | error | **new in this catalog**; `PL0001` is the generic syntax error |
 | **Lexical / layout / identifier** | `PL01nn` | error | closed; `PL0199` is the cascade summary (L-32) |
-| **Type / declaration** | `PL02nn` | error | extended here to `PL0236`; next free is `PL0237` |
+| **Type / declaration** | `PL02nn` | error | extended here to `PL0237`; next free is `PL0238` |
 | **Runtime fault** | `PLFLnn` | **fault** (terminating, uncatchable) | **new in this catalog** |
 | **Warning** | `PL11nn` | warning | `PL1101`…`PL1104` |
 
@@ -130,6 +130,7 @@ Rules for the scheme (Proposed):
 | `PL0234` | T-09 | Variant with more than one payload, or a positional field list | **new** |
 | `PL0235` | T-25 | Implicit widening or subtyping attempt (no subtyping exists) | **new** |
 | `PL0236` | T-16 | Interface declares a default method body (D-12) | **new** |
+| `PL0237` | E-15 | Ordering operator applied to a type that does not implement `Ord` | **new (B1)** |
 
 ## 4. Fault codes — `PLFLnn` (new namespace)
 
@@ -160,33 +161,79 @@ assert them and a Gate 1 pass must not imply them (A-42).
 | `PL1103` | L-12 | Name-case style violation in a bicameral script (fix suggested) |
 | `PL1104` | L-11 | Identifier outside the UTS #39 General Security Profile (independently suppressible) |
 
-## 6. Rules that need **no** code, and why
+## 6. The 38 rules that need no code — audited, with verdicts
 
-Carrying a `MUST` does not imply a diagnostic. These rules are semantic
-obligations verified by behavior, or implementation constraints verified by
-review. Listing them prevents the opposite error — inventing a code for
-something that must simply *happen*.
+Carrying a `MUST` does not imply a diagnostic. Listing these prevents the
+opposite error — inventing a code for something that must simply *happen*.
 
-| Rule | Obligation | Why no code | Verified by |
-|---|---|---|---|
-| L-05 | `--` starts a line comment | Nothing is refused | behavior fixture |
-| L-17 | Trailing commas accepted | Nothing is refused | parser fixture (S-0) |
-| L-19 | Block opens on a trailing `:` | Nothing is refused | layout fixture |
-| L-21 | `pattern:` opens a block; `->` only in return types | Its violations are `PL0122`/`PL0123` | parser fixture |
-| L-23 | Blank/comment lines do not affect indentation | Its violation *is* a column error (`PL0122`) | layout fixture |
-| L-26 | A block's value is its tail expression | Nothing is refused | evaluation fixture |
-| L-28 | No user-defined operators; precedence closed | The syntax is refused as `PL0115` | rejection fixture |
-| L-30, L-31, L-33, L-34 | The diagnostic *contract* itself | They govern all codes above; they are not conditions | applies to every code |
-| T-04 | `List.get` out of bounds returns `None` | A value, not a fault (T-04) | behavior fixture |
-| T-05 | `Bool` is an ordinary union | Nothing is refused | type fixture |
-| T-10 | Unions are closed | Its violation is `PL0233` | behavior fixture |
-| T-12 | Faults are not catchable | No `catch` syntax parses at all | rejection fixture |
-| T-18 (rule 3 only) | No blanket implementations, so overlap cannot arise | The construct is not expressible (D-14); **rules 1, 2, 4 raise `PL0210`/`PL0211`/`PL0212`** and are not in this list | parser fixture |
-| T-30 | No implicit entry point | Nothing is refused; a fixture names its function | runner fixture |
-| E-01…E-04, E-07, E-09, E-14…E-16, E-20, E-25, E-27, E-29, E-31, E-35 | Order, numeric semantics, closures, `?`/`defer`, matching, fault propagation, determinism | Behavior, not rejection | behavior fixtures |
-| E-19 (except its last clause) | `?` evaluates its operand once and unwinds to the nearest activation | Behavior — **but the final clause, "`?` inside `defer` is rejected", raises `PL0228`** and is not codeless | behavior + rejection fixture |
-| **E-10, E-22, E-32, E-36** | Compiler/implementation constraints (no fast-math; `defer` not guaranteed on fault; no partial state; no profile-dependent meaning) | No *user program* can violate these; a violating **implementation** is non-conforming | `SR` — structured review + the dual-profile run |
-| E-33 (except its fuel clause) | Faults are deterministic given the same inputs | Implementation constraint. **Its fuel clause is not codeless: quota exhaustion is the fault `PLFL05`** | `SR` + the fuel fixture |
+**This section was audited on 2026-11-04 (backlog item B1).** Every one of the
+38 rules was re-read against its own text and given one of four verdicts:
+
+| Verdict | Meaning | Count |
+|---|---|---|
+| **B — behaviour** | Nothing is refused, or the refusal is a different rule's code. The correct fixture asserts what happens | 19 |
+| **C — implementation constraint** | No *user program* can violate it; a violating **implementation** is non-conforming. Verified by structured review, not by a fixture that compiles something | 10 |
+| **R — rejection coded elsewhere** | The rule *does* refuse something; the code belongs to another rule and is named here | 7 |
+| **G — gap** | The rule refuses something and no code existed | **1**, now closed |
+
+The audit found exactly one gap and one correction:
+
+- **E-15 was a gap.** It requires `Ord` for `<`, `<=`, `>`, `>=` and says
+  records and unions are not `Ord` by default — but no code covered applying an
+  ordering operator to a non-`Ord` type. Added **`PL0237`**.
+- **E-14 and E-15 were conflated in the previous version of this table**, which
+  listed only E-14…E-16 as needing no code. E-14's refusal is `PL0219`; E-15's
+  was the missing code. They are now separate rows with separate verdicts.
+- **E-33 is `C` plus a coded clause**: determinism is an implementation
+  constraint, while quota exhaustion is the fault `PLFL05`.
+
+| Rule | Obligation | Verdict | Code, if any | Verified by |
+|---|---|---|---|---|
+| L-05 | `--` starts a line comment | B | — | behaviour fixture |
+| L-17 | Trailing commas accepted | B | — | parser fixture (S-0) |
+| L-19 | A block opens on a trailing `:` | B | violations are `PL0122`/`PL0123` | layout fixture |
+| L-21 | `pattern:` opens a block; `->` only in return types | R | `PL0001` | parser fixture |
+| L-23 | Blank/comment lines do not affect indentation | B | a column error is `PL0122` | layout fixture |
+| L-26 | A block's value is its tail expression | B | — | evaluation fixture |
+| L-28 | No user-defined operators; precedence closed | R | `PL0115` | rejection fixture |
+| L-30 | Diagnostic contract | C | governs all codes | applies to every code |
+| L-31 | Diagnostic contract | C | governs all codes | applies to every code |
+| L-33 | Diagnostic contract | C | governs all codes | applies to every code |
+| L-34 | Fixture obligation | C | governs all codes | applies to every code |
+| T-04 | `List.get` out of bounds returns `None` | B | — | behaviour fixture |
+| T-05 | `Bool` is an ordinary union | B | — | type fixture |
+| T-10 | Unions are closed | R | `PL0233` | rejection fixture |
+| T-12 | Faults are not catchable | B | no `catch` syntax parses | rejection fixture |
+| T-18 | Coherence: no orphan, no duplicate, no specialization, no overlap | R | `PL0210`, `PL0211`, `PL0212`; overlap not expressible (D-14) | rejection fixture |
+| T-30 | No implicit entry point | B | — | runner fixture |
+| E-01 | Strict, call-by-value | B | — | behaviour fixture |
+| E-02 | Left-to-right within a construct | B | — | behaviour fixture |
+| E-03 | Pipe evaluates `y` before `x` | B | — | behaviour fixture |
+| E-04 | Scrutinee evaluated exactly once | B | — | behaviour fixture |
+| E-07 | IEEE 754 binary64; no implicit conversion | B | — | behaviour fixture |
+| E-09 | Explicit total order via `Float.compare` | B | — | behaviour fixture |
+| E-10 | No fast-math; no reassociation | C | — | `SR` structured review |
+| E-14 | `==`/`!=` structural, only on `Eq` types | R | `PL0219` | rejection fixture |
+| **E-15** | **`<`, `<=`, `>`, `>=` require `Ord`** | **R** | **`PL0237`** | rejection fixture |
+| E-16 | Immutable capture by value at creation | B | — | behaviour fixture |
+| E-19 | `?` evaluates its operand once | R | `PL0228` for the `defer` clause | behaviour + rejection |
+| E-20 | `defer` runs LIFO before the block value | B | — | behaviour fixture |
+| E-22 | `defer` not guaranteed on fault | C | — | `SR` structured review |
+| E-25 | An explicit `_` arm is required to suppress listing | B | missing variants are `PL0224` | behaviour fixture |
+| E-27 | Patterns are partial; bindings scope to the arm | B | exhaustiveness is `PL0224` | behaviour fixture |
+| E-29 | `else:` plus nested `if` is the only chaining | R | `PL0115` | rejection fixture |
+| E-31 | A fault terminates the task, not the platform | C | — | runtime behaviour, Phase 3 fixture |
+| E-32 | No partial task-local core state | C | — | `SR` structured review |
+| E-33 | Faults are deterministic | C | quota exhaustion is `PLFL05` | `SR` + fuel fixture |
+| E-35 | No ambient authority or implicit randomness | C | — | `SR` structured review |
+| E-36 | Meaning must not depend on build profile | C | — | the dual-profile run |
+
+> **What is still a judgement.** The B/C boundary is not mechanical: deciding
+> that E-31 is an implementation constraint rather than a behaviour rests on
+> "no user program can make the platform exit." A future reader may disagree
+> with an individual verdict. The table makes the disagreement *visible and
+> local* — one row, one verdict — instead of buried in eight paragraphs of
+> rule prose.
 
 ## 7. Skeleton message shape (illustrative, not ratified)
 
@@ -217,17 +264,17 @@ the files themselves. If prose and tool disagree, the tool is right.
 
 | Quantity | Before | After |
 |---|---:|---:|
-| Codes in the registry (`diagnostic_codes`) | 53 | **73** |
-| — error | 49 | **64** (+15) |
+| Codes in the registry (`diagnostic_codes`) | 53 | **74** |
+| — error | 49 | **65** (+16) |
 | — fault | 0 | **5** (+5, new namespace) |
 | — warning | 4 | 4 |
 | — historical | 1 | 1 (`PL0106`) |
-| **Active codes (L-34 fixtures)** | **52** | **72** — 67 error/warning + 5 fault |
-| New identifiers introduced here | 0 | **20** (15 errors + 5 faults) |
+| **Active codes (L-34 fixtures)** | **52** | **73** — 68 error/warning + 5 fault |
+| New identifiers introduced here | 0 | **21** (16 errors + 5 faults) |
 | Codes with no owning rule | — | **0** |
 | Rules requiring rejection that name no code | 12 | **0** |
 | Fault identifiers reserved for later phases | 0 | 3 (`PLFL06`–`PLFL08`) |
-| Total conformance budget | 341 | **356** |
+| Total conformance budget | 341 | **357** |
 
 > **This section's first two drafts were wrong, and both are recorded.**
 > Draft one claimed +16 error codes, +8 fault codes, 68 active codes. Draft two
@@ -242,7 +289,7 @@ the files themselves. If prose and tool disagree, the tool is right.
 
 | # | Item | Why |
 |---|---|---|
-| 1 | Exact wording for all 72 codes | Editorial; L-30/L-33 constrain it and fixtures will pin it |
+| 1 | Exact wording for all 73 codes | Editorial; L-30/L-33 constrain it and fixtures will pin it |
 | 2 | Span convention for multi-token diagnostics (where a caret starts) | Needs the lexer; `line:column` alone does not decide a judgement call |
 | 3 | Whether `PL0105` and `PL1101` may both fire on one identifier | Depends on A-47's suppression mechanism, deferred to tooling |
 | 4 | Review of every name in this catalog | **Owner ratification pending.** Names are the cheapest thing to change now and the most expensive once fixtures cite them |

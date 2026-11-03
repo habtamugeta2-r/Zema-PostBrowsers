@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.4 (Phase 1 audit) |
+| **Version** | 1.5 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -193,13 +193,14 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 126 | "Concern 16 states that three labels govern every statement the project makes; measured with a pattern that accepts inline and cell labels, 10 of 56 markdown files use one, and the normative specification (`docs/plain/`, 10 files) uses none." | E | Script over all `*.md`; broadened pattern after the first, narrower one reported 1 of 55 | 1 | 2026-11-03 | Confirmed. The first-pattern figure is recorded because it was published in the trace's first draft and corrected in place; a pattern is part of the claim |
 | 127 | "Concern 17 requires 'never a bare Gate 2', yet the repository contains 7 'Book Gate' references, 7 'Prompt Gate' references and 365 bare `Gate N` references in the colliding range 0–5." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. The rule is stated correctly and violated three orders of magnitude because it is a prose caution with no check behind it |
 | 128 | "Two of Phase 14's eight named stopping conditions — install friction too high, and platform/app-store restrictions — appear in no file outside the Master Prompt, so no gate review has ever had to consider them." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. Recorded in `VERTICAL-TRACE.md` §3.3 with the per-risk counts |
+| 129 | "Auditing the catalog's 38 'needs no code' verdicts against the rule text found one genuine gap: E-15 requires `Ord` for the ordering operators but no code covered applying one to a non-`Ord` type." | E | Backlog item B1; `docs/plain/02-evaluation.md` E-15; `docs/plain/08-diagnostics-and-faults.md` §6 on 2026-11-04 | 1 | 2026-11-04 | Confirmed by reading all 38 rules. Added `PL0237`. Verdict split: 19 behaviour, 10 implementation constraint, 7 rejection-coded-elsewhere, 1 gap (closed). The B/C boundary remains a judgement and is recorded as such |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 128 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace) |
-| Established (E) | 71 |
+| Total rows | 129 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace + 1 backlog) |
+| Established (E) | 72 |
 | Proposed (P) | 27 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |

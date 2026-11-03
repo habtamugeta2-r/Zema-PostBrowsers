@@ -58,10 +58,10 @@ Rule IDs are permanent. A rule may be revised, never renumbered.
 | 2 | [`02-evaluation.md`](./02-evaluation.md) | Evaluation order, integer/float/text semantics, equality and ordering, closures and capture, `?` propagation, `defer`, faults, exhaustive matching |
 | 3 | [`03-ambiguities.md`](./03-ambiguities.md) | 47 derived ambiguities: 42 resolved (proposed), 5 deferred, 0 open |
 | 4 | [`04-deferred-features.md`](./04-deferred-features.md) | 20 deferrals: nine named by the Master Prompt plus eleven added here, each with a reason, cost, and revisit trigger |
-| 5 | [`05-conformance-plan.md`](./05-conformance-plan.md) | The Gate 1 test plan: core vs platform scope, 356 allocated fixture targets, runner requirements — **plan only, zero fixtures written** |
+| 5 | [`05-conformance-plan.md`](./05-conformance-plan.md) | The Gate 1 test plan: core vs platform scope, 357 allocated fixture targets, runner requirements — **plan only, zero fixtures written** |
 | 6 | [`06-operational-semantics.md`](./06-operational-semantics.md) | **Non-normative** small-step core reduction draft, conjectures, and trace obligations |
 | 7 | [`07-traceability.md`](./07-traceability.md) | Rule→verification matrix: all 106 rule IDs allocated to a method and an area; the rules Gate 1 cannot verify, with owners — **allocation, not coverage** |
-| 8 | [`08-diagnostics-and-faults.md`](./08-diagnostics-and-faults.md) | The diagnostic and fault catalog: four code namespaces (`PL01nn`, `PL02nn`, **`PLFLnn` faults**, `PL11nn`), 72 active codes, and the 38 rules that correctly need no code — **proposal, owner ratification pending** |
+| 8 | [`08-diagnostics-and-faults.md`](./08-diagnostics-and-faults.md) | The diagnostic and fault catalog: four code namespaces (`PL01nn`, `PL02nn`, **`PLFLnn` faults**, `PL11nn`), 73 active codes, and the 38 rules that correctly need no code — **proposal, owner ratification pending** |
 
 Research that supports these choices:
 [`../../research/phase-01-01-language-prior-art.md`](../../research/phase-01-01-language-prior-art.md)
