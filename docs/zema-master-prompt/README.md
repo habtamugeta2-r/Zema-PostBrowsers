@@ -63,6 +63,7 @@ docs/zema-master-prompt/
 ├── ZEMA-Master-Research-and-Build-Prompt.md       ← canonical build plan (v1.1)
 ├── IMPROVEMENTS.md                                ← v1.1 editorial records
 ├── PHASE-TRACKER.md                               ← phase/gate status board
+├── VERTICAL-TRACE.md                              ← concerns → phases → gates → evidence
 └── templates/
     ├── evidence-register.md
     ├── decision-record.md
@@ -81,6 +82,7 @@ the master prompt:
 | Research findings | [`../../research/`](../../research/) — index in [`../../research/README.md`](../../research/README.md) |
 | The frozen problem statement | [`../problem-statement.md`](../problem-statement.md) |
 | Evidence register | [`../evidence-register.md`](../evidence-register.md) |
+| **Vertical trace** (concern → phase → gate → evidence) | [`VERTICAL-TRACE.md`](./VERTICAL-TRACE.md) — 3 of 19 concerns had an evidence row before it existed |
 | Decisions (build / reuse / invent) | [`../decisions/`](../decisions/) — index and status vocabulary in [`../decisions/README.md`](../decisions/README.md) |
 | Gate reviews | [`../gates/`](../gates/) |
 | Experiments (E1, E2, E4, E5, …) | `experiments/EN-*/` — created when each experiment begins |

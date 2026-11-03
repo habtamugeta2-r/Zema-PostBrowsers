@@ -499,16 +499,16 @@
     "sum": 356
   },
   "evidence": {
-    "count": 123,
+    "count": 128,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 66
+      "E": 71
     },
     "declared_summary": {
-      "total": 123,
+      "total": 128,
       "labels": {
-        "E": 66,
+        "E": 71,
         "P": 27,
         "H": 30
       }
@@ -1386,6 +1386,20 @@
     "silent": [],
     "listed": 38
   },
+  "vertical_trace": {
+    "ok": true,
+    "concerns_defined": 19,
+    "rows_in_trace": 19,
+    "missing_rows": [],
+    "overclaimed_traced": [],
+    "concerns_with_evidence": [
+      3,
+      11,
+      15,
+      16,
+      17
+    ]
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1404,13 +1418,13 @@
   },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 56,
+    "markdown_files": 57,
     "python_files": 10,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 123,
+    "evidence_rows": 128,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,

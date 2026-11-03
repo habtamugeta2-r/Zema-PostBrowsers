@@ -452,6 +452,58 @@ def codeless_claim_check() -> dict:
     return {"ok": not silent, "silent": silent, "listed": len(rows)}
 
 
+CONCERNS_REL = "docs/zema-master-prompt/00-Core-Concerns.md"
+TRACE_REL = "docs/zema-master-prompt/VERTICAL-TRACE.md"
+MASTER_REL = "docs/zema-master-prompt/ZEMA-Master-Research-and-Build-Prompt.md"
+
+
+def vertical_trace_check() -> dict:
+    """Every concern appears in the vertical trace, and "traced" is not a claim.
+
+    The project keeps its reasons, its schedule, and its evidence in three
+    documents that never referenced each other: 3 of 19 concerns had an
+    evidence row, and no gate document mentioned a concern at all. This check
+    makes the joint real in both directions:
+
+    1. every concern defined in Core Concerns has a row in the trace, so a new
+       concern cannot be added without an owner and a proof status;
+    2. a row that claims `traced` must actually have an evidence row naming it,
+       so `traced` cannot be typed optimistically.
+    """
+    concerns_text = read(CONCERNS_REL)
+    defined = sorted(
+        {int(n) for n in re.findall(r"^### (\d{1,2})\. ", concerns_text, re.MULTILINE)}
+    )
+    trace_text = read(TRACE_REL)
+    section = trace_text.split("## 2.", 1)
+    rows = {}
+    if len(section) == 2:
+        body = section[1].split("## 3.", 1)[0]
+        for line in body.splitlines():
+            cells = table_cells(line)
+            if len(cells) < 4 or not cells[0].isdigit():
+                continue
+            rows[int(cells[0])] = line
+
+    missing = [n for n in defined if n not in rows]
+
+    evidence_text = read("docs/evidence-register.md")
+    cited = {int(n) for n in re.findall(r"Concern[s]? (\d{1,2})", evidence_text)}
+    overclaimed = [
+        n for n, line in rows.items() if "traced? **no**" not in line.lower()
+        and "yes" in line.lower().rsplit("|", 2)[-2]
+        and n not in cited
+    ]
+    return {
+        "ok": not missing and not overclaimed,
+        "concerns_defined": len(defined),
+        "rows_in_trace": len(rows),
+        "missing_rows": missing,
+        "overclaimed_traced": overclaimed,
+        "concerns_with_evidence": sorted(cited),
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -648,6 +700,7 @@ def main() -> int:
     uncoded = uncoded_obligation_check()
     fault_ns = fault_namespace_check()
     codeless = codeless_claim_check()
+    vtrace = vertical_trace_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -669,6 +722,7 @@ def main() -> int:
         "uncoded_obligations": uncoded,
         "fault_namespace": fault_ns,
         "codeless_claims": codeless,
+        "vertical_trace": vtrace,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -726,6 +780,11 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not vtrace["ok"]:
+        problems.append(
+            f"vertical trace incomplete: missing rows {vtrace['missing_rows']}, "
+            f"claimed-traced without evidence {vtrace['overclaimed_traced']}"
+        )
     if not codeless["ok"]:
         problems.append(
             "rules are listed in the catalog as needing no code but the registry records "
@@ -757,6 +816,11 @@ def main() -> int:
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "fault_namespace": report["fault_namespace"],
         "codeless_claims": report["codeless_claims"],
+        "vertical_trace": {
+            "concerns_defined": report["vertical_trace"]["concerns_defined"],
+            "rows_in_trace": report["vertical_trace"]["rows_in_trace"],
+            "concerns_with_evidence": report["vertical_trace"]["concerns_with_evidence"],
+        },
         "traceability": {
             "rows": traceability["rows"],
             "covered": traceability["covered"],

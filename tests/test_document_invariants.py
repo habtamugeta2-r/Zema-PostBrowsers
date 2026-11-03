@@ -27,6 +27,7 @@ uncoded_obligation_check = audit.uncoded_obligation_check
 conformance_area_coverage = audit.conformance_area_coverage
 fault_namespace_check = audit.fault_namespace_check
 codeless_claim_check = audit.codeless_claim_check
+vertical_trace_check = audit.vertical_trace_check
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -225,3 +226,33 @@ class DiagnosticCatalogTest(unittest.TestCase):
     def test_conformance_budget_matches_area_rows(self):
         coverage = conformance_area_coverage()
         self.assertTrue(coverage["ok"], coverage)
+
+
+class VerticalTraceTest(unittest.TestCase):
+    """The three document layers must be joined, not merely coexist.
+
+    Measured before the trace existed: 3 of 19 concerns had an evidence row and
+    no gate document mentioned a concern at all.
+    """
+
+    def test_every_concern_has_a_trace_row(self):
+        result = vertical_trace_check()
+        self.assertEqual(
+            result["missing_rows"], [], "a concern exists with no owner or proof status"
+        )
+
+    def test_a_traced_claim_has_an_evidence_row(self):
+        """Regression: marking an untraced concern as traced passed every test."""
+        result = vertical_trace_check()
+        self.assertEqual(
+            result["overclaimed_traced"],
+            [],
+            "a concern is marked traced but no evidence row cites it",
+        )
+
+    def test_concern_count_matches_the_founding_document(self):
+        result = vertical_trace_check()
+        self.assertEqual(result["concerns_defined"], 19, "Concern IDs are permanent")
+        self.assertEqual(
+            result["rows_in_trace"], 19, "the trace must carry every concern"
+        )

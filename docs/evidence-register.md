@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.3 (Phase 1 audit) |
+| **Version** | 1.4 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -188,13 +188,18 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 121 | "The catalog's own §6 list of rules needing no diagnostic code contradicted the derived registry in five places: T-18, E-19 and E-33 were listed as codeless while the registry recorded them as owning `PL0210`–`PL0212`, `PL0228` and `PLFL05`." | E | `docs/plain/08-diagnostics-and-faults.md` §6 against `tools/audit_phase01.py` `diagnostic_registry()` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by cross-checking the two artifacts. Cause: the registry attributes a code to every rule named on its line, so a rule inside an enumeration inherits the code. All five rows now name the code that is *not* codeless; a check fails if a §6 row silently contradicts the registry |
 | 122 | "The specification said \"a syntax error\" in two places (chained comparison, L-32's cascade rule) but no generic parse-error code existed in the registry or any document." | E | `docs/plain/00-lexical-and-layout.md` L-28 grammar note and L-32; exhaustive code registry | 0 | 2026-11-03 | Confirmed. `PL0001` was added in a new `PL00nn` parse range. The first identity pass missed it because it searched for rules that *refuse* something, and a grammar note is not a rule bullet |
 | 123 | "The catalog's claim that 38 rules need no code was itself unverified — a wrong call either invents a pointless code or hides a missing one." | P | `docs/plain/08-diagnostics-and-faults.md` §6; audit record §8a item 8 | 0 | 2026-11-03 | Partially closed: the five self-contradictions were found and fixed by machine cross-check. Whether each remaining classification is *correct* still needs a human read against the rule text, and stays open as §8a.8 |
+| 124 | "Only 3 of the project's 19 core concerns (3, 11, 15) are cited by any evidence row; Concerns 16, 17 and 18 — the three that govern how the project is run — are cited by none." | E | `docs/evidence-register.md` joined against `docs/zema-master-prompt/00-Core-Concerns.md`; `tools/audit_phase01.py` `vertical_trace_check()` | 0 | 2026-11-03 | Confirmed by script. Created `docs/zema-master-prompt/VERTICAL-TRACE.md` with a row per concern and a check that a `traced` claim needs a real evidence row |
+| 125 | "No gate document mentions a concern, and the Master Prompt contains zero occurrences of 'Concern', so the Concern→Phase map is asserted from one side only and cannot be visibly wrong." | E | `grep -c Concern docs/gates/*.md` → 0 and 0; `ZEMA-Master-Research-and-Build-Prompt.md` → 0 of 1,267 lines | 0 | 2026-11-03 | Confirmed. This is the vertical version of the diagnostic gap: each layer is coherent, the edges between layers do not exist |
+| 126 | "Concern 16 states that three labels govern every statement the project makes; measured with a pattern that accepts inline and cell labels, 10 of 56 markdown files use one, and the normative specification (`docs/plain/`, 10 files) uses none." | E | Script over all `*.md`; broadened pattern after the first, narrower one reported 1 of 55 | 1 | 2026-11-03 | Confirmed. The first-pattern figure is recorded because it was published in the trace's first draft and corrected in place; a pattern is part of the claim |
+| 127 | "Concern 17 requires 'never a bare Gate 2', yet the repository contains 7 'Book Gate' references, 7 'Prompt Gate' references and 365 bare `Gate N` references in the colliding range 0–5." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. The rule is stated correctly and violated three orders of magnitude because it is a prose caution with no check behind it |
+| 128 | "Two of Phase 14's eight named stopping conditions — install friction too high, and platform/app-store restrictions — appear in no file outside the Master Prompt, so no gate review has ever had to consider them." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. Recorded in `VERTICAL-TRACE.md` §3.3 with the per-risk counts |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 123 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit) |
-| Established (E) | 66 |
+| Total rows | 128 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace) |
+| Established (E) | 71 |
 | Proposed (P) | 27 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |

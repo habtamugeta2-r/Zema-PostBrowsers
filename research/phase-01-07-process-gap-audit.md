@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.3 |
+| **Version** | 1.4 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result. Version 1.2 adds §3.9 and revises §4: the deeper finding is not only missing artifact governance but an **unspecified failure vocabulary** |
@@ -388,10 +388,66 @@ three from silent defects into failing tests; the last two were found only by
 cross-checking two artifacts against each other, which is why `--check` now does
 that rather than trusting either one.
 
+## 3.10 The gap above the artifacts: nothing joins the three document layers
+
+Sections 3.1–3.8 are horizontal (copies disagreeing). §3.9 is vertical but
+narrow (one document unbuildable). This section is vertical and wide: the
+project holds its **reasons**, its **schedule**, and its **proof** in three
+document sets that never referenced each other.
+
+Measured:
+
+| Gap | Number |
+|---|---|
+| Concerns (why) | 19 |
+| Gate exit criteria (what must be true, when) | 50 across 15 phases |
+| Evidence rows (proof) | 128 |
+| **Concerns cited by any evidence row** | **3** (3, 11, 15) |
+| Gate documents that mention a concern | **0** of 2 |
+| Occurrences of "Concern" in the 1,267-line Master Prompt | **0** |
+| Gate 1's own exit criteria restated in the readiness packet | **0** of 3 |
+
+The three untraced concerns that matter most are **16 (evidence discipline),
+17 (stage gates) and 18 (named risks)** — the rules that govern the project's
+own conduct. A project whose rule "evidence discipline governs every statement"
+has no evidence row, no gate check, and no label on its own specification, is
+not applying the rule; it is reciting it.
+
+### 3.10.1 Three specific decays
+
+1. **Concern 16's label rule covers 10 of 56 documents, and 0 of 10 specification
+   documents.** The research layer is exemplary — `phase-00-02` labels all 30
+   catalog rows — and the normative language definition has no labels at all.
+   L-30's diagnostic contract does not apply to L-30.
+2. **Concern 17's "never a bare Gate 2" rule is violated 365 times** in the
+   colliding range, against 7 compliant `Book Gate` and 7 `Prompt Gate`
+   references. The rule is correct, is written down, and has no check.
+3. **Two of the eight named stopping conditions appear in one file.** Install
+   friction and app-store restriction — the two under which the project should
+   *stop* — are named only in the Master Prompt, which no gate review reads
+   that far into.
+
+### 3.10.2 Why this is the same root cause a third time
+
+§4 said: claims were governed, artifacts were not. §3.9 said: an identifier is
+an artifact. This says: **a link between documents is an artifact too.**
+
+All three are one failure — the project writes documents and does not maintain
+the *relations* between them. Claims have a register because someone decided
+claims needed one. Nothing decided that the concern→phase→gate→evidence chain
+needed one, so it was assumed to hold by construction. It does not: it is
+missing four of its five arrows.
+
+The repair is deliberately small, because a large one would fail the same way:
+[`VERTICAL-TRACE.md`](../docs/zema-master-prompt/VERTICAL-TRACE.md) adds one row per
+concern with an owner and a proof status, a check that a `traced` claim requires
+a real evidence row, and three proposed fields for the existing gate-review
+template. Nothing new is fabricated; the untraced 16 are recorded as untraced.
+
 ## 4. The root cause
 
 One sentence: **the project had an evidence register but no artifact register
-— and an identifier is an artifact.**
+— and an identifier, and a link between two documents, are both artifacts.**
 
 Version 1.2 sharpens this. The drift in §3.1–3.8 and the unbuildability in §3.9
 are one failure at two levels: nothing governed the *things* the documents rely
@@ -570,6 +626,7 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-03 | 1.4 | Read the two founding documents in depth for the first time. Added §3.10: the three document layers (19 concerns / 50 gate criteria / 128 evidence rows) are unjoined — 3 of 19 concerns traced, 0 gate documents mention a concern, 0 occurrences of "Concern" in the Master Prompt, 365 ambiguous bare gate references, 2 of 8 stopping conditions named in one file. Created `VERTICAL-TRACE.md` with a check. Evidence #124–#128 |
 | 2026-11-03 | 1.3 | Self-audit of the catalog against its own registry. Found five §6 rows that called a rule codeless while it owned a code (T-18, E-19, E-33), and found that no generic syntax-error code existed although the spec twice said "syntax error"; `PL0001` added in a new `PL00nn` range. Two mistakes appended to §3.9.2 (now five). Counts 73 codes / 72 active / budget 356 / evidence 123. Two new checks: `codeless_claim_check`, `fault_namespace_check` |
 | 2026-11-03 | 1.2 | Added §3.9 (the specification could not be built because its failure modes were unnamed) and revised §4 to the sharper root cause: an identifier is an artifact, and nothing governed the identifier namespaces. Created `docs/plain/08-diagnostics-and-faults.md`; assigned 19 identifiers into normative rule text; added 13 tests; recorded three mistakes made during the repair. Open gaps 8a.6–8a.10 added |
 | 2026-11-03 | 1.1 | Second pass. §3.6 records that this audit's own repair duplicated the exclusion table and that the first duplicate-detection check was too weak to catch it — found by mutation-testing the check, not by review. §3.7 corrects three typed numbers in v1.0 (including the problem statement's "580 words" → 519 measured) and adds `--verify`. §3.8 completes PR-06 across all 16 decision records and fixes the "seven documents" count. §8a lists five gaps deliberately left open. Duplication check rewritten from set-equality to overlap. |
