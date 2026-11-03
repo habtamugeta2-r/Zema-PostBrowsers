@@ -28,6 +28,11 @@ conformance_area_coverage = audit.conformance_area_coverage
 fault_namespace_check = audit.fault_namespace_check
 codeless_claim_check = audit.codeless_claim_check
 vertical_trace_check = audit.vertical_trace_check
+gate_coverage_check = audit.gate_coverage_check
+gate_criteria = audit.gate_criteria
+task_audit_check = audit.task_audit_check
+master_tasks = audit.master_tasks
+evidence_link_check = audit.evidence_link_check
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -256,3 +261,252 @@ class VerticalTraceTest(unittest.TestCase):
         self.assertEqual(
             result["rows_in_trace"], 19, "the trace must carry every concern"
         )
+
+
+class GateCoverageTest(unittest.TestCase):
+    """Every gate exit criterion must have a disposition, and it must be honest.
+
+    Measured before this existed: 50 criteria rested on a conformance plan whose
+    23 areas are all Phase-1 language areas, so it can reach 8 of them.
+    """
+
+    def test_all_fifty_criteria_have_a_disposition(self):
+        result = gate_coverage_check()
+        self.assertEqual(result["criteria"], 50, "the Master Prompt defines 50 criteria")
+        self.assertEqual(result["missing_rows"], [], "a criterion has no disposition")
+
+    def test_no_disposition_is_unrecognised(self):
+        result = gate_coverage_check()
+        self.assertEqual(result["bad_disposition"], [], "a row has no valid disposition")
+
+    def test_a_covered_claim_points_at_a_real_file(self):
+        """Regression: a `covered` row citing a nonexistent path passed silently."""
+        result = gate_coverage_check()
+        self.assertEqual(result["false_covered"], [], "a `covered` claim cites a missing file")
+
+    def test_the_disposition_table_is_not_duplicated(self):
+        """Regression: the check was order-dependent when it parsed the whole file.
+
+        Sections 3 and 4 also key rows by criterion ID, so whichever table came
+        last silently won. The disposition table is now scoped to section 2.
+        """
+        result = gate_coverage_check()
+        self.assertEqual(result["duplicate_rows"], [], "a criterion appears twice in section 2")
+
+    def test_uncovered_criteria_are_counted_not_hidden(self):
+        result = gate_coverage_check()
+        self.assertGreater(
+            result["dispositions"]["UNCOVERED"],
+            0,
+            "zero uncovered is implausible while E1-E5 are undefined; "
+            "if this fires, check whether an uncovered row was relabelled",
+        )
+
+
+class TaskAuditTest(unittest.TestCase):
+    """Every Master Prompt task has a status, and `done` is verifiable.
+
+    Measured before this existed: 128 tasks, 19 done, and the phase tracker
+    summarised all of Phase 1 in one status cell.
+    """
+
+    def test_the_prompt_defines_one_hundred_and_twenty_eight_tasks(self):
+        tasks = master_tasks()
+        self.assertEqual(len(tasks), 128, "66 research + 62 build")
+        self.assertEqual(sum(1 for t in tasks if t["kind"] == "R"), 66)
+        self.assertEqual(sum(1 for t in tasks if t["kind"] == "B"), 62)
+
+    def test_every_research_task_has_a_status_row(self):
+        result = task_audit_check()
+        self.assertEqual(result["missing_rows"], [], "a research task has no status")
+
+    def test_no_task_has_two_status_rows(self):
+        result = task_audit_check()
+        self.assertEqual(result["duplicate_rows"], [], "a task is statused twice")
+
+    def test_a_done_claim_names_a_file_that_exists(self):
+        """Regression: marking P2.R1 done and citing a nonexistent research
+        record passed every check until this loop was added."""
+        result = task_audit_check()
+        self.assertEqual(
+            result["false_done"], [], "a task is marked done without verifiable evidence"
+        )
+
+
+class EvidenceLinkTest(unittest.TestCase):
+    """An Established claim a reader cannot reach is a Hypothesis mislabelled.
+
+    Measured before this existed: 0 of 135 rows cited a URL, and 42 cited a
+    document title with no route to it.
+    """
+
+    def test_every_row_is_examined(self):
+        result = evidence_link_check()
+        self.assertGreaterEqual(result["rows_checked"], 135)
+
+    def test_the_research_layer_defines_sources_to_point_at(self):
+        """EL-2 depends on these existing: the URLs live in the research records."""
+        result = evidence_link_check()
+        self.assertGreater(
+            result["spans_defined"], 0, "no [S##] source is defined anywhere"
+        )
+
+    def test_the_unlinked_count_does_not_grow(self):
+        """A ratchet, not an absolute: the historical defect is recorded, and
+        new rows must be linked or the count rises and this fails."""
+        result = evidence_link_check()
+        self.assertLessEqual(
+            result["unlinked"],
+            101,
+            f"unlinked rows grew to {result['unlinked']}: a new row cites nothing reachable",
+        )
+
+    def test_a_markdown_link_counts_as_a_route(self):
+        """Regression: the first version read only backticked paths, so a row
+        citing a markdown link was counted unlinked. Caught by the ratchet."""
+        rows = audit.evidence_link_check()
+        linked_by_markdown = []
+        for line in read("docs/evidence-register.md").splitlines():
+            match = re.match(r"\|\s*(\d{3})\s*\|", line)
+            if not match:
+                continue
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) < 5:
+                continue
+            if re.search(r"\]\([^)]+\.md\)", cells[3]):
+                linked_by_markdown.append(cells[0])
+        self.assertTrue(linked_by_markdown, "no row uses a markdown link any more")
+        for row_id in linked_by_markdown:
+            self.assertNotIn(
+                row_id,
+                rows["unlinked_ids"],
+                f"row {row_id} cites a markdown link but is reported unlinked",
+            )
+
+
+class AmbiguityDecisionTest(unittest.TestCase):
+    """A resolution is a design choice, and an unrecorded choice did not happen.
+
+    Measured before this existed: 42 rows said Resolved, and 35 had no decision
+    record behind them. All 42 passed the only test the project had -- "does
+    the cited rule exist?" -- which asks whether the answer is written down,
+    not whether anyone chose it.
+    """
+
+    def test_every_resolved_row_is_counted_exactly_once(self):
+        result = audit.ambiguity_decision_check()
+        rows = audit.ambiguity_rows(read("docs/plain/03-ambiguities.md"))
+        resolved = [r for r in rows if r["status"].lower().startswith("resolved")]
+        self.assertEqual(result["resolved_rows"], len(resolved))
+        self.assertEqual(
+            result["recorded"] + result["unrecorded"], result["resolved_rows"]
+        )
+
+    def test_a_recorded_row_names_a_decision_that_declares_it(self):
+        """No row may claim a route to a record that does not name it."""
+        result = audit.ambiguity_decision_check()
+        declared = audit._declared_ambiguity_records()
+        for row in result["rows"]:
+            self.assertNotIn(
+                row["id"],
+                {aid for ids in declared.values() for aid in ids},
+                f"{row['id']} is listed unrecorded but a record declares it",
+            )
+
+    def test_the_unrecorded_count_does_not_grow(self):
+        """A ratchet. The historical 35 is recorded; new rows must be recorded."""
+        result = audit.ambiguity_decision_check()
+        self.assertLessEqual(
+            result["unrecorded"],
+            35,
+            f"unrecorded resolutions grew to {result['unrecorded']}: "
+            f"a new Resolved row cites no decision: {result['unrecorded_ids']}",
+        )
+
+    def test_no_resolved_row_is_owner_ratified(self):
+        """The finding, stated as an assertion so it cannot quietly become false.
+
+        All 7 recorded rows are `Resolved (proposed)`, and the owner's answer to
+        the readiness packet was Revise. If a row ever becomes ratified this
+        test should fail and be updated deliberately, with the response cited.
+        """
+        result = audit.ambiguity_decision_check()
+        self.assertEqual(result["ratified"], 0)
+        for row in result["rows"]:
+            self.assertFalse(row["status"].lower().endswith("ratified"))
+
+    def test_deferrals_live_in_the_deferral_register(self):
+        """Decision 0007 says a deferral without a trigger is a scope change.
+
+        A-13 defers `where` clauses and A-47 defers a configuration mechanism,
+        both inside a resolution cell, both citing no D-ID. This test pins the
+        current leak count so a new one fails here.
+        """
+        result = audit.ambiguity_decision_check()
+        self.assertLessEqual(
+            len(result["deferral_leaks"]),
+            2,
+            f"deferrals outside the register grew: {result['deferral_leaks']}",
+        )
+
+
+class BackfillQuoteTest(unittest.TestCase):
+    """Every backfilled A-ID in AMBIGUITY-DECISION-AUDIT §2 must quote its record.
+
+    The table claims 24 rows are "decided but unlinked". That claim is only
+    worth anything if the quote is real, so each row is re-read from the
+    decision file here. A record edited later breaks this immediately.
+    """
+
+    ROW = re.compile(
+        r"^\|\s*(A-\d{2})\s*\|\s*(\d{4})\s*\|\s*(decides|partial)\s*\|\s*\"(.+?)\"\s*\|\s*$",
+        re.M,
+    )
+
+    def rows(self):
+        text = read("docs/zema-master-prompt/AMBIGUITY-DECISION-AUDIT.md")
+        return self.ROW.findall(text)
+
+    def decision_text(self, record):
+        paths = sorted((ROOT / "docs" / "decisions").glob(f"{record}-*.md"))
+        self.assertEqual(len(paths), 1, f"decision {record} not found exactly once")
+        body = paths[0].read_text(encoding="utf-8")
+        match = re.search(
+            r"^## Decision[^\n]*\n(.*?)(?=^## (?!Decision))", body, re.M | re.S
+        )
+        if not match:
+            match = re.search(
+                r"^## \d+\. Proposed Plain profile\n(.*?)(?=^## )", body, re.M | re.S
+            )
+        # Bold markers are stripped on both sides: A-06's decision emphasises the
+        # first three words of the sentence, so the verbatim text spans a `**`
+        # boundary. The prose is unchanged; only the emphasis is removed.
+        return " ".join((match.group(1) if match else "").split()).replace("**", "")
+
+    def test_the_table_lists_the_rows_it_claims(self):
+        rows = self.rows()
+        self.assertEqual(len(rows), 24, f"expected 24 backfill rows, found {len(rows)}")
+        self.assertEqual(len({r[0] for r in rows}), 24, "duplicate A-ID in the table")
+
+    def test_every_quote_is_verbatim_in_its_decision_section(self):
+        checked = 0
+        for aid, record, _strength, quote in self.rows():
+            body = self.decision_text(record)
+            self.assertIn(
+                quote.replace("**", ""),
+                body,
+                f"{aid}: the table quotes decision {record} but that text is not "
+                f"in its Decision section: {quote[:80]!r}",
+            )
+            checked += 1
+        self.assertEqual(checked, 24)
+
+    def test_every_backfilled_row_is_actually_unrecorded(self):
+        """The table must not 'backfill' a row that already has a decision."""
+        unrecorded = set(audit.ambiguity_decision_check()["unrecorded_ids"])
+        for aid, _record, _strength, _quote in self.rows():
+            self.assertIn(
+                aid,
+                unrecorded,
+                f"{aid} is listed for backfill but the check already records it",
+            )

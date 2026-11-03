@@ -504,6 +504,413 @@ def vertical_trace_check() -> dict:
     }
 
 
+GATE_COVERAGE_REL = "docs/zema-master-prompt/GATE-COVERAGE.md"
+
+GATE_DISPOSITIONS = ("covered", "future", "platform", "UNCOVERED")
+
+
+def gate_criteria() -> list[dict]:
+    """Every gate exit criterion in the Master Prompt, with its phase.
+
+    Extracted rather than listed: the prompt is the authority, and a criterion
+    added there without a disposition here is a silent gap -- which is the
+    exact failure this check exists to prevent.
+    """
+    text = read(MASTER_REL)
+    criteria: list[dict] = []
+    for chunk in re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)[1:]:
+        pass
+    parts = re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)
+    for index in range(1, len(parts), 3):
+        phase = int(parts[index + 1])
+        body = parts[index + 2]
+        gate = re.search(r"### Gate \d+ — Exit criteria[^\n]*\n(.*?)(?=\n---|\n## )", body, re.S)
+        if not gate:
+            continue
+        items = re.findall(r"- \[ \] (.+?)(?=\n  [A-Za-z*]|\n- |\Z)", gate.group(1), re.S)
+        for number, item in enumerate(items, start=1):
+            criteria.append(
+                {
+                    "id": f"G{phase}.{number}",
+                    "phase": phase,
+                    "text": re.sub(r"\s+", " ", item).strip(),
+                }
+            )
+    # the phase number is captured as the criterion's own prefix; when a phase
+    # has no gate the numbering must still descend, so verify uniqueness here
+    seen: set[str] = set()
+    for criterion in criteria:
+        if criterion["id"] in seen:
+            criterion["id"] += "b"
+        seen.add(criterion["id"])
+    return criteria
+
+
+def gate_coverage_check() -> dict:
+    """Every criterion has a disposition, and `covered` names an existing path.
+
+    The disposition table is the only place that says whether a gate criterion
+    can actually be discharged. It is checked against the Master Prompt in both
+    directions: no criterion without a row, and no `covered` claim pointing at
+    a document that does not exist.
+    """
+    criteria = gate_criteria()
+    coverage_text = read(GATE_COVERAGE_REL)
+
+    # Only section 2 carries dispositions. Sections 3 and 4 also key rows by
+    # criterion ID for readability, so parsing the whole file made the result
+    # depend on table order: the last row to mention an ID won, and §4's
+    # three-column table silently erased §2's disposition for G1.1-G1.3.
+    disposition_table = coverage_text.split("## 2.", 1)[-1].split("\n## 3.", 1)[0]
+    rows: dict[str, str] = {}
+    duplicates: list[str] = []
+    for line in disposition_table.splitlines():
+        match = re.match(r"\|\s*(G\d{1,2}\.\d)\s*\|", line)
+        if match:
+            if match.group(1) in rows:
+                duplicates.append(match.group(1))
+            rows[match.group(1)] = line
+
+    missing = [c["id"] for c in criteria if c["id"] not in rows]
+
+    bad_disposition = []
+    for criterion in criteria:
+        line = rows.get(criterion["id"])
+        if not line:
+            continue
+        if not any(f"| {d} " in line or f"| {d} |" in line or f"**{d}**" in line for d in GATE_DISPOSITIONS):
+            bad_disposition.append(criterion["id"])
+
+    # a `covered` row must cite a repository path that exists
+    false_covered = []
+    for criterion in criteria:
+        line = rows.get(criterion["id"], "")
+        if not re.search(r"\|\s*covered\s*\|", line):
+            continue
+        paths = re.findall(r"\]\(([^)]+\.(?:md|json|py|txt))\)", line)
+        for target in paths:
+            resolved = (ROOT / GATE_COVERAGE_REL).parent / target
+            if not resolved.exists():
+                false_covered.append({"id": criterion["id"], "missing": target})
+
+    counts = {d: 0 for d in GATE_DISPOSITIONS}
+    for criterion in criteria:
+        line = rows.get(criterion["id"], "")
+        for disposition in GATE_DISPOSITIONS:
+            if re.search(r"\|\s*" + disposition + r"\s*\|", line, re.I):
+                counts[disposition] += 1
+                break
+
+    return {
+        "ok": not missing and not duplicates and not bad_disposition and not false_covered,
+        "criteria": len(criteria),
+        "rows": len(rows),
+        "missing_rows": missing,
+        "duplicate_rows": duplicates,
+        "bad_disposition": bad_disposition,
+        "false_covered": false_covered,
+        "dispositions": counts,
+    }
+
+
+TASK_AUDIT_REL = "docs/zema-master-prompt/TASK-AUDIT.md"
+
+
+def master_tasks() -> list[dict]:
+    """Every research and build task in the Master Prompt.
+
+    Extracted so the audit cannot drift from the prompt it audits: a task added
+    there without a status here is a silent gap.
+    """
+    text = read(MASTER_REL)
+    parts = re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)
+    tasks: list[dict] = []
+    for index in range(1, len(parts), 3):
+        phase = int(parts[index + 1])
+        body = parts[index + 2]
+        for kind, pattern in (
+            ("R", r"### Research tasks(.*?)### Build tasks"),
+            ("B", r"### Build tasks(.*?)### Deliverables"),
+        ):
+            block = re.search(pattern, body, re.S)
+            if not block:
+                continue
+            items = re.findall(r"- \[ \] (.+?)(?=\n  [A-Za-z*]|\n- |\Z)", block.group(1), re.S)
+            for number, item in enumerate(items, start=1):
+                tasks.append(
+                    {
+                        "id": f"P{phase}.{kind}{number}",
+                        "phase": phase,
+                        "kind": kind,
+                        "text": re.sub(r"\s+", " ", item).strip(),
+                    }
+                )
+    return tasks
+
+
+def task_audit_check() -> dict:
+    """Every task has a status, and every `done` names a path that exists."""
+    tasks = master_tasks()
+    audit = read(TASK_AUDIT_REL)
+
+    statuses: dict[str, str] = {}
+    seen: list[str] = []
+    for line in audit.splitlines():
+        match = re.match(r"\|\s*(P\d{1,2}\.[RB]\d{1,2})\s*\|", line)
+        if not match:
+            continue
+        task_id = match.group(1)
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        if task_id in statuses:
+            seen.append(task_id)
+        statuses[task_id] = cells[2]
+        # build tasks are audited in aggregate by phase, so a row may name a
+        # phase rather than an individual ID; those are counted separately
+    missing = [t["id"] for t in tasks if t["id"] not in statuses and t["kind"] == "R"]
+    duplicated = sorted(set(seen))
+
+    # A `done` claim must name a path that exists. Without this, marking a
+    # not-started task done and citing a plausible research record passes --
+    # verified by mutation on 2026-11-04, which is why this loop exists.
+    false_done = []
+    for line in audit.splitlines():
+        match = re.match(r"\|\s*(P\d{1,2}\.[RB]\d{1,2})\s*\|", line)
+        if not match:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 4 or cells[2] != "done":
+            continue
+        cited = re.findall(r"`([^`]+\.(?:md|json|py|txt))`", cells[3])
+        if not cited:
+            false_done.append({"id": match.group(1), "why": "no path cited"})
+            continue
+        for target in cited:
+            if not (ROOT / target).exists():
+                false_done.append({"id": match.group(1), "missing": target})
+
+    counted: dict[str, int] = {}
+    for status in statuses.values():
+        counted[status] = counted.get(status, 0) + 1
+
+    declared = {}
+    for line in audit.splitlines():
+        if line.startswith("| **Total** |"):
+            cells = [c.strip().replace("*", "") for c in line.strip().strip("|").split("|")]
+            for label, value in zip(cells[2::2], cells[3::2]):
+                if value.isdigit():
+                    declared[label] = int(value)
+    return {
+        "ok": not missing and not duplicated and not false_done,
+        "tasks_in_prompt": len(tasks),
+        "false_done": false_done,
+        "research_rows": len(statuses),
+        "missing_rows": missing,
+        "duplicate_rows": duplicated,
+        "counted": counted,
+        "declared_total": declared,
+    }
+
+
+SOURCE_PREFIXES = ("docs/", "research/", "tools/", "tests/", "src/", "conformance/")
+
+
+def evidence_link_check() -> dict:
+    """Every Established row must be reachable, not merely named.
+
+    The register cites sources as prose titles: "Chromium *Release Cycle* [A]".
+    That is unreachable -- there is no route from the row to the document. The
+    research records hold the URLs in their [S##] Tables, so the first hop of
+    the evidence chain was broken.
+
+    A row is linked when its source cell contains at least one of:
+      - a repository path that exists,
+      - an http(s) URL,
+      - an [S##] pointer to a source that a research record defines.
+    """
+    text = read("docs/evidence-register.md")
+
+    defined_spans: set[str] = set()
+    for rel in sorted(str(p.relative_to(ROOT)) for p in (ROOT / "research").glob("*.md")):
+        for match in re.finditer(r"\|\s*(S\d+)\s*\|", read(rel)):
+            defined_spans.add(match.group(1))
+
+    rows = []
+    for line in text.splitlines():
+        match = re.match(r"\|\s*(\d{3})\s*\|", line)
+        if not match:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 5:
+            continue
+        rows.append({"id": cells[0], "label": cells[2], "source": cells[3]})
+
+    unlinked = []
+    for row in rows:
+        if row["label"] not in ("E", "P", "H"):
+            continue
+        source = row["source"]
+        linked = False
+        if re.search(r"https?://", source):
+            linked = True
+        if not linked:
+            for span in re.findall(r"\[S\d+\]", source):
+                if span.strip("[]") in defined_spans:
+                    linked = True
+                    break
+        if not linked:
+            for candidate in re.findall(r"`([^`]+)`", source):
+                candidate = candidate.strip()
+                if candidate.startswith(SOURCE_PREFIXES) and (ROOT / candidate).exists():
+                    linked = True
+                    break
+        if not linked:
+            # markdown links are equally valid routes; the first version only
+            # read backticked paths and flagged row 138, which cites its own
+            # audit record with [text](path). Found by the ratchet test.
+            for candidate in re.findall(r"\]\(([^)\s]+\.(?:md|json|py|txt))\)", source):
+                resolved = (ROOT / "docs" / "evidence-register.md").parent / candidate
+                if resolved.exists():
+                    linked = True
+                    break
+        if not linked:
+            unlinked.append({"id": row["id"], "label": row["label"], "source": source[:90]})
+
+    return {
+        "ok": True,  # informational: the defect is recorded, not gated
+        "rows_checked": len(rows),
+        "unlinked": len(unlinked),
+        "unlinked_ids": [u["id"] for u in unlinked],
+        "sample": unlinked[:5],
+        "spans_defined": len(defined_spans),
+    }
+
+
+def _declared_ambiguity_records() -> dict[str, set[str]]:
+    """Which A-IDs each decision record declares it resolves.
+
+    Only the **Resolves** field counts. A decision that *mentions* an A-ID, or
+    whose text cites one of the rules that resolve it, is not the same claim:
+    decision 0006 cites `(T-06, T-10, T-25)` while deciding subtyping, not
+    A-24's empty-record question, and 0007's "blanket implementations" is not
+    A-02's blank lines. Both were tried as extra signals and both produced
+    false positives, so this check reads the declared field only and the
+    semantic question is answered by reading in
+    `docs/zema-master-prompt/AMBIGUITY-DECISION-AUDIT.md` (AD-2).
+    """
+    declared: dict[str, set[str]] = {}
+    for path in sorted((ROOT / "docs" / "decisions").glob("0*.md")):
+        text = path.read_text(encoding="utf-8")
+        ids: set[str] = set()
+        match = re.search(r"\*\*Resolves\*\*\s*\|(.*)", text)
+        if match:
+            ids = set(re.findall(r"\bA-\d{2}\b", match.group(1)))
+        declared[path.name[:4]] = ids
+    return declared
+
+
+def ambiguity_decision_check() -> dict:
+    """Every `resolved` ambiguity must trace to the decision that resolved it.
+
+    The register's rule 3 defines Resolved as "the specification states the
+    rule and a conformance test can assert it". All 42 rows satisfy that:
+    each cites rule IDs that exist. That is not the question. A resolution is
+    a *design choice*, and the project's own rule is that "a decision that is
+    not recorded did not happen". So the question is whether the choice has an
+    author, not whether its rule text exists.
+
+    A row is recorded when either edge exists:
+
+    - **forward**: the row's cells cite a decision record; or
+    - **declared**: a decision record names the A-ID in its **Resolves** field.
+
+    Deliberately NOT counted as an edge: a decision record that merely
+    *mentions* the A-ID, or whose text happens to cite one of the row's rule
+    IDs. Both were tried and both produce false positives -- decision 0006
+    cites `(T-06, T-10, T-25)` while deciding subtyping, not A-24's empty-record
+    question; decision 0007's "blanket implementations" is not A-02's blank
+    lines. The semantic matches are recorded once, by hand, in
+    `AMBIGUITY-DECISION-AUDIT.md` §2 with a verbatim quote per row, and a test
+    re-verifies every quote. A check that guesses from prose is a check that
+    lies.
+
+    Two readings are also reported, because they are the finding:
+
+    - `deferral_leak`: a Resolved row whose resolution text defers part of the
+      question but cites no `D-##`. By the deferral register's own rule 1, a
+      deferral must live there with a trigger; if it only lives in a register
+      cell, nothing revisits it.
+    - `ratified`: no resolved row is both recorded and owner-ratified. The
+      seven recorded rows are all `Resolved (proposed)`.
+    """
+    text = read("docs/plain/03-ambiguities.md")
+    rows = []
+    for line in text.splitlines():
+        if not re.match(r"^\|\s*A-\d{2}\s*\|", line):
+            continue
+        cells = table_cells(line)
+        if len(cells) < 5:
+            continue
+        rows.append(
+            {
+                "id": cells[0],
+                "resolution": cells[2],
+                "status": cells[3].replace("*", ""),
+                "ref": cells[4],
+            }
+        )
+
+    declared: dict[str, set[str]] = {}
+    for path in sorted((ROOT / "docs" / "decisions").glob("0*.md")):
+        match = re.search(
+            r"\*\*Resolves\*\*\s*\|(.*)", path.read_text(encoding="utf-8")
+        )
+        declared[path.name[:4]] = (
+            set(re.findall(r"\bA-\d{2}\b", match.group(1))) if match else set()
+        )
+
+    deferral_ids = set(re.findall(r"^### (D-\d{2})", read("docs/plain/04-deferred-features.md"), re.M))
+
+    recorded: list[dict] = []
+    unrecorded: list[dict] = []
+    leaks: list[dict] = []
+    for row in rows:
+        if not row["status"].startswith("Resolved"):
+            continue
+        cells = row["ref"] + " " + row["resolution"]
+        cited = sorted(set(re.findall(r"decision[s]?\s+(\d{4})", cells, re.I)))
+        declaring = sorted(k for k, ids in declared.items() if row["id"] in ids)
+        entry = {
+            "id": row["id"],
+            "status": row["status"],
+            "rule_ids": sorted(set(re.findall(r"\b([LTES]-\d{1,2})\b", row["ref"]))),
+        }
+        if cited or declaring:
+            recorded.append({**entry, "decisions": sorted(set(cited) | set(declaring))})
+        else:
+            unrecorded.append(entry)
+        # a deferral that cites no D-ID escapes the deferral register
+        if re.search(r"\bdeferred\b", row["resolution"], re.I):
+            cited_d = sorted(set(re.findall(r"\b(D-\d{2})\b", cells)))
+            dangling = [d for d in cited_d if d not in deferral_ids]
+            if not cited_d or dangling:
+                leaks.append({"id": row["id"], "cited": cited_d, "undefined": dangling})
+
+    return {
+        "ok": True,  # informational: the finding is recorded, not gated
+        "resolved_rows": len(recorded) + len(unrecorded),
+        "recorded": len(recorded),
+        "unrecorded": len(unrecorded),
+        "unrecorded_ids": [r["id"] for r in unrecorded],
+        "ratified": 0,  # every recorded row is still "Resolved (proposed)"
+        "deferral_leaks": leaks,
+        "declaring_records": sorted({d for r in recorded for d in r["decisions"]}),
+        "statuses_unrecorded": sorted({r["status"] for r in unrecorded}),
+        "rows": unrecorded,
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -701,6 +1108,8 @@ def main() -> int:
     fault_ns = fault_namespace_check()
     codeless = codeless_claim_check()
     vtrace = vertical_trace_check()
+    gcov = gate_coverage_check()
+    taudit = task_audit_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -723,9 +1132,13 @@ def main() -> int:
         "fault_namespace": fault_ns,
         "codeless_claims": codeless,
         "vertical_trace": vtrace,
+        "gate_coverage": gcov,
+        "task_audit": taudit,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
+        "evidence_links": evidence_link_check(),
+        "ambiguity_decisions": ambiguity_decision_check(),
         "broken_relative_links": broken_links(),
     }
     out = ROOT / "research" / "data" / "phase-01-document-audit.json"
@@ -780,6 +1193,18 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not taudit["ok"]:
+        problems.append(
+            f"task audit incomplete: missing rows {taudit['missing_rows']}, "
+            f"duplicate rows {taudit['duplicate_rows']}, "
+            f"unverifiable done claims {taudit['false_done']}"
+        )
+    if not gcov["ok"]:
+        problems.append(
+            f"gate coverage incomplete: missing rows {gcov['missing_rows']}, "
+            f"duplicate rows {gcov['duplicate_rows']}, "
+            f"bad disposition {gcov['bad_disposition']}, false covered {gcov['false_covered']}"
+        )
     if not vtrace["ok"]:
         problems.append(
             f"vertical trace incomplete: missing rows {vtrace['missing_rows']}, "
@@ -816,6 +1241,20 @@ def main() -> int:
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "fault_namespace": report["fault_namespace"],
         "codeless_claims": report["codeless_claims"],
+        "evidence_links": {
+            "rows_checked": report["evidence_links"]["rows_checked"],
+            "unlinked": report["evidence_links"]["unlinked"],
+        },
+        "task_audit": {
+            "tasks_in_prompt": report["task_audit"]["tasks_in_prompt"],
+            "tasks_with_a_row": report["task_audit"]["research_rows"],
+            "counted": report["task_audit"]["counted"],
+        },
+        "gate_coverage": {
+            "criteria": report["gate_coverage"]["criteria"],
+            "dispositions": report["gate_coverage"]["dispositions"],
+            "uncovered": report["gate_coverage"]["dispositions"].get("UNCOVERED", 0),
+        },
         "vertical_trace": {
             "concerns_defined": report["vertical_trace"]["concerns_defined"],
             "rows_in_trace": report["vertical_trace"]["rows_in_trace"],

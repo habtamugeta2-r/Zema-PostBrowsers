@@ -182,7 +182,7 @@ verification that must exist before Gate 1 can be attempted.
 | Rules attributable to a conformance-plan area | 106 | plan §2, after the gap repair |
 | Rules with **no** Gate 1 fixture (`NV`) | 2 | `E-31`, `E-34` — see §4 |
 | Rules only **partly** verifiable at Gate 1 | 2 | `E-12`, `L-33` — see §4 |
-| Planned fixture budget | 356 | conformance plan §2; recomputed when the diagnostic registry grew from 52 to 72 active codes |
+| Planned fixture budget | 357 | conformance plan §2; recomputed when the diagnostic registry grew from 52 to 73 active codes |
 | Fixtures written | **0** | repository observation, 2026-11-03 |
 | Rule-level coverage now provable | **0 %** | there is nothing to run |
 

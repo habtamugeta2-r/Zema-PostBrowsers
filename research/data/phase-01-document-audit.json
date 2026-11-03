@@ -493,22 +493,22 @@
       },
       {
         "area": "Diagnostics quality",
-        "target": 67
+        "target": 68
       }
     ],
-    "sum": 356
+    "sum": 357
   },
   "evidence": {
-    "count": 128,
+    "count": 141,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 71
+      "E": 84
     },
     "declared_summary": {
-      "total": 128,
+      "total": 141,
       "labels": {
-        "E": 71,
+        "E": 84,
         "P": 27,
         "H": 30
       }
@@ -1239,6 +1239,17 @@
       ]
     },
     {
+      "code": "PL0237",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "E-15"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
       "code": "PL1101",
       "severity": "warning",
       "historical": false,
@@ -1400,6 +1411,39 @@
       17
     ]
   },
+  "gate_coverage": {
+    "ok": true,
+    "criteria": 50,
+    "rows": 50,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "bad_disposition": [],
+    "false_covered": [],
+    "dispositions": {
+      "covered": 8,
+      "future": 27,
+      "platform": 8,
+      "UNCOVERED": 7
+    }
+  },
+  "task_audit": {
+    "ok": true,
+    "tasks_in_prompt": 128,
+    "false_done": [],
+    "research_rows": 66,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "counted": {
+      "done": 10,
+      "not-started": 49,
+      "partial": 6,
+      "blocked: book": 1
+    },
+    "declared_total": {
+      "19": 7,
+      "101": 1
+    }
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1416,25 +1460,493 @@
     "duplicate_ids": [],
     "invalid_entries": []
   },
+  "evidence_links": {
+    "ok": true,
+    "rows_checked": 141,
+    "unlinked": 101,
+    "unlinked_ids": [
+      "002",
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "009",
+      "010",
+      "011",
+      "012",
+      "013",
+      "014",
+      "015",
+      "016",
+      "017",
+      "018",
+      "019",
+      "020",
+      "021",
+      "022",
+      "023",
+      "024",
+      "025",
+      "026",
+      "027",
+      "028",
+      "029",
+      "030",
+      "031",
+      "032",
+      "033",
+      "034",
+      "035",
+      "036",
+      "037",
+      "038",
+      "041",
+      "042",
+      "043",
+      "044",
+      "045",
+      "046",
+      "047",
+      "049",
+      "050",
+      "051",
+      "052",
+      "053",
+      "054",
+      "055",
+      "056",
+      "057",
+      "058",
+      "061",
+      "062",
+      "063",
+      "064",
+      "065",
+      "066",
+      "067",
+      "068",
+      "069",
+      "070",
+      "071",
+      "072",
+      "073",
+      "074",
+      "075",
+      "076",
+      "077",
+      "078",
+      "079",
+      "080",
+      "081",
+      "082",
+      "083",
+      "084",
+      "085",
+      "086",
+      "087",
+      "088",
+      "089",
+      "091",
+      "092",
+      "093",
+      "095",
+      "096",
+      "097",
+      "098",
+      "099",
+      "100",
+      "101",
+      "102",
+      "110",
+      "125",
+      "126",
+      "127",
+      "128",
+      "132",
+      "135"
+    ],
+    "sample": [
+      {
+        "id": "002",
+        "label": "H",
+        "source": "Experiments E1–E5; Phase 12 equivalent-workload baselines"
+      },
+      {
+        "id": "003",
+        "label": "H",
+        "source": "No metric, baseline, or workload is named. Gate 12 must restate per metric or retract"
+      },
+      {
+        "id": "004",
+        "label": "H",
+        "source": "Experiment E1"
+      },
+      {
+        "id": "005",
+        "label": "P",
+        "source": "E1; Master Prompt Phase 2"
+      },
+      {
+        "id": "006",
+        "label": "H",
+        "source": "Phase 12 energy measurement (no method yet)"
+      }
+    ],
+    "spans_defined": 18
+  },
+  "ambiguity_decisions": {
+    "ok": true,
+    "resolved_rows": 42,
+    "recorded": 7,
+    "unrecorded": 35,
+    "unrecorded_ids": [
+      "A-01",
+      "A-02",
+      "A-03",
+      "A-05",
+      "A-06",
+      "A-07",
+      "A-08",
+      "A-09",
+      "A-10",
+      "A-11",
+      "A-13",
+      "A-14",
+      "A-15",
+      "A-16",
+      "A-17",
+      "A-18",
+      "A-19",
+      "A-20",
+      "A-22",
+      "A-24",
+      "A-25",
+      "A-28",
+      "A-29",
+      "A-30",
+      "A-31",
+      "A-32",
+      "A-33",
+      "A-34",
+      "A-35",
+      "A-36",
+      "A-37",
+      "A-39",
+      "A-40",
+      "A-41",
+      "A-43"
+    ],
+    "ratified": 0,
+    "deferral_leaks": [
+      {
+        "id": "A-13",
+        "cited": [],
+        "undefined": []
+      },
+      {
+        "id": "A-47",
+        "cited": [],
+        "undefined": []
+      }
+    ],
+    "declaring_records": [
+      "0009",
+      "0010",
+      "0011",
+      "0012"
+    ],
+    "statuses_unrecorded": [
+      "Resolved",
+      "Resolved (partial)",
+      "Resolved (risk accepted)"
+    ],
+    "rows": [
+      {
+        "id": "A-01",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-03",
+          "L-20"
+        ]
+      },
+      {
+        "id": "A-02",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-23"
+        ]
+      },
+      {
+        "id": "A-03",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-06"
+        ]
+      },
+      {
+        "id": "A-05",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-09"
+        ]
+      },
+      {
+        "id": "A-06",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-28"
+        ]
+      },
+      {
+        "id": "A-07",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-18"
+        ]
+      },
+      {
+        "id": "A-08",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-07",
+          "T-23"
+        ]
+      },
+      {
+        "id": "A-09",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-05",
+          "E-36"
+        ]
+      },
+      {
+        "id": "A-10",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-06"
+        ]
+      },
+      {
+        "id": "A-11",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-08",
+          "E-09"
+        ]
+      },
+      {
+        "id": "A-13",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-15"
+        ]
+      },
+      {
+        "id": "A-14",
+        "status": "Resolved (risk accepted)",
+        "rule_ids": [
+          "T-27"
+        ]
+      },
+      {
+        "id": "A-15",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-09"
+        ]
+      },
+      {
+        "id": "A-16",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-19",
+          "T-13"
+        ]
+      },
+      {
+        "id": "A-17",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-18"
+        ]
+      },
+      {
+        "id": "A-18",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-04"
+        ]
+      },
+      {
+        "id": "A-19",
+        "status": "Resolved (partial)",
+        "rule_ids": [
+          "L-10",
+          "L-11"
+        ]
+      },
+      {
+        "id": "A-20",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-22"
+        ]
+      },
+      {
+        "id": "A-22",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-28"
+        ]
+      },
+      {
+        "id": "A-24",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-16",
+          "T-06"
+        ]
+      },
+      {
+        "id": "A-25",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-25",
+          "E-27"
+        ]
+      },
+      {
+        "id": "A-28",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-11",
+          "L-04"
+        ]
+      },
+      {
+        "id": "A-29",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-12"
+        ]
+      },
+      {
+        "id": "A-30",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-12",
+          "L-29"
+        ]
+      },
+      {
+        "id": "A-31",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-19",
+          "L-22"
+        ]
+      },
+      {
+        "id": "A-32",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-29"
+        ]
+      },
+      {
+        "id": "A-33",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-21"
+        ]
+      },
+      {
+        "id": "A-34",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-03",
+          "S-2"
+        ]
+      },
+      {
+        "id": "A-35",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-19",
+          "E-21",
+          "T-13"
+        ]
+      },
+      {
+        "id": "A-36",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-20",
+          "E-22"
+        ]
+      },
+      {
+        "id": "A-37",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-26",
+          "E-27"
+        ]
+      },
+      {
+        "id": "A-39",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-32"
+        ]
+      },
+      {
+        "id": "A-40",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-30",
+          "E-33"
+        ]
+      },
+      {
+        "id": "A-41",
+        "status": "Resolved (partial)",
+        "rule_ids": [
+          "L-02",
+          "L-31"
+        ]
+      },
+      {
+        "id": "A-43",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-30"
+        ]
+      }
+    ]
+  },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 57,
-    "python_files": 10,
+    "markdown_files": 63,
+    "python_files": 11,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 128,
+    "evidence_rows": 141,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,
     "problem_statement_total_words": 828,
     "conformance_fixtures_written": 0,
     "code_accounting": {
-      "codes_cited_by_rules": 72,
+      "codes_cited_by_rules": 73,
       "historical_codes": 1,
       "fault_codes_defined": 5,
-      "all_active_codes": 77
+      "all_active_codes": 78
     },
     "rules_requiring_rejection_without_a_code": [
       "L-23",
