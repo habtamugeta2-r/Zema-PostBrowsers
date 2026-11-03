@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — scope recommendation by the agent; owner/reviewer ratification remains required |
+| **Owner ratification** | **pending — A-42** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** for scope; **Established** for repository phase/gate definitions |
 | **Source grade** | Repository primary documents: Master Prompt Phase 1 gate text and derived conformance plan; supporting semantics and prior-art records are not external authority for project scope |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); Gate 1 reviewer/owner may ratify or overrule |
@@ -65,11 +66,19 @@ state the latter are not evaluated.
   or revise this scope before recording Gate 1.
 - The conformance plan's core/platform split is the operational checklist
   for this boundary; coverage counts must not merge the two.
-- The build remains blocked by C1/C5. C2 remains due before any Gate 1
-  attempt. No interpreter, fixture, or gate result is created here.
+- *(Correction, same day: C1 and C5 were resolved after this text was written —
+  build is no longer blocked.)* C2 remains due before any Gate 1 attempt. No
+  interpreter, fixture, or gate result is created here.
 
 ## Change log
 
 | Date | Change |
 |---|---|
 | 2026-11-03 | Proposed explicit Gate 1 core scope and non-waiver of later platform obligations. |
+
+## Dated note (2026-11-03, after this record)
+
+The Consequences text above describes the state when this decision was written.
+C1 and C5 were resolved by the owner later the same day ([`../gates/gate-00.md`](../gates/gate-00.md) §10),
+so **build is no longer blocked**; this decision still awaits ratification, and
+C2 remains due before a Gate 1 attempt. The text above is left as written.

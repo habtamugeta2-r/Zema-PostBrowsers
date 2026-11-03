@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — the specification is a draft; syntax freezes only at Gate 1, after the conformance suite passes |
+| **Owner ratification** | **pending** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); owner sign-off pending (Gate 0 C1, `PlainP` ruling C5) |
 | **Implements** | [`../plain/00-lexical-and-layout.md`](../plain/00-lexical-and-layout.md), [`../plain/03-ambiguities.md`](../plain/03-ambiguities.md) |

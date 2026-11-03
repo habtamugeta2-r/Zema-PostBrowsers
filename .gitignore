@@ -1,0 +1,7 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Pinned Unicode inputs are fetched, hash-verified, and cached — never vendored
+# before the C4 licence decision (decision 0014, Gate 0 condition C4).
+research/data/.cache/

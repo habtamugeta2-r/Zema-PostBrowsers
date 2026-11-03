@@ -134,3 +134,20 @@ control, US-English normalization (the original's
 *internationalisation/authorisation/colour*), and evidence-label
 discipline as Master Prompt v1.1. The concern numbers 1–19 are
 permanent IDs and must never be renumbered.
+
+## Process improvements (2026-11-03) — from the process-gap audit
+
+Recorded here because the project requires every controlled-document change to
+carry a version bump and an entry in this file. Each is a rule the project now
+follows, not a suggestion.
+
+| ID | Rule | Why it exists | Status |
+|---|---|---|---|
+| **PR-01** | **No count is typed into prose; it is printed by a tool.** | Three separate hand-counted figures in this project were wrong, including two in the document that was auditing the problem. `audit_phase01.py --verify` now prints every quantity prose may quote. | **Executed** |
+| **PR-02** | **One authoritative location per fact; other documents link to it.** | The Gate 1 exclusion table was copied into two files and drifted. It now lives only in `plain/07-traceability.md` §4. | **Executed** |
+| **PR-03** | **A check is not trusted until a mutation makes it fail.** | The first duplicate-detection check passed against a known duplicate; a fault code renamed out of its namespace passed every test. Both were found by deliberately breaking the thing. | **Executed** |
+| **PR-04** | **Every identifier has exactly one owning rule.** A second rule may cite a code but never redefine it. | Four codes are cited by two rules each; nothing recorded which rule owned them. | **Executed** (catalog §1 rule 2) |
+| **PR-05** | **Deleting an artifact requires deleting every reference to it in the same commit.** | A duplicate result file was deleted while a script and two documents still pointed at it. | **Executed** |
+| **PR-06** | **Decision status is two fields: `Status` and `Owner ratification`.** | Three records read "Accepted" while the readiness packet listed the same items as open. | **Executed** |
+| **PR-07** | **A specification rule that refuses a construct must name the code it raises, or be listed as needing none.** | 12 rules required rejection with no identifier; a runner asserting exact codes could not fixture them. | **Executed** — enforced by `--check`; the exemption list is `08-diagnostics-and-faults.md` §6 |
+| **PR-08** | **A fault is never in the same namespace as a recoverable diagnostic.** | The plan demanded exact fault codes; with one namespace, the natural wrong move is a `catch` the language forbids (T-12). | **Executed** (`PLFL`) |

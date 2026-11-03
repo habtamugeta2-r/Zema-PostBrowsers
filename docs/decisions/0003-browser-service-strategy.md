@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 0 / Gate 0 |
 | **Status** | **Accepted** as Phase 0's classification; individual rows remain revisitable at their owning gates |
+| **Owner ratification** | **not required** — Phase 0 classification; each row is revisited at its owning gate |
 | **Evidence label** | **Proposed** |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); project owner sign-off at Gate 0 (condition C1) |
 | **Ratifies** | [`../../research/phase-00-02-browser-services-catalog.md`](../../research/phase-00-02-browser-services-catalog.md) (BSC-01 … BSC-21) |

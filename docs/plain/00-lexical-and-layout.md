@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.4 (draft) |
+| **Version** | 0.2.5 (draft) — v0.2.5 adds diagnostic codes to rules that named none; no rule's meaning changed |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `L-nn` (lexical/layout), `S-nn` (sanctioned sugar) |
@@ -12,20 +12,20 @@
 ## 1. Source and encoding
 
 - **L-01** A source file **MUST** be valid UTF-8. A byte-order mark **MUST** be rejected (`PL0101`).
-- **L-02** Line endings **MUST** be accepted as LF or CRLF and **MUST** be normalized to LF before parsing. Other Unicode line/paragraph separators (U+0085, U+2028, U+2029) **MUST NOT** act as source line terminators outside text literals; they are data or invalid source, not hidden layout ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Whitespace-Syntax) §3.2).
+- **L-02** Line endings **MUST** be accepted as LF or CRLF and **MUST** be normalized to LF before parsing. Other Unicode line/paragraph separators (U+0085, U+2028, U+2029) **MUST NOT** act as source line terminators outside text literals (`PL0126`); they are data or invalid source, not hidden layout ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Whitespace-Syntax) §3.2).
 - **L-03** The only permitted indentation characters are the space (U+0020). A tab in indentation **MUST** be an error with a fix suggestion (`PL0102`).
 - **L-04** Identifiers **MUST** be treated as their Unicode **NFC** form. A non-NFC identifier **MUST** be an error that shows the NFC form and offers it as a fix (`PL0103`). Text literals **MUST NOT** be silently normalized: their scalar-value contents are data, including non-NFC sequences. Tooling **MAY** show a “normalize this text” fix only when the user explicitly requests it ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Normalization-and-Case) §3.1.1; [UAX #15 revision 57](https://www.unicode.org/reports/tr15/tr15-57.html) states normalization forms are not closed under concatenation).
 
 ## 2. Comments
 
 - **L-05** `--` starts a line comment that ends at the newline.
-- **L-06** `{-` … `-}` is a block comment and **MUST** nest.
+- **L-06** `{-` … `-}` is a block comment and **MUST** nest. An unterminated block comment is `PL0125`, with its span opening at `{-`.
 - **L-07** `---` starts a **doc comment** attached to the next declaration; it is preserved for tooling and documentation. A doc comment with no following declaration **MUST** be an error (`PL0104`).
 
 ## 3. Identifiers
 
-- **L-08** An identifier **MUST** match the declared profile `(_ | XID_Start) XID_Continue*`, using XID_Start/XID_Continue from **Unicode 17.0.0** (Unicode 17.0.0; UAX #31 rev43/C1/C2; UAX #15 rev57; UAX #9 rev51; UTS #39 rev32; UTS #55 rev5), the initial pinned profile (A-27, decision 0009). This is a UAX #31 R1-2 profile that adds `_` to Start; it is not unmodified R1-1. A lone `_` is the wildcard pattern, not an identifier. The implementation **MUST** report the Unicode data release and all algorithm revisions in the adopted profile: UAX #31, #15, and #9, plus UTS #39 and #55. Exact data-file hashes are in the source manifest. A data upgrade requires a decision record, data diff, regenerated fixtures, and a conformance rerun; no silent bump.
-- **L-09** Reserved words **MUST NOT** be identifiers. The set is closed for v0.1:
+- **L-08** An identifier **MUST** match the declared profile `(_ | XID_Start) XID_Continue*` (`PL0118`), using XID_Start/XID_Continue from **Unicode 17.0.0** (Unicode 17.0.0; UAX #31 rev43/C1/C2; UAX #15 rev57; UAX #9 rev51; UTS #39 rev32; UTS #55 rev5), the initial pinned profile (A-27, decision 0009). This is a UAX #31 R1-2 profile that adds `_` to Start; it is not unmodified R1-1. A lone `_` is the wildcard pattern, not an identifier. The implementation **MUST** report the Unicode data release and all algorithm revisions in the adopted profile: UAX #31, #15, and #9, plus UTS #39 and #55. Exact data-file hashes are in the source manifest. A data upgrade requires a decision record, data diff, regenerated fixtures, and a conformance rerun; no silent bump.
+- **L-09** Reserved words **MUST NOT** be identifiers (`PL0119`). The set is closed for v0.1:
   `alias and as defer distinct else fn for if impl import in interface let mut not or return then type when with`
   (`return` is reserved even though `return` is not used in expressions — early exit is written with `?` for `Result` and by block structure otherwise; see A-15.)
 - **L-10** **Confusable declarations are an error.** Two distinct, simultaneously visible names are directionally confusable if `bidiSkeleton(d, X) == bidiSkeleton(d, Y)` for any `d ∈ {LTR, RTL, FS}` under UTS #39 rev32 (decision 0012); a matching direction produces the proposed `PL0105` error. The standard’s compatibility `skeleton(X)` is only `bidiSkeleton(LTR, X)`, so Plain’s proposed relation is broader than that default. Compare names that resolve to distinct declarations in the same scope or that are both visible at a use site; repeated references resolving to the same declaration are not collisions. Reserved/prelude names participate where visible. Directional skeletons are internal comparison data only, not normalized source text or display text (UTS #39 rev32 §4; UTS #55 rev5 §5.1.1; decisions 0011/0012). This is a proposed mitigation, not an anti-spoofing guarantee; owner ratification and conformance are pending.
@@ -41,8 +41,8 @@
 
 ## 4. Literals
 
-- **L-13** Integer literals: decimal `0`, `1_000_000`; hexadecimal `0xFF`; binary `0b1011`. Underscores **MAY** separate digits but **MUST NOT** lead or trail.
-- **L-14** Float literals **MUST** contain a decimal point with digits on both sides (`1.5`, `0.25`) and **MAY** carry an exponent (`1.5e3`). `1.` and `.5` are errors. A literal without a decimal point is an `Int`.
+- **L-13** Integer literals: decimal `0`, `1_000_000`; hexadecimal `0xFF`; binary `0b1011`. Underscores **MAY** separate digits but **MUST NOT** lead or trail (`PL0120`).
+- **L-14** Float literals **MUST** contain a decimal point with digits on both sides (`1.5`, `0.25`) and **MAY** carry an exponent (`1.5e3`). `1.` and `.5` are errors (`PL0121`). A literal without a decimal point is an `Int`.
 - **L-15** Text literals are `"..."` on one line with escapes `\n \t \" \\ \u{1F600}`. Escape values **MUST** be Unicode scalar values: surrogate code points U+D800–U+DFFF and values above U+10FFFF are errors (`PL0117`). Literal contents are not normalized (L-04). Multi-line strings are **deferred** (D-18); their absence is deliberate v0.1 scope.
 - **L-16** The unit value is `()`. There is **no empty record literal**: `{}` is an error pointing at `()` (`PL0107`). One notation per concept.
 - **L-17** List literals use `[a, b, c]` and **MAY** be empty (`[]`). Trailing commas are permitted in lists, records, argument lists, and parameter lists; the formatter removes them (S-0).
@@ -53,17 +53,17 @@
 Plain is indentation-delimited. There are no semicolons and no braces for blocks.
 
 - **L-19** A **block** is introduced by a line ending in `:`. The following lines that are indented deeper belong to it; the block ends at the first line at the same or lower indentation (a virtual `DEDENT`).
-- **L-20** All statements in one block **MUST** start at the same column. That column **MUST** be greater than the column of the line that introduced the block. Widths are free (the formatter canonicalizes to two spaces per level).
+- **L-20** All statements in one block **MUST** start at the same column. That column **MUST** be greater than the column of the line that introduced the block. Either violation is `PL0122`. Widths are free (the formatter canonicalizes to two spaces per level).
 - **L-21** A **case arm** is introduced by `pattern:` and owns a block. There is no `->` in patterns: `->` appears **only** in function return types. One notation per concept.
 - **L-22** An expression **MAY** continue on the next line if, and only if, one of the following holds:
   1. the next line begins with a binary operator (`.`, `|>`, `and`, `or`, `==`, `!=`, `<`, `<=`, `>`, `>=`, `+`, `-`, `*`, `/`, `%`);
   2. the previous line ends with a binary operator, `,`, `(`, `[`, or `{`.
   A trailing `:` introduces a block under L-19; it is not an expression continuation. A block opener and a continuation are mutually exclusive.
 
-  Such continuation lines **MUST** be indented deeper than the first token of the statement. Any other newline ends the expression. This rule is the *only* line-continuation mechanism.
+  Such continuation lines **MUST** be indented deeper than the first token of the statement (`PL0123`). Any other newline ends the expression. This rule is the *only* line-continuation mechanism.
 - **L-23** Blank lines and comment-only lines **MUST NOT** affect indentation analysis.
 - **L-24** Empty blocks are forbidden (`PL0109`). A block's last line is either a statement or the block's tail expression.
-- **L-25** One declaration per line; declarations **MUST NOT** be nested inside function bodies (local declarations are deferred, D-17).
+- **L-25** One declaration per line; declarations **MUST NOT** be nested inside function bodies (`PL0124`; local declarations are deferred, D-17).
 - **L-26** A block's value is the value of its **tail expression**; if the block ends in a statement, its value is `()`.
 - **L-27** A non-final expression statement **MUST** have type `()`. Discarding a non-`()` value silently is an error (`PL0110`) — the value must be bound to a name or consumed by a function.
 
@@ -156,7 +156,7 @@ Notes that the grammar alone does not express, and which **MUST** be checked by 
 
 ## 7. Operator precedence and associativity
 
-Highest to lowest; all binary operators are left-associative except `<`, `<=`, `>`, `>=`, `==`, `!=`, which are **non-associative** (a chained comparison is a syntax error rather than a silent boolean).
+Highest to lowest; all binary operators are left-associative except `<`, `<=`, `>`, `>=`, `==`, `!=`, which are **non-associative** — a chained comparison is a syntax error (`PL0001`) rather than a silent boolean.
 
 | Level | Operators | Associativity |
 |---|---|---|
@@ -193,7 +193,7 @@ Phase 1 requires "readable diagnostics with error spans". These rules make that 
 
 - **L-30** Every diagnostic **MUST** carry: a stable code (`PLnnnn` / `PL1nnn` for warnings), a severity, a primary span with `line:column` start and end, a one-line message, a cause paragraph, and — where a fix is mechanical — one or more machine-applicable fixes.
 - **L-31** Every diagnostic **MUST** quote the offending source line with a caret underline. Directional/bidi control characters and other invisible format controls in quoted source **MUST** be escaped or visibly marked so diagnostic output cannot reorder executable code misleadingly ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html) §§4–5).
-- **L-32** The compiler **MUST NOT** cascade: after an unrecoverable parse or type error in a declaration, subsequent errors in that declaration **MUST** be suppressed and summarized (`PL0199`).
+- **L-32** The compiler **MUST NOT** cascade: after an unrecoverable parse or type error (`PL0001`) in a declaration, subsequent errors in that declaration **MUST** be suppressed and summarized (`PL0199`).
 - **L-33** Diagnostic wording **MUST** use the language's own terms ("a block", "a case arm", "a record field"), never internal AST or IR names.
 - **L-34** The conformance suite **MUST** include a diagnostics section: for every active diagnostic code in the generated registry, a fixture asserting code, span, and the presence of a fix where required. The registry is derived from the rules, not a hand-maintained range; retired codes are marked historical.
 

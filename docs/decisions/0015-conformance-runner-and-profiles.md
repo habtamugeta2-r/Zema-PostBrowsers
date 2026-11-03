@@ -5,12 +5,13 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — owner/reviewer acceptance not recorded; runner and profiles not implemented |
+| **Owner ratification** | **pending** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | Established for the existing conformance-plan requirements; Proposed for runner design |
 | **Deciders** | ZEMA research agent; owner Better-back has not ratified this decision |
 
 ## Context
 
-`docs/plain/05-conformance-plan.md` defines a 307-fixture planning budget, rule-attributed fixtures, the command `plain test conformance/ --profile checked|optimized --report json`, an empty in-scope uncovered list, exact fault-code assertions, normalized diagnostic assertions, and checked/optimized parity. Gate 1 cannot pass when any in-scope rule is uncovered. The draft also requires actual profile equivalence, not merely a flag that selects the same path.
+`docs/plain/05-conformance-plan.md` defined a 307-fixture planning budget at the time of this record (now 341 after the 2026-11-03 traceability repair; see [`../../research/phase-01-07-process-gap-audit.md`](../../research/phase-01-07-process-gap-audit.md)), rule-attributed fixtures, the command `plain test conformance/ --profile checked|optimized --report json`, an empty in-scope uncovered list, exact fault-code assertions, normalized diagnostic assertions, and checked/optimized parity. Gate 1 cannot pass when any in-scope rule is uncovered. The draft also requires actual profile equivalence, not merely a flag that selects the same path.
 
 ## Options considered
 

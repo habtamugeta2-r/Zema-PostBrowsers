@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — implementation profile drafted from primary standards; owner/reviewer ratification reserved |
+| **Owner ratification** | **pending — A-44** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Established** for Unicode standard clauses and retrieved file bytes; **Proposed** for Plain’s diagnostic policy |
 | **Source grade** | A — Unicode Consortium standards and Unicode 17.0.0 data; repository source manifest pins exact mirror bytes |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); Gate 1 reviewer/owner may ratify or revise |
@@ -149,12 +150,22 @@ expectation.
   The diagnostics allocation rises from 20 to 52, taking the planning
   total from 275 to 307 fixtures; this remains a target, not coverage.
   The registry also adds `PL1104`.
+
+> **Dated correction, 2026-11-03 (later the same day).** The figures above are
+> the state at the time Decision 0011 was prepared and are retained as written.
+> The diagnostic-identity pass later added [`plain/08-diagnostics-and-faults.md`](../plain/08-diagnostics-and-faults.md):
+> the registry now holds **73 codes** (64 error, 5 fault, 4 warning) including the
+> historical `PL0106`, so **72 active-code fixtures** are required, the
+> diagnostics allocation is **67** (fault codes are fixtured in the faults row,
+> not counted twice), and the planning total is **356**. The decision's *rule*
+> is unchanged; only the counts it quoted moved.
 - The hashed Unicode data manifest is reproducible by immutable commit
   and can be independently checked. Hashing data is not an implementation
   or conformance run.
 - No Unicode data, third-party code, interpreter, fixture, or gate result
-  is adopted or produced by this decision. C1/C5 still block build; C2
-  remains due before Gate 1.
+  is adopted or produced by this decision. *(Correction, same day: C1 and C5 were
+  resolved after this text was written — build is authorized. C2 and A-*
+  ratification still gate a Gate 1 attempt.)*
 
 ## Sources
 
@@ -169,3 +180,12 @@ expectation.
 | Date | Change |
 |---|---|
 | 2026-11-03 | Proposed exact UTS #55 chunk diagnostics, GSP warning, UTS #39 skeleton semantics, and the initial 15-file hash lock; decision 0012 later supersedes/refines the directional relation and adds the 16th input. |
+
+## Dated note (2026-11-03, after this record)
+
+The Consequences text above describes the state when this decision was written.
+C1 and C5 were resolved later the same day, so build is authorized; this
+decision still awaits ratification, and the diagnostic fixture floor recorded
+here (52 active codes) is now carried in
+[`../../docs/plain/07-traceability.md`](../../docs/plain/07-traceability.md) and
+[`05-conformance-plan.md`](../../docs/plain/05-conformance-plan.md).

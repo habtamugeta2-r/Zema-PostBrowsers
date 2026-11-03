@@ -38,8 +38,8 @@ These cannot be completed by the research agent.
 
 | ID | Required action | Recorded state | Owner response / evidence |
 |---|---|---|---|
-| C1 | Review and sign the frozen problem statement, target app class, and non-goals; record sign-off in `docs/gates/gate-00.md`. | **Resolved 2026-11-03:** Better-back signed via Arena owner response; recorded in `gate-00.md` §9. | Better-back — signed 2026-11-03 |
-| C5 | Rule whether PlainP is superseded, a donor, or an eventual home; record the decision in the project record. | **Resolved 2026-11-03:** PlainP is a donor only; no code adopted. Recorded in `gate-00.md` §9. | Donor only — Better-back, 2026-11-03 |
+| C1 | Review and sign the frozen problem statement, target app class, and non-goals; record sign-off in `docs/gates/gate-00.md`. | **Resolved 2026-11-03:** Better-back signed via Arena owner response; recorded in `gate-00.md` §10. | Better-back — signed 2026-11-03 |
+| C5 | Rule whether PlainP is superseded, a donor, or an eventual home; record the decision in the project record. | **Resolved 2026-11-03:** PlainP is a donor only; no code adopted. Recorded in `gate-00.md` §10. | Donor only — Better-back, 2026-11-03 |
 | C2 | Import the research book, or explicitly authorize retirement of its chapter cross-references under decision 0004. | **Owner selected import on 2026-11-03; source not supplied yet. Outstanding; due before any Gate 1 attempt.** | Better-back selected “Import”; exact source path/file and book content pending |
 
 C4 (licensing) remains due before public release or third-party code
@@ -68,7 +68,9 @@ This is a checklist of future evidence, not evidence already produced:
 - [ ] A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratified or replaced by signed decisions.
 - [ ] Core interpreter/compiler exists and is scoped to the accepted
   profile.
-- [ ] Every in-scope rule has at least one fixture; no uncovered rules.
+- [ ] Every in-scope rule has at least one fixture; no uncovered rules. The
+  work list is [`../plain/07-traceability.md`](../plain/07-traceability.md): all
+  106 rule IDs are allocated, none is implemented.
 - [ ] Checked and optimizing profiles agree on all fixtures.
 - [ ] Diagnostics fixtures cover every active registered code, including PL1101 and PL1104.
 - [ ] Unicode 17.0.0 source files match their recorded SHA-256 values before use.
@@ -82,3 +84,4 @@ This is a checklist of future evidence, not evidence already produced:
 | 2026-11-03 | Assembled the owner/reviewer action packet after proposed decisions 0009/0010; no sign-off or gate result recorded. |
 | 2026-11-03 | Recorded Better-back's Arena owner responses: C1 signed; C5 ruled PlainP donor-only. Phase 1 build may proceed against the proposed profile; C2 and A-* ratifications still block Gate 1. No gate result recorded. |
 | 2026-11-03 | Better-back selected import for C2 (source still needed) and selected Revise for the A-* proposals (specific IDs/wording still needed). Gate 1 remains blocked. |
+| 2026-11-03 | Rule-level traceability added ([`../plain/07-traceability.md`](../plain/07-traceability.md)); conformance budget 307 → 341 after 14 rules were found with no area. Owner actions are unchanged: C2, and ratification or revision of the seven A-* proposals. No gate result recorded. |

@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — independently checked against pinned primary sources; owner/reviewer ratification reserved |
+| **Owner ratification** | **pending — A-45/A-46/A-47** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Established** for cited Unicode clauses and repository/hash observations; **Proposed** for Plain policy |
 | **Source grade** | A — Unicode Consortium standards and Unicode 17.0.0 data |
 | **Resolves** | A-45, A-46, and A-47 as proposals; refines A-44, decision 0011, and L-08/L-10/L-11 |
@@ -141,7 +142,7 @@ These are **Hypotheses/proposed test targets**, not expected algorithm outputs. 
 - **Vendor `IndicSyllabicCategory.txt` or third-party implementation code** — rejected; the repository pins the identity only. No Unicode data or third-party code is adopted.
 - **Make PL1104 separately suppressible** — selected as a proposed behavior, consistent with UTS #55 rev5 §5.1.3; default remains enabled. Configuration syntax and UI remain outside this profile decision and are deferred to the tooling phase.
 
-A-45/A-46/A-47 are **Resolved (proposed)**; L-10/L-11 and the profile input lock are updated accordingly. LTR/RTL/FS example outcomes and every operation remain unimplemented and untested. The conformance planning total remains 307; the existing 14-identifier allocation includes these candidate cases and is a planning budget, not coverage evidence. C1/C5 still block build work and C2 remains due before Gate 1.
+A-45/A-46/A-47 are **Resolved (proposed)**; L-10/L-11 and the profile input lock are updated accordingly. LTR/RTL/FS example outcomes and every operation remain unimplemented and untested. The conformance planning total remains 307; the existing 14-identifier allocation includes these candidate cases and is a planning budget, not coverage evidence. C1/C5 still block build work and C2 remains due before Gate 1. *(Correction, same day: C1 and C5 were resolved after this text was written — build is authorized. C2 and A-* ratification still gate a Gate 1 attempt.)*
 
 ## Sources
 
@@ -154,7 +155,7 @@ A-45/A-46/A-47 are **Resolved (proposed)**; L-10/L-11 and the profile input lock
 
 ## Post-audit execution note (2026-11-03)
 
-The earlier statements in this record describe the state at the time Decision 0012 was prepared. Later on 2026-11-03, all 16 pinned Unicode files were fetched into an ignored cache and verified against manifest Git blob SHA-1, byte length, and SHA-256. A project-owned `internalSkeleton` implementation (NFD → remove Default_Ignorable_Code_Point → `confusables.txt` map → NFD) computed outputs for the five candidates in [`phase-01-internal-skeleton-examples.json`](../../research/data/phase-01-internal-skeleton-examples.json). These are **internalSkeleton only**, not `skeleton(X)` or LTR/RTL/FS `bidiSkeleton` outputs; no Plain confusability result, chunk/C4 diagnostic, or language fixture is asserted. The full NormalizationTest corpus passed via experiment EN-unicode17-normalization. C1/C5 were subsequently resolved; C2 and A-* ratifications remain outstanding before Gate 1.
+The earlier statements in this record describe the state at the time Decision 0012 was prepared. Later on 2026-11-03, all 16 pinned Unicode files were fetched into an ignored cache and verified against manifest Git blob SHA-1, byte length, and SHA-256. A project-owned `internalSkeleton` implementation (NFD → remove Default_Ignorable_Code_Point → `confusables.txt` map → NFD) computed outputs for the five candidates in [`phase-01-internal-skeleton-examples.json`](../../research/data/phase-01-internal-skeleton-examples.json). These are **internalSkeleton only**, not `skeleton(X)` or LTR/RTL/FS `bidiSkeleton` outputs; no Plain confusability result, chunk/C4 diagnostic, or language fixture is asserted. The full NormalizationTest corpus passed via experiment EN-unicode17-normalization. C1/C5 were subsequently resolved; C2 and A-* ratifications remain outstanding before Gate 1. Rule-level traceability for all 106 rule IDs is now recorded in [`../plain/07-traceability.md`](../plain/07-traceability.md).
 
 ## Change log
 

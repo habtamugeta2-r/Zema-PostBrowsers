@@ -9,7 +9,7 @@
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner (Better-back) |
 | **Status** | **Frozen at Gate 0**, subject to the recorded conditions in [`gates/gate-00.md`](./gates/gate-00.md). Changes require a new version and a recorded decision |
 | **Evidence label** | Mixed — the problem framing is **Proposed**; every supporting measurement is cited and labeled in the Phase 0 research records |
-| **Length** | About 580 words of prose plus reference tables. The Master Prompt's "one page" constraint is applied to the prose; the tables are lookups, not argument |
+| **Length** | About 520 words of prose, 828 words including the control block and reference tables (measured 2026-11-03 by `python3 tools/audit_phase01.py --verify`, which excludes this row so that editing it cannot move the number it quotes). The Master Prompt's "one page" constraint is applied to the prose; the tables are lookups, not argument |
 
 ---
 

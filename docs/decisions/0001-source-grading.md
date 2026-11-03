@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 0 / Gate 0 |
 | **Status** | **Accepted** (methodological; easily reversible) |
+| **Owner ratification** | **not applicable** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); project owner sign-off recorded as condition C1 at Gate 0 |
 

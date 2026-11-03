@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.4 (draft) — text unchanged since 0.2.3; the version follows the specification's document set, not this file's edit history |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `E-nn` |
@@ -22,11 +22,11 @@
 
 ## 2. Integers
 
-- **E-05** `Int` is 64-bit signed two's complement. Arithmetic is **checked in every build profile** — there is no debug/release divergence (decision [0006](../decisions/0006-type-and-evaluation-core.md)).
+- **E-05** `Int` is 64-bit signed two's complement. Arithmetic is **checked in every build profile** — there is no debug/release divergence (decision [0006](../decisions/0006-type-and-evaluation-core.md)). Overflow is the fault `PLFL01`; `Int.min / -1` is `PLFL02`.
   - overflow of `+`, `-`, `*`, unary `-`, and `Int.min / -1` raises a **fault** (E-30), not a wrapped value and not a compile error;
   - explicit, named alternatives live in the prelude: `Int.wrapping_add`, `Int.saturating_add`, `Int.checked_add -> Option<Int>`;
   - an implementation **MUST NOT** silently optimize a checked operation into a wrapping one. A conformance test asserts that `Int.max + 1` faults in optimized builds.
-- **E-06** Integer division truncates **toward zero**; the remainder `%` takes the sign of the **dividend** (`-7 / 2 == -3`, `-7 % 2 == -1`). Division or remainder by zero raises a **fault**.
+- **E-06** Integer division truncates **toward zero**; the remainder `%` takes the sign of the **dividend** (`-7 / 2 == -3`, `-7 % 2 == -1`). Division by zero is the fault `PLFL03`; remainder by zero is `PLFL04`.
 
 ## 3. Floating point
 
@@ -94,7 +94,7 @@
   Later platform contracts add host quota exceeded (Phase 3), capability revoked/misused (Phase 5), and unrecoverable host I/O failure (Phase 9). Those are not Gate 1 core conformance obligations unless explicitly included by A-42.
 - **E-31** A fault **terminates the current task**, not the platform. The observable effects are: the in-flight reactive transaction is discarded (Phase 2), the task's supervisor is notified with a diagnostic code and span, and other tasks continue (Phase 3, Gate 3).
 - **E-32** A fault **MUST NOT** leave partial **task-local core state**: the provisional interpreter discards in-memory mutations of the faulting task. This rule does **not** roll back external host effects. Durable writes, external I/O, compensation, and transactional visibility are Phase 9 obligations, not a claim that all effects are atomic.
-- **E-33** Core faults are deterministic under the same inputs and **deterministic fuel/step quotas**. Wall-clock timeouts are host scheduling policy (Phase 3), not core semantic inputs; a conformance result **MUST NOT** depend on GC timing or wall-clock scheduling.
+- **E-33** Core faults are deterministic under the same inputs and **deterministic fuel/step quotas**. Wall-clock timeouts are host scheduling policy (Phase 3), not core semantic inputs; a conformance result **MUST NOT** depend on GC timing or wall-clock scheduling. Exhausting the deterministic fuel/step quota is the fault `PLFL05`.
 - **E-34** `Int.max + 1` faulting rather than wrapping is a **Proposed** choice with a measurable cost; E1/E2 (Phase 2/4) must record whether checked arithmetic appears in any measured hot path, and Gate 12 must not accept a performance claim that quietly disabled the checks.
 
 ## 13. Determinism

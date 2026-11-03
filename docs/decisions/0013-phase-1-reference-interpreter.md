@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — owner/reviewer acceptance not recorded; build may use this as the current working proposal only |
+| **Owner ratification** | **pending** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | Established for environment facts; Proposed for the selected architecture |
 | **Deciders** | ZEMA research agent; owner Better-back has not ratified this decision |
 

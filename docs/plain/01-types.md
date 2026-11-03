@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.5 (draft) — v0.2.5 adds diagnostic codes to T-03, T-08, T-09, T-16, T-25; no rule's meaning changed |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `T-nn` |
@@ -13,10 +13,15 @@
 
 - **T-01** `let` introduces an immutable binding. It **MUST NOT** be reassigned (`PL0201`).
 - **T-02** `mut` introduces a mutable binding. Only a `mut` binding may appear on the left of `=` (`PL0202`). Mutability is a property of the *binding*, not of the value: there are no reference types in the core, so no mutable aliasing exists.
+- **T-03** `mut` bindings are **block-local**; use outside the declaring block is `PL0232`. Passing a `mut` binding to a function passes its current value. There is no borrowing, no shared mutability, and therefore no data race inside the language (concurrency safety is Phase 4's problem at task boundaries).
+
+> **Note on ID order.** Rule IDs are permanent and records cite them, so a rule
+> added later keeps its number and is placed next to the rules it belongs with.
+> `T-28`, `T-29`, and `T-30` are therefore out of numeric order: **T-28** sits
+> in §1 (bindings, alongside T-01–T-03), **T-29** in §2 (top-level constants),
+> **T-30** in §8 (entry point). No ID has been renumbered.
+
 - **T-28** **Shadowing:** a `let` or `mut` in the **same block** that redeclares an existing name in that block is an error (`PL0227`, fix: use `mut` or a new name). A **nested** block **MAY** shadow an outer name; this produces a warning (`PL1102`) and never changes which binding an earlier line referred to.
-- **T-03** `mut` bindings are **block-local**. Passing a `mut` binding to a function passes its current value. There is no borrowing, no shared mutability, and therefore no data race inside the language (concurrency safety is Phase 4's problem at task boundaries).
-- **T-29** A user top-level `let` **MUST** have an explicit type and a **constant initializer**: literals, constructors applied to constants, records/lists of constants, and `distinct` casts of constants. It **MUST NOT** call functions, read mutable state, perform host effects, or refer to a later top-level binding (`PL0230`). Prelude constants are host-provided, not user top-level effects. This removes top-level initialization order/cycles from the core (A-32).
-- **T-30** The core language has **no implicit program entry point**. A conformance fixture names the function to evaluate; an application host invokes an exported entry function under Phase 3/6 contracts. `main` is not a keyword and has no special core semantics (A-43).
 
 ## 2. The type universe
 
@@ -36,14 +41,15 @@
 
 - **T-04** `List` provides no indexing syntax. Bounds-safe access is `List.get(xs, i) -> Option<a>`; the out-of-bounds case is a value, not a fault.
 - **T-05** `Bool` is declared in the prelude as an ordinary union, so `if`/`when` need no special boolean type. `and`, `or`, and `not` remain **keywords with short-circuit semantics** because a strict function cannot express them (E-13).
+- **T-29** A user top-level `let` **MUST** have an explicit type and a **constant initializer**: literals, constructors applied to constants, records/lists of constants, and `distinct` casts of constants. It **MUST NOT** call functions, read mutable state, perform host effects, or refer to a later top-level binding (`PL0230`). Prelude constants are host-provided, not user top-level effects. This removes top-level initialization order/cycles from the core (A-32).
 
 ## 3. Records (structural) and unions (nominal)
 
 - **T-06** A record type is written `{ field: Type, … }` and is **structural**: two record types with identical field names and types are the same type, and there is no record declaration form. Records **MUST** have at least one field (`{}` is `PL0107`; use `()`).
 - **T-07** A record value is written `{ field: expr, … }`; every field of the type **MUST** be present exactly once (`PL0203`). Field order in a literal **MUST NOT** matter for typing; it does determine evaluation order (E-02).
-- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types — and **closed**: a value is one of the declared variants, permanently (T-10).
-- **T-09** A variant carries **at most one** value: either a single type (`Some(a)`) or a record when more than one field is needed (`Archived({ reason: Text })`). There is **no positional field list**, so there is no field-order/field-swap hazard, and matching reuses record patterns rather than inventing a second one (A-05).
-- **T-10** A union **MUST NOT** be extended after declaration. Modelling "one more case" requires a new union; this is what makes exhaustive matching (E-14) a real guarantee.
+- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types, and using one where the other is expected is `PL0203` (T-07) — and **closed**: a value is one of the declared variants, permanently (`PL0233`, T-10).
+- **T-09** A variant carries **at most one** value: either a single type (`Some(a)`) or a record when more than one field is needed (`Archived({ reason: Text })`). There is **no positional field list**, so there is no field-order/field-swap hazard, and matching reuses record patterns rather than inventing a second one (A-05). Violations are `PL0234`.
+- **T-10** A union **MUST NOT** be extended after declaration (`PL0233`). Modelling "one more case" requires a new union; this is what makes exhaustive matching (E-14) a real guarantee.
 
 ## 4. Absence, failure, and errors
 
@@ -55,7 +61,7 @@
 
 - **T-14** A type parameter **MUST** be declared in the declaration that uses it: `fn map<a, b>(xs: List<a>, f: fn(a) -> b) -> List<b>`. Unbound type variables are `PL0206`.
 - **T-15** Generic code **MUST** declare the interfaces it relies on as bounds: `fn display_all<a: Display>(xs: List<a>) -> List<Text>`. Use of an interface operation on an unbounded parameter is `PL0207` with the missing bound as a fix. For a single-parameter interface, `a: Display` is shorthand for `a: Display<a>`; explicit type arguments are required otherwise. Prelude interfaces in the Gate 1 core: `Eq`, `Ord`, `Display`. `Ord` requires `Eq` (decision 0009). `Hash` is deferred until Phase 9 needs it (D-19).
-- **T-16** An interface declares signatures only: `interface Display<a>:` with `fn display(value: a) -> Text`. Interfaces carry no default bodies in v0.1.
+- **T-16** An interface declares signatures only: `interface Display<a>:` with `fn display(value: a) -> Text`. Interfaces carry no default bodies in v0.1. Violations are `PL0236`.
 - **T-17** An implementation is `impl Display<Task> for Task:` (or `impl<a> Display<a> for List<a>:` where the interface/type heads require parameters) followed by the required functions. Implementations **MUST** be complete (`PL0208`) and **MUST NOT** add functions beyond the interface (`PL0209`).
 - **T-18** **Coherence rules (normative):**
   1. **Orphan rule** — an `impl` **MUST** live in the module that declares the type or the interface (`PL0210`).
@@ -63,7 +69,7 @@
   3. **No overlap** — blanket implementations are not expressible in v0.1 (D-14), so overlap cannot arise; if it ever does, it is an error, not a warning.
   4. **No specialization** — a more specific implementation never overrides a general one (`PL0212`).
 - **T-19** `alias Name = Type` is **transparent**: `Name` and `Type` are interchangeable everywhere (`PL0213` explains this in diagnostics when it surprises someone).
-- **T-20** `distinct Name = Type` is **nominal** and zero-cost: no implicit conversion in either direction; `expr as Name` and `name as Type` (S-4) are the only conversions (`PL0114`). Use it for identifiers that must not be confused (`User_id` vs `Order_id`), which is the target app class's most common silent bug.
+- **T-20** `distinct Name = Type` is **nominal** and zero-cost: no implicit conversion in either direction; `expr as Name` and `name as Type` (S-4) are the only conversions (`PL0114`, S-4 and T-20 define the only legal `as`). Use it for identifiers that must not be confused (`User_id` vs `Order_id`), which is the target app class's most common silent bug.
 
 ## 6. Inference and its limits
 
@@ -77,14 +83,18 @@
 - **T-22** The following are **not** in the language and **MUST** be rejected by name rather than by accident: higher-rank polymorphism, higher-kinded types, implicit parameters, ad-hoc overloading (one name, many types), polymorphic recursion, defaulting beyond T-23, and implicit numeric widening (`PL0216`).
 - **T-23** Numeric literals: an integer literal has type `Int` unless the expected type is `Float`, in which case it is a **compile error**, not a conversion (`PL0217`); write `1.0`. There is no other defaulting.
 - **T-24** An empty list literal with no expected type **MUST** be an error asking for an annotation (`PL0218`). Guessing the element type is how "it compiles but the data is wrong" starts.
-- **T-25** There is **no subtyping** in v0.1 — not for records, not for unions, not for interfaces. Variance questions do not exist because there is no subtyping relation to be variant about.
+- **T-25** There is **no subtyping** in v0.1 — not for records, not for unions, not for interfaces. Variance questions do not exist because there is no subtyping relation to be variant about. Violations are `PL0235`.
 
 ## 7. Equality and ordering types
 
 - **T-26** Structural equality is derived automatically for any type whose components are all equality-capable. The sealed prelude contract is `interface Eq<a>:` with `fn equal(left: a, right: a) -> Bool`; `==`/`!=` use this operation (E-14). User `impl Eq` is rejected (`PL0231`). `Float` and function types are **not** equality-capable (E-08), so a type containing them is not `Eq` (`PL0219`). The sealed ordering contract is `interface Ord<a: Eq>:` with `fn compare(left: a, right: a) -> Ordering`; `Ord` requires `Eq` and implementations must satisfy reflexivity, totality (exactly one of `Less`, `Equal`, `Greater` for every pair), antisymmetry, transitivity, and equality consistency (`compare(a,b) == Equal` iff `a == b`). The compiler checks the `Eq` prerequisite, not user order laws. `Float` and functions are not `Ord`; `Float.compare` is an explicit operation, not an `Ord` implementation. `Map`/`Set` are deferred (D-19); when admitted, ordered keys/elements require `Ord`.
 - **T-27** A recursive type definition **MUST** be productive: every cycle in the type graph passes through a declared union variant or a prelude container (`List`, `Option`, `Result`). A cycle solely through record fields is rejected (`PL0220`). Recursive unions are fine when written with the one-payload rule: `type Tree = Leaf | Node({ left: Tree, right: Tree })`. Structural equality then terminates on finite values. Rationale and trade-off: A-14.
 
-## 8. Open items owned by this document
+## 8. Entry point
+
+- **T-30** The core language has **no implicit program entry point**. A conformance fixture names the function to evaluate; an application host invokes an exported entry function under Phase 3/6 contracts. `main` is not a keyword and has no special core semantics (A-43).
+
+## 9. Open items owned by this document
 
 | ID | Question | Status |
 |---|---|---|

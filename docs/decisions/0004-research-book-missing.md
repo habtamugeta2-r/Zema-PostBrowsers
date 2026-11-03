@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 0 / Gate 0 |
 | **Status** | **Accepted** (interim; superseded the moment the book is imported) |
+| **Owner ratification** | **not required now** — interim; superseded the moment the book is imported or retired |
 | **Evidence label** | **Proposed** |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); project owner must supply the book or approve retirement at Gate 1 (condition C2) |
 | **Input** | [`../../research/phase-00-05-book-import-audit.md`](../../research/phase-00-05-book-import-audit.md) |
