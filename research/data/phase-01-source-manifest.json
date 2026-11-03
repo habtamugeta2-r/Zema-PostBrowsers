@@ -736,6 +736,23 @@
       "license_note": "Unicode data inspected for research only; no data file or third-party code adopted."
     },
     {
+      "id": "unicode17-indicsyllabiccategory",
+      "repo": "unicode-org/unicodetools",
+      "commit": "3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c",
+      "path": "unicodetools/data/ucd/17.0.0/IndicSyllabicCategory.txt",
+      "url": "https://github.com/unicode-org/unicodetools/blob/3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c/unicodetools/data/ucd/17.0.0/IndicSyllabicCategory.txt",
+      "official_url": "https://www.unicode.org/Public/17.0.0/ucd/IndicSyllabicCategory.txt",
+      "git_blob_sha": "43287cca65e978e4ca04a49faa7032dde3ddf250",
+      "sha256": "3fc122f4cf58b0c19268d5f810263b04ab4e1e67743386ec0e0ada9c76aec5be",
+      "bytes": 86695,
+      "retrieved": "2026-11-03",
+      "kind": "github-file",
+      "version": "Unicode 17.0.0",
+      "sections_used": "UTS #39 rev32 §3.1.1.1(B): the character after ZWJ must not have Indic_Syllabic_Category=Vowel_Dependent.",
+      "note": "Bytes and SHA-256 computed from the GitHub blob at the immutable commit; file header declares Unicode 17.0.0. Added after the independent audit found it missing from the original 15-file lock. No data file was vendored.",
+      "license_note": "Unicode data inspected for research only; no data file or third-party code adopted."
+    },
+    {
       "id": "uax9-51",
       "kind": "web-document",
       "url": "https://www.unicode.org/reports/tr9/tr9-51.html",

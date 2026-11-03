@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.4 (draft) |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `L-nn` (lexical/layout), `S-nn` (sanctioned sugar) |
@@ -28,12 +28,12 @@
 - **L-09** Reserved words **MUST NOT** be identifiers. The set is closed for v0.1:
   `alias and as defer distinct else fn for if impl import in interface let mut not or return then type when with`
   (`return` is reserved even though `return` is not used in expressions — early exit is written with `?` for `Result` and by block structure otherwise; see A-15.)
-- **L-10** **Confusable declarations are an error.** Two distinct, simultaneously visible names whose [UTS #39 revision 32](https://www.unicode.org/reports/tr39/tr39-32.html) `skeleton(X)` values match are an error (`PL0105`). `skeleton(X)` is the versioned UTS #39 operation—defined as `bidiSkeleton(LTR, X)`—not an ad hoc per-character substitution; it can change length. Compare names that resolve to distinct declarations in the same scope or that are both visible at a use site; repeated references resolving to the same declaration are not collisions. Reserved/prelude names participate where they are visible. The skeleton is internal comparison data only, not normalized source text or display text (UTS #39 rev32 §4; UTS #55 rev5 §5.1.1; decision 0011). This is a mitigation, not an anti-spoofing guarantee.
-- **L-11** Unicode security diagnostics follow [UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html) (decision 0011):
-  - Identifier chunks use the exact CamelBoundary, HATBoundary, and snake-boundary rules in UTS #55 §5.1.2.1, including the `Mn`/`Me` handling and Greek `Lt` exception; no other boundaries are introduced.
-  - A chunk **MUST** receive a `PL1101` warning exactly when it meets the UTS #55 §5.1.2.2 confusing-chunk test: restriction level above Highly Restrictive, and a qualifying confusable `Y` with a nonempty/non-`ALL` resolved script set contained in the union of `Script_Extensions` for the chunk, where `Y` is in the UTS #39 rev32 General Security Profile. A chunk that is above that restriction level but has no such `Y` is visibly mixed-script and **MUST NOT** receive `PL1101`.
-  - An identifier outside the UTS #39 rev32 General Security Profile **MUST** receive a separate `PL1104` warning. U+200C and U+200D are treated as profile-allowed only in the contextual joining cases from UTS #39 §3.1.1. This warning does not reject the identifier and is independent of `PL1101`.
-  - These checks **MUST NOT** be replaced by a blanket “Latin plus Cyrillic/Greek” heuristic. The check is bounded mitigation, not a guarantee against spoofing.
+- **L-10** **Confusable declarations are an error.** Two distinct, simultaneously visible names are directionally confusable if `bidiSkeleton(d, X) == bidiSkeleton(d, Y)` for any `d ∈ {LTR, RTL, FS}` under UTS #39 rev32 (decision 0012); a matching direction produces the proposed `PL0105` error. The standard’s compatibility `skeleton(X)` is only `bidiSkeleton(LTR, X)`, so Plain’s proposed relation is broader than that default. Compare names that resolve to distinct declarations in the same scope or that are both visible at a use site; repeated references resolving to the same declaration are not collisions. Reserved/prelude names participate where visible. Directional skeletons are internal comparison data only, not normalized source text or display text (UTS #39 rev32 §4; UTS #55 rev5 §5.1.1; decisions 0011/0012). This is a proposed mitigation, not an anti-spoofing guarantee; owner ratification and conformance are pending.
+- **L-11** Unicode security diagnostics follow UTS #55 rev5 §§5.1.2–5.1.3, with the proposed all-direction identifier relation from decision 0012:
+  - Identifier chunks use the exact CamelBoundary, HATBoundary, and snake-boundary rules in UTS #55 §5.1.2.1, including `Mn`/`Me` mark handling and the Greek `Lt` exception; no other boundaries are introduced.
+  - A chunk **MUST** receive a proposed `PL1101` warning when it meets UTS #55 §5.1.2.2 C4: restriction level above Highly Restrictive, plus a qualifying `Y` whose resolved script set is neither empty nor `ALL`, is a subset of the union of the chunk’s `Script_Extensions`, and is in the UTS #39 rev32 General Security Profile. For Plain identifiers, `Y` is directionally confusable with the chunk if any LTR/RTL/FS `bidiSkeleton` values match (decision 0012). This is an explicit proposed extension of the C4 confusable relation, informed by UTS #39 §4; it is not presented as wording in UTS #55. A chunk above the restriction level with no qualifying `Y` under the adopted relation is visibly mixed-script and **MUST NOT** receive `PL1101`.
+  - An identifier outside the UTS #39 rev32 General Security Profile **MUST** receive a separate proposed `PL1104` warning. U+200C/U+200D are profile exceptions only when the complete UTS #39 §3.1.1.1 A1/A2/B context succeeds, including its single-script restriction (ignoring Common/Inherited) and NFC condition. L-04 already requires NFC identifiers. The warning does not reject an otherwise syntactically valid identifier and is a separate diagnostic from `PL1101`. Per UTS #55 §5.1.3, Plain proposes that `PL1104` also be independently suppressible from `PL0105`/`PL1101`; the exact tool configuration mechanism is deferred (decision 0012, A-47).
+  - These checks **MUST NOT** be replaced by a blanket “Latin plus Cyrillic/Greek” heuristic. This is bounded mitigation, not a guarantee against spoofing; all-direction outcomes remain unimplemented and untested.
 - **L-12** Name roles are determined by declaration context and name resolution, **not** by case alone. The grammar’s `TYPE_NAME`, `VALUE_NAME`, and `VARIANT_NAME` are resolved categories, not case-sensitive token classes.
   - recommended style: types/interfaces/constructors/variants/modules `UpperCamel`; values/parameters/fields/functions `lower_snake`; type parameters `lower_snake`.
   - For bicameral scripts, a style violation is a warning (`PL1103`) with a suggested fix, not a parse error. For unicameral scripts, case-based style checks are not applied. This keeps Ethiopic, Arabic, Hebrew, CJK, and other scripts usable ([UTS #55 revision 5](https://www.unicode.org/reports/tr55/tr55-5.html#Computer-Language-Specifications) §3.1.2).
@@ -67,7 +67,7 @@ Plain is indentation-delimited. There are no semicolons and no braces for blocks
 - **L-26** A block's value is the value of its **tail expression**; if the block ends in a statement, its value is `()`.
 - **L-27** A non-final expression statement **MUST** have type `()`. Discarding a non-`()` value silently is an error (`PL0110`) — the value must be bound to a name or consumed by a function.
 
-## 6. Grammar (v0.2.3, compact EBNF)
+## 6. Grammar (v0.2.4, compact EBNF)
 
 ```ebnf
 program        = { declaration } EOF ;

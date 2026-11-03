@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 |
+| **Version** | 0.2.4 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | **Plan only.** No test file exists yet; this document exists so the build task has a specification to satisfy |
 | **Rules covered** | L-01…L-34, S-0…S-5, T-01…T-30, E-01…E-36 |
@@ -26,7 +26,7 @@
 | Area | Rules | Fixture count (target) | Notes |
 |---|---|---|---|
 | Lexical: encoding, NFC, tabs, tables of literals | L-01…L-04, L-13…L-18 | 18 | Includes hostile inputs: BOM, invalid UTF-8, tab indentation, non-NFC `é` |
-| Identifiers: syntax, reserved words, confusables, naming | L-08…L-12 | 14 | Includes a pinned UTS #39 skeleton collision; UTS #55 C4 cases `Строкa`/`Δt`/`HTTPसर्वер`; valid Persian ZWNJ; `PL1104` profile warning |
+| Identifiers: syntax, reserved words, confusables, naming | L-08…L-12 | 14 | Includes LTR/RTL/FS UTS #39 collision candidates, including `aא1` / `a1א`; UTS #55 C4 cases `Строкa`/`Δt`/`HTTPसर्वер`; valid Persian ZWNJ; `PL1104` profile warning |
 | Layout: blocks, dedent, continuation, empty block, discard | L-19…L-27 | 20 | Includes "dedent that closes two blocks" and each of L-22's two continuation causes |
 | Grammar: every production | §6 | 25 | Records need ≥1 field; `{}`; `x.f(y)`; chained comparison; missing `else` |
 | Sugar and forbidden sugar | S-0…S-5 | 12 | Each sanctioned sugar has a desugaring-print assertion; each forbidden form has a diagnostic |

@@ -1,9 +1,9 @@
-# Plain — Language Specification (Draft v0.2.3)
+# Plain — Language Specification (Draft v0.2.4)
 
 | Field | Detail |
 |---|---|
 | **Document** | Plain language specification, index and status |
-| **Version** | 0.2.3 (draft — **not frozen**) |
+| **Version** | 0.2.4 (draft — **not frozen**) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 (Gate 1 **not attempted**: no executable core, no conformance run) |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -54,7 +54,7 @@ Rule IDs are permanent. A rule may be revised, never renumbered.
 | 0 | [`00-lexical-and-layout.md`](./00-lexical-and-layout.md) | Source encoding, identifiers (UAX #31, UTS #39), literals, comments, layout rules, compact EBNF grammar, sanctioned sugar, diagnostics requirements |
 | 1 | [`01-types.md`](./01-types.md) | `let`/`mut`, records, tagged unions, `Option`/`Result`, generics and bounds, interfaces and coherence, `alias` vs `distinct`, inference limits |
 | 2 | [`02-evaluation.md`](./02-evaluation.md) | Evaluation order, integer/float/text semantics, equality and ordering, closures and capture, `?` propagation, `defer`, faults, exhaustive matching |
-| 3 | [`03-ambiguities.md`](./03-ambiguities.md) | 44 derived ambiguities: 39 resolved (proposed), 5 deferred, 0 open |
+| 3 | [`03-ambiguities.md`](./03-ambiguities.md) | 47 derived ambiguities: 42 resolved (proposed), 5 deferred, 0 open |
 | 4 | [`04-deferred-features.md`](./04-deferred-features.md) | 20 deferrals: nine named by the Master Prompt plus eleven added here, each with a reason, cost, and revisit trigger |
 | 5 | [`05-conformance-plan.md`](./05-conformance-plan.md) | The Gate 1 test plan: core vs platform scope, 307 currently allocated fixture targets, runner requirements — **plan only, zero fixtures written** |
 | 6 | [`06-operational-semantics.md`](./06-operational-semantics.md) | **Non-normative** small-step core reduction draft, conjectures, and trace obligations |
@@ -74,7 +74,8 @@ Decisions:
 [0008](../decisions/0008-phase-01-research-and-draft-v02.md) (research continuation and v0.2 corrections),
 [0009](../decisions/0009-unicode-pin-and-eq-ord-laws.md) (Unicode and Eq/Ord proposals),
 [0010](../decisions/0010-gate-1-core-scope.md) (Gate 1 scope proposal), and
-[0011](../decisions/0011-unicode-diagnostic-profile.md) (Unicode diagnostic/data profile).
+[0011](../decisions/0011-unicode-diagnostic-profile.md) (initial Unicode diagnostic/data profile), and
+[0012](../decisions/0012-directional-confusability-and-ucd-completeness.md) (direction-aware confusability and completed Unicode data lock).
 
 ## 4. The language's own non-goals
 
@@ -118,4 +119,5 @@ These are *language* non-goals, distinct from the project's
 | 2026-11-02 | 0.1 | Initial draft: four normative documents (98 numbered rules + 5 sanctioned sugars), 26 derived ambiguities (21 resolved, 5 deferred), 18 deferred features, a conformance plan, and **no executable implementation**. |
 | 2026-11-03 | 0.2 | Research audit applied: 100 numbered rules (T-29/T-30 added), 43 ambiguities (35 resolved, 5 deferred, 3 open at that snapshot), 20 deferrals, corrected grammar/Unicode/defer/fault rules, non-normative semantics draft. Still **no executable implementation and no gate attempt**. |
 | 2026-11-03 | 0.2.2 | Proposed decisions 0009/0010 resolve the three remaining ambiguity questions as proposals; 38 resolved, 5 deferred, 0 open. Owner/reviewer ratification pending. No implementation, fixtures, or gate attempt. |
-| 2026-11-03 | 0.2.3 | Decision 0011 specifies UTS #55 chunk diagnostics and pins 15 Unicode 17.0.0 data/test inputs by hash; the active diagnostic fixture floor raises the planning sum to 307. 44 ambiguities: 39 resolved proposals, 5 deferred, 0 open. No data vendored, no implementation, no fixtures, no gate attempt. |
+| 2026-11-03 | 0.2.3 | Decision 0011 specifies UTS #55 chunk diagnostics and pins the initial 15 Unicode 17.0.0 data/test inputs; the active diagnostic fixture floor raises the planning sum to 307. No data vendored, no implementation, no fixtures, no gate attempt. |
+| 2026-11-03 | 0.2.4 | Decision 0012 distinguishes UTS #55 source-order advice from UTS #39 all-direction guidance, proposes LTR/RTL/FS confusability, and adds `IndicSyllabicCategory.txt`; 47 ambiguities (42 proposed-resolved, 5 deferred, 0 open); A-47 proposes independent suppression of PL1104, 16 inputs verified. No implementation, fixtures, or gate attempt. |

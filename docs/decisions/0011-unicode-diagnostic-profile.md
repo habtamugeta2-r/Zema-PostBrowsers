@@ -92,17 +92,22 @@ Plain’s proposed behavior (**Proposed, grade A**), not a test result.
 
 These are named as future fixture candidates only. No fixture files have
 been written, and the outcomes have not been run against an implementation.
-The first five classifications are directly listed in UTS #55; the last
-two are scope examples whose precise diagnostics are still governed by
-the normative algorithm above.
+The listed C4 classifications are UTS #55 baseline examples, while the
+last two are scope examples. Decision 0012 proposes a broader all-direction
+relation for Plain; the published baseline remains established evidence,
+but each proposed Plain outcome must be recomputed before becoming a fixture
+expectation.
 
 ## Decision 3 — Exact confusable operation and data lock
 
-- `PL0105` compares the UTS #39 revision 32 `skeleton(X)` operation
-  (which the standard defines via `bidiSkeleton(LTR, X)`), not an ad hoc
-  per-code-point substitution. Skeleton output is internal comparison
-  data only and must never be displayed or silently stored as normalized
-  source text.
+- **Historical proposal, superseded in part by decision 0012:** this
+  decision initially specified that `PL0105` compare the UTS #39 revision
+  32 `skeleton(X)` operation (defined via `bidiSkeleton(LTR, X)`). The
+  independent audit found LTR-only comparison too narrow for code
+  identifiers. Decision [0012](0012-directional-confusability-and-ucd-completeness.md)
+  proposes LTR/RTL/FS comparisons for `PL0105` and the C4-based `PL1101`
+  relation. Skeleton output remains internal comparison data only and
+  must never be displayed or silently stored as normalized source text.
 - The Unicode data release is **17.0.0**. The algorithmic baseline is
   UAX #15 revision 57, UAX #9 revision 51, UAX #31 revision 43, UTS #39
   revision 32, and UTS #55 revision 5. (UAX #9 revision 52 is Unicode
@@ -113,13 +118,15 @@ the normative algorithm above.
   `NormalizationTest.txt` and UAX #9 bidi conformance data as future
   test inputs, not completed test runs.
 - The data files remain external inputs; none are copied into the
-  repository. On 2026-11-03, all 15 recorded byte lengths and SHA-256
-  values were rechecked against their immutable GitHub blobs and matched.
-  Before implementation, the developer must still verify each fetched
-  byte stream against the manifest hashes and preserve the Unicode
-  license/attribution. A Unicode update still requires the
-  decision, data diff, fixture regeneration, and dual-profile rerun
-  required by decision 0009.
+  repository. The original 15 byte lengths and SHA-256 values were
+  independently rechecked against immutable GitHub blobs. A later audit
+  found the missing `IndicSyllabicCategory.txt` input for UTS #39 rev32
+  §3.1.1.1(B); decision 0012 adds it, and all 16 byte lengths, Git blob
+  IDs, and SHA-256 values were rechecked against pinned GitHub objects.
+  Before implementation, the developer must still verify the exact bytes
+  fetched for use and preserve Unicode license/attribution. A Unicode
+  update still requires the decision, data diff, fixture regeneration,
+  and dual-profile rerun required by decision 0009.
 
 ## Options considered
 
@@ -155,10 +162,10 @@ the normative algorithm above.
 - [UTS #39 revision 32, §§3.1, 3.1.1, 4, 5, 7](https://www.unicode.org/reports/tr39/tr39-32.html) — security profile, joining contexts, skeletons, script resolution, and data files (A).
 - [UAX #31 revision 43, §§1.4, 2, 5](https://www.unicode.org/reports/tr31/tr31-43.html) — version and profile conformance, XID properties (A).
 - [UAX #15 revision 57](https://www.unicode.org/reports/tr15/tr15-57.html) and [UAX #9 revision 51](https://www.unicode.org/reports/tr9/tr9-51.html) — Unicode 17.0.0 normalization and bidi algorithms (A).
-- [`phase-01-source-manifest.json`](../../research/data/phase-01-source-manifest.json) — immutable GitHub paths, blob IDs, bytes, and SHA-256 values for 15 Unicode 17.0.0 data/test files.
+- [`phase-01-source-manifest.json`](../../research/data/phase-01-source-manifest.json) — the initial 15-file lock from this decision, now completed to 16 Unicode 17.0.0 data/test files by decision 0012.
 
 ## Change log
 
 | Date | Change |
 |---|---|
-| 2026-11-03 | Proposed exact UTS #55 chunk diagnostics, GSP warning, UTS #39 skeleton semantics, and hash-locked data inputs. |
+| 2026-11-03 | Proposed exact UTS #55 chunk diagnostics, GSP warning, UTS #39 skeleton semantics, and the initial 15-file hash lock; decision 0012 later supersedes/refines the directional relation and adds the 16th input. |

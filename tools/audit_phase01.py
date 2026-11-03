@@ -175,7 +175,13 @@ def source_manifest_check() -> dict:
         digest = source.get("sha256")
         if digest is not None and not re.fullmatch(r"[0-9a-f]{64}", str(digest)):
             invalid.append(f"source[{i}] has invalid sha256")
-    return {"ok": not duplicates and not invalid, "count": len(sources), "duplicate_ids": duplicates, "invalid_entries": invalid}
+    unicode17_files = [
+        s for s in sources
+        if s.get("repo") == "unicode-org/unicodetools"
+        and s.get("version") == "Unicode 17.0.0"
+        and s.get("git_blob_sha")
+    ]
+    return {"ok": not duplicates and not invalid, "count": len(sources), "unicode17_data_files": len(unicode17_files), "duplicate_ids": duplicates, "invalid_entries": invalid}
 
 
 def diagnostic_registry() -> list[dict]:
@@ -275,13 +281,13 @@ def main() -> int:
     problems = []
     if report["normative_rule_count_L_T_E"] != 100:
         problems.append(f"expected 100 L/T/E rules, found {report['normative_rule_count_L_T_E']}")
-    if len(amb) != 44 or amb_status.get("resolved") != 39 or amb_status.get("deferred") != 5 or amb_status.get("open", 0) != 0:
-        problems.append(f"expected 44 ambiguities (39 resolved, 5 deferred, 0 open), found {len(amb)} / {amb_status}")
+    if len(amb) != 47 or amb_status.get("resolved") != 42 or amb_status.get("deferred") != 5 or amb_status.get("open", 0) != 0:
+        problems.append(f"expected 47 ambiguities (42 resolved, 5 deferred, 0 open), found {len(amb)} / {amb_status}")
     if len(deferral_ids) != 20:
         problems.append(f"expected 20 deferrals, found {len(deferral_ids)}")
     if report["conformance_fixture_targets"]["sum"] != 307:
         problems.append("fixture target sum is not 307")
-    if len(ev) != 96 or labels.get("E") != 46 or labels.get("P") != 21 or labels.get("H") != 29:
+    if len(ev) != 100 or labels.get("E") != 49 or labels.get("P") != 22 or labels.get("H") != 29:
         problems.append(f"evidence counts drift: {len(ev)} rows, labels={dict(labels)}")
     if report["broken_relative_links"]:
         problems.append(f"broken links: {report['broken_relative_links']}")
@@ -289,8 +295,8 @@ def main() -> int:
         problems.append(f"undefined specification references: {xref['undefined']}")
     if not grammar["ok"]:
         problems.append(f"grammar closure failure: {grammar}")
-    if not manifest["ok"] or manifest["count"] != 57:
-        problems.append(f"source manifest check failed or entry count drifted: {manifest}")
+    if not manifest["ok"] or manifest["count"] != 58 or manifest["unicode17_data_files"] != 16:
+        problems.append(f"source manifest check failed or entry counts drifted: {manifest}")
     if any(not entry["rules"] and not entry["historical"] for entry in registry):
         problems.append("diagnostic code without an owning rule")
     report["check"] = {"ok": not problems, "problems": problems}

@@ -127,7 +127,7 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 065 | "Kotlin's `when` has statement and expression forms, so whether a missing case is an error depends on form and version." | H | Kotlin docs for the expression form [A]; statement-form gap reported by a C-grade source [C] | 1 | 2026-11-02 | **Superseded 2026-11-03 by #078** — Kotlin 1.7 closes the enum/sealed/Boolean statement gap |
 | 066 | "Plain's core can be specified completely in four documents, yielding 26 derived ambiguities and 18 recorded deferrals." | E | This repository: [`./plain/`](./plain/) | 1 | 2026-11-02 | **Superseded 2026-11-03 by #082** — “completely” was false; v0.2 has 43 ambiguities, 20 deferrals, and open items |
 | 067 | "Requiring NFC for identifiers prevents visually identical, byte-different names from aliasing." | P | Unicode normalization + UAX #31/UTS #39/UTS #55 (rule L-04) | 1 | 2026-11-02 | Open — identifiers only; text literals are not normalized (A-28); NFC does not stop all confusables |
-| 068 | "Same-scope UTS #39 skeleton collision detection catches homoglyph identifier spoofing in code review." | P | UTS #39/UTS #55 (rule L-10); skeleton is a versioned sequence-aware mitigation | 1 | 2026-11-02 | Open — **bounded**; visible-name scope and version pin still matter (A-27/A-41) |
+| 068 | "Same-scope UTS #39 skeleton collision detection catches homoglyph identifier spoofing in code review." | P | UTS #39/UTS #55 (rule L-10); canonical skeleton is a versioned sequence-aware mitigation | 1 | 2026-11-02 | Superseded by #099 — LTR-only comparison is too narrow for the proposed code-identifier policy; retained as historical claim |
 | 069 | "Checking integer arithmetic in every build profile eliminates build-mode-dependent program behavior." | P | Decision 0006, rules E-05/E-36 | 1 | 2026-11-02 | Open — conformance fixture required (both profiles) |
 | 070 | "Checked arithmetic costs measurable performance in hot loops." | H | E1/E2 (Phase 2, Phase 4) | 1 | 2026-11-02 | Open — must be measured, and must not be traded for a silent semantic switch |
 | 071 | "Capturing immutable bindings by value and rejecting `mut` capture prevents late-binding closure bugs by construction." | P | Rule E-17 | 1 | 2026-11-02 | Open |
@@ -162,22 +162,26 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 
 | 091 | "UTS #55 revision 5 defines identifier chunks through explicit Camel, HAT, and punctuation boundaries, and requires diagnosis of chunks meeting its mixed-script confusability test (C4)." | E | Unicode UTS #55 rev5 §§5.1.2.1–5.1.2.2 and C4, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed as standard requirements; severity and Plain adoption remain separate design choices |
 | 092 | "UTS #55 revision 5 recommends warning mechanisms for identifiers outside UTS #39's General Security Profile and recommends contextual treatment of ZWNJ/ZWJ." | E | Unicode UTS #55 rev5 §5.1.3 and UTS #39 rev32 §3.1.1, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed as recommendation, not a claim that Plain already implements it |
-| 093 | "Plain proposes exact UTS #55 C4 chunk warnings (`PL1101`) plus an independent out-of-profile warning (`PL1104`); neither converts the source-profile check into rejection." | P | Decision 0011; proposed L-10/L-11; UTS #55 rev5 §§5.1.1–5.1.3 | 1 | 2026-11-03 | Owner/reviewer ratification and implementation/conformance remain pending |
-| 094 | "Fifteen Unicode 17.0.0 UCD/security data and conformance files are pinned by immutable repository commit, Git blob IDs, byte lengths, and SHA-256 in the Phase 1 source manifest." | E | `research/data/phase-01-source-manifest.json`; Unicode Consortium's `unicode-org/unicodetools` repository, commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c`; source grade A for the Unicode data, repository hash computation observation | 1 | 2026-11-03 | Confirmed; all 15 byte lengths and SHA-256 values rechecked against immutable GitHub blobs. No file bytes vendored and no conformance suite run |
+| 093 | "Plain proposes UTS #55 C4-based chunk warnings (`PL1101`), interpreted with UTS #39 all-direction identifier confusability, plus an independent out-of-profile warning (`PL1104`)." | P | Decisions 0011/0012; proposed L-10/L-11; UTS #55 rev5 §§5.1.1–5.1.3 and UTS #39 rev32 §4 | 1 | 2026-11-03 | Proposed policy extension; owner/reviewer ratification and implementation/conformance remain pending |
+| 094 | "Sixteen Unicode 17.0.0 UCD/security data and conformance files are pinned by immutable repository commit, Git blob IDs, byte lengths, and SHA-256 in the Phase 1 source manifest." | E | `research/data/phase-01-source-manifest.json`; Unicode Consortium's `unicode-org/unicodetools` repository, commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c`; source grade A for Unicode data, reproducible repository hash observation | 1 | 2026-11-03 | Confirmed; all 16 blob objects independently re-fetched and matched bytes, SHA-256, and Git blob ID. No file bytes vendored and no conformance suite run |
 
-| 095 | "UAX #9 revision 51 is the Unicode 17.0.0 annex; revision 52 is the Unicode 18.0.0 annex." | E | Unicode UAX #9 revision pages, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed; revision 51 is the profile pin in decision 0011 |
+| 095 | "UAX #15 revision 57 and UAX #9 revision 51 correspond to Unicode 17.0.0; UAX #9 revision 52 corresponds to Unicode 18.0.0 and is excluded." | E | Unicode UAX #15 rev57 and UAX #9 rev51/rev52 version headers, retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed; selected annexes align with the Unicode 17.0.0 data lock; rev52 excluded |
 | 096 | "Plain’s bidi skeleton baseline should use UAX #9 revision 51 so the algorithm revision aligns with the pinned Unicode 17.0.0 UCD/security data." | P | Decision 0011; UTS #39 rev32 skeleton definition; UAX #9 rev51; source manifest | 1 | 2026-11-03 | Proposed, not implemented or conformance-tested |
+| 097 | "UTS #39 rev32 §4 says to use LTR, RTL, and FS confusability for programming-language identifiers when single-script or single-directionality restrictions are inappropriate." | E | Unicode UTS #39 rev32 §4, definition of `bidiSkeleton(d, X)` and programming-language identifier guidance; retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed as standards guidance, not proof of Plain implementation |
+| 098 | "UTS #39 rev32 §3.1.1.1(B) permits ZWJ after Letter + Mn* + Virama + Mn-with-nonzero-CCC* only when the next character is not `Indic_Syllabic_Category=Vowel_Dependent`; A1/A2/B also impose single-script and NFC conditions." | E | Unicode UTS #39 rev32 §3.1.1.1(A1/A2/B); Unicode 17.0.0 `IndicSyllabicCategory.txt`; retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed; missing from the original 15-file lock, added and pinned as file 16 |
+| 099 | "Plain should treat identifiers as confusable if any LTR, RTL, or FS `bidiSkeleton` matches, and apply that relation to `PL0105` and the UTS #55 C4-based `PL1101` check." | P | Decision 0012; proposed L-10/L-11; UTS #39 rev32 §4; UTS #55 rev5 §§5.1.1–5.1.2.2; grade A for source guidance, Proposed for Plain policy | 1 | 2026-11-03 | Proposed policy extension; ratification, fixture verification, and implementation remain pending |
+| 100 | "UTS #55 rev5 §5.1.3 recommends that an out-of-profile diagnostic be independently suppressible from confusable detection." | E | Unicode UTS #55 rev5 §5.1.3, retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed recommendation; Plain proposes an independently suppressible `PL1104`, but the configuration mechanism is deferred and owner/reviewer ratification remains pending |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 96 (63 at Gate 0 + 10 Phase 1 draft + 23 Phase 1 audit/decision) |
-| Established (E) | 46 |
-| Proposed (P) | 21 |
+| Total rows | 100 (63 at Gate 0 + 10 Phase 1 draft + 27 Phase 1 audit/decision) |
+| Established (E) | 49 |
+| Proposed (P) | 22 |
 | Hypothesis (H) | 29 |
 | Retracted | 4 — #001, #057, #062, #073 |
-| Superseded | 3 — #065, #066, #080 |
+| Superseded | 4 — #065, #066, #068, #080 |
 | Blocked | 3 — #060, #061, #063 |
 | Open headline claims that may **not** ship (Gate 12 rule) | #002, #003, #006, #007, #008, #023, #070 |
 
@@ -198,3 +202,4 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 2026-11-02 | Register created at Gate 0 with 63 rows covering every claim in the founding documents, the Phase 0 research records, and the planned decisions. #001 retracted; #062 closed as unattested; #060/#061/#063 blocked pending the research book. |
 | 2026-11-02 | Phase 1 added rows #064–#073 for the language specification's claims (no-null/no-exceptions posture, identifier normalization and confusables, checked arithmetic, capture rule, exhaustiveness, `Float`/`Eq`, and the specification-completeness observation). #065 and #070 flagged as unverified. |
 | 2026-11-03 | Phase 1 audit added #074–#086; retracted #057 universal negative and #073 overclaim; superseded #065/#066; corrected Elm/Kotlin/Unicode sources; summary recomputed. |
+| 2026-11-03 | Independent Unicode profile audit added #097–#099; #068 is retained but superseded by #099; all 16 Unicode 17.0.0 data/test blob identities independently verified. |

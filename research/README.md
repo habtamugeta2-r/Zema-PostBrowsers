@@ -31,7 +31,7 @@ that folder navigable and states the rules the records follow.
 | 1 | [`phase-01-02-honest-limits.md`](./phase-01-02-honest-limits.md) | Which seams does one language actually remove, and which domains stay hard no matter what? |
 | 1 | [`phase-01-03-primary-source-audit.md`](./phase-01-03-primary-source-audit.md) | Which v0.1 language claims survive primary-source checking, and what Unicode source-handling profile should Plain use? |
 | 1 | [`phase-01-04-integrated-systems-and-plainp.md`](./phase-01-04-integrated-systems-and-plainp.md) | Which integrated systems are closest to ZEMA’s intersection, and what does a read-only PlainP audit establish? |
-| 1 | [`phase-01-05-specification-audit.md`](./phase-01-05-specification-audit.md) | What blocks Plain v0.1 from being implementation-ready, what changed in v0.2, and which citation/scope/Unicode-diagnostic issues were refined through v0.2.3? |
+| 1 | [`phase-01-05-specification-audit.md`](./phase-01-05-specification-audit.md) | What blocks Plain v0.1 from being implementation-ready, what changed in v0.2, and which citation/scope/Unicode-diagnostic issues were refined through v0.2.4? |
 | 1 | [`data/phase-01-source-manifest.json`](./data/phase-01-source-manifest.json) | Pinned source bytes/URLs, versions, hashes, and retrieval method for the Phase 1 audit |
 | 1 | [`data/phase-01-document-audit.json`](./data/phase-01-document-audit.json) | Machine-recomputed counts, link check, specification cross-reference check, grammar production closure, source-manifest structure check, and generated diagnostic-code registry (`python3 tools/audit_phase01.py --check`) |
 
@@ -122,4 +122,5 @@ Stated plainly so no reader over-reads this folder:
 - [`../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md`](../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md) — proposed A-27/A-38 resolutions.
 - [`../docs/decisions/0010-gate-1-core-scope.md`](../docs/decisions/0010-gate-1-core-scope.md) — proposed A-42 resolution.
 
-- [`../docs/decisions/0011-unicode-diagnostic-profile.md`](../docs/decisions/0011-unicode-diagnostic-profile.md) — exact UTS #55 chunk diagnostics and hash-locked Unicode data profile (proposed).
+- [`../docs/decisions/0011-unicode-diagnostic-profile.md`](../docs/decisions/0011-unicode-diagnostic-profile.md) — exact UTS #55 chunk diagnostics and initial Unicode data profile (proposed).
+- [`../docs/decisions/0012-directional-confusability-and-ucd-completeness.md`](../docs/decisions/0012-directional-confusability-and-ucd-completeness.md) — proposed LTR/RTL/FS identifier relation and complete Unicode 17.0.0 input lock.
