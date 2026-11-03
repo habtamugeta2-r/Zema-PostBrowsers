@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-05-specification-audit.md` |
-| **Version** | 1.2 |
+| **Version** | 1.3 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) |
@@ -14,9 +14,10 @@
 > **Bottom line.** Plain v0.1 was a useful draft, but it was not
 > implementation-ready. The audit found mechanical contradictions,
 > missing grammar productions, Unicode policy problems, and gate-scope
-> ambiguity. v0.2 fixed the mechanical issues; v0.2.3 makes the Unicode
-> security diagnostics precise, hash-pins their data inputs, and updates
-> the diagnostics fixture floor. The text remains a proposal. **Gate 1 is
+> ambiguity. v0.2 fixed the mechanical issues; v0.2.3 specified the
+> initial Unicode security diagnostics and data lock. The v0.2.4 independent
+> audit checked direction-sensitive confusability, all join-control clauses,
+> version alignment, and the 16-file data/test input inventory. The text remains a proposal. **Gate 1 is
 > still not attempted.** C1/C5 still block build tasks; C2 is still due
 > before Gate 1.
 
@@ -29,8 +30,10 @@ These are repository observations, not quality claims.
 | Check | v0.1 result | Action |
 |---|---|---|
 | Normative rules in docs 00–02 | v0.1: 34 L + 28 T + 36 E = **98**; v0.2 adds T-29/T-30 = **100** | Tracker’s “60 normative rules” corrected; reproducible via `tools/audit_phase01.py` |
-| Derived ambiguities | 26 rows: 21 resolved, 5 deferred | v0.2 adds A-27…A-43; v0.2.2/0.2.3 add proposed resolutions and A-44; counts recomputed from the table |
+| Derived ambiguities | 26 rows: 21 resolved, 5 deferred | v0.2 adds A-27…A-43; v0.2.2/0.2.3 add proposed resolutions and A-44; v0.2.4 adds A-45–A-47; now 47 total (42 proposed-resolved, 5 deferred, 0 open) |
 | Deferrals | 18 rows | v0.2 adds D-19/D-20 for Map/Set and Unicode segmentation APIs |
+| Evidence register | 96 rows before this audit | Now 100 rows (E49/P22/H29); new rows #097–#100 capture directionality, joining-context and warning-suppression findings/proposals |
+| Unicode source lock | 57 total manifest entries, 15 Unicode 17.0.0 data/test files | Now 58 entries, 16 Unicode 17.0.0 files; all 16 pinned blob IDs, byte lengths, and SHA-256 values independently match |
 | Conformance target | The v0.2 listed area counts summed to **275**, not “≈285” | Decision 0011 raised the diagnostics floor from 20 to 52 active codes; current plan sums to 307 and remains a planning target, not a coverage proof |
 | Relative Markdown links | 0 broken at audit time | Rechecked after edits by `tools/audit_phase01.py --check` |
 | Small-step operational semantics | Absent | Non-normative draft added as [`../docs/plain/06-operational-semantics.md`](../docs/plain/06-operational-semantics.md); not a proof or implementation |
@@ -67,8 +70,11 @@ editorial/count/reference defect.
 | SA-22 | Major | E-33 says faults are deterministic under quotas, but wall-clock timeouts are scheduling-dependent. | Conformance uses deterministic fuel/step quotas; wall-clock policy is a host concern, not a core semantic input. | Proposed; A-40 |
 | SA-23 | Blocker | L-11 said “UTS #55-style chunks” but did not state chunk boundaries, UTS55-C4’s confusing-chunk test, or the required General Security Profile membership test. | Decision 0011 imports UTS #55 rev5 §§5.1.2.1–5.1.2.2 and assigns `PL1101` only to confusing chunks; UTS #39 data are versioned. | Resolved (proposed); A-44 ratification pending |
 | SA-24 | Major | No distinct diagnostic warned about identifiers outside UTS #39’s General Security Profile or specified valid ZWNJ/ZWJ contexts. | Decision 0011 proposes independent `PL1104` and UTS #39 rev32 §3.1.1 joiner-context handling; this does not reject identifiers. | Resolved (proposed) |
-| SA-25 | Major | The Unicode pin named standards but had no file-level hashes for XID, normalization, script, security, or bidi inputs; unversioned UAX #9 resolves to rev52/Unicode 18.0.0. | Decision 0011 pins UAX #9 rev51/Unicode 17.0.0 and adds 15 Unicode 17 data/test files with immutable commit, blob IDs, sizes, and SHA-256; all 15 hashes and byte lengths were independently rechecked. | Fixed as research manifest; no data vendored |
+| SA-25 | Major | The Unicode pin named standards but had no file-level hashes for XID, normalization, script, security, or bidi inputs; unversioned UAX #9 resolves to rev52/Unicode 18.0.0. | Decision 0011 pins UAX #9 rev51/Unicode 17.0.0 and the initial 15 Unicode 17 data/test files. Decision 0012 adds `IndicSyllabicCategory.txt`; all 16 blob IDs, lengths, and SHA-256 values match independently re-fetched pinned GitHub blobs. | Fixed as research manifest; no data vendored |
 | SA-26 | Major | The 20+ diagnostics fixture target was incompatible with L-34’s one-active-code/one-fixture minimum once 52 active codes were counted. | Target raised to 52+; total planning sum rises from 275 to 307. Still a target, not coverage or a test run. | Fixed in v0.2.3 plan |
+| SA-27 | Major | L-10 compared only canonical LTR `skeleton(X)` even though UTS #39 rev32 §4 recommends LTR, RTL, and FS confusability for programming-language identifiers when direction is not constrained. **Established, grade A.** | Decision 0012 proposes the union of all three `bidiSkeleton` relations for PL0105 and as a deliberate extension to PL1101 C4. UTS #55’s LTR/RTL source-order recommendation is distinguished from this UTS #39 guidance. **Proposed; grade A source guidance; ratification and algorithm check pending.** | Addressed in draft policy; not implemented or tested |
+| SA-28 | Major | The original 15-file lock omitted `IndicSyllabicCategory.txt`, required by UTS #39 rev32 §3.1.1.1(B) to test that a ZWJ is not followed by a Vowel_Dependent scalar. **Established, grade A.** | Added Unicode 17.0.0 file 16; documented A1/A2/B and global script/NFC conditions; independently verified all 16 blob IDs, lengths, and SHA-256 values. **Proposed input inventory; grade A.** | Fixed in research manifest; no data vendored or algorithm run |
+| SA-29 | Major | UTS #55 rev5 §5.1.3 recommends that the out-of-profile warning be independently suppressible from confusable detection; Plain named `PL1104` separately but did not specify suppression. **Established, grade A.** | Propose `PL1104` enabled by default and independently suppressible from `PL0105`/`PL1101`; defer configuration/UI mechanism to tooling phase. **Proposed; grade A source guidance.** | A-47 added as resolved (proposed); owner/reviewer ratification pending |
 
 ## 3. Representative counterexamples
 
@@ -195,3 +201,4 @@ can be omitted without changing Plain’s safety argument.
 | 2026-11-03 | 1.0 | Audit created: 22 findings, counterexamples, count corrections, Gate 1 readiness table. |
 | 2026-11-03 | 1.1 | Verified the Featherweight Java bibliographic citation against the ACM publisher abstract and narrowed the methodological claim; updated the source manifest. |
 | 2026-11-03 | 1.2 | Added UTS #55 chunk-diagnostic analysis, exact versioned Unicode data hashes, and the v0.2.3 conformance-budget correction (26 findings total). |
+| 2026-11-03 | 1.3 | Independently checked UTS #55/UTS #39 direction and joining clauses, version alignment, and the 16-file source inventory; added SA-27–SA-29, A-45–A-47, Decision 0012, and evidence #097–#100. 29 findings total. |

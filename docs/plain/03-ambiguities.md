@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.3 (draft) |
+| **Version** | 0.2.4 (draft) |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Active register |
 | **Evidence label** | **Proposed** (each resolution is a design decision) |
@@ -69,16 +69,19 @@
 | A-41 | How are bidi/invisible controls shown in diagnostics? | Quote source with directional/invisible controls escaped or visibly marked; full editor rendering is Phase 13 | Resolved (partial) | L-02, L-31 |
 | A-42 | What exactly does Gate 1 cover? | Hermetic Plain core only; later platform obligations remain binding in their named phases and are not waived (decision 0010); owner/reviewer ratification required before Gate 1 | Resolved (proposed) | 05-conformance-plan.md, decision 0010 |
 | A-43 | Is there a `main` entry point? | No core keyword. Fixtures name the function to evaluate; application hosts define exported entry later | Resolved | T-30 |
-| A-44 | What exact Unicode security diagnostics and data sources does Plain use? | UTS #55 rev5 chunk boundaries and C4 confusing-chunk test; separate UTS #39 rev32 General Security Profile warning; exact Unicode 17.0.0 files and hashes in source manifest (decision 0011) | Resolved (proposed) | L-08…L-11, decision 0011 |
+| A-44 | What exact Unicode security diagnostics and data sources does Plain use? | UTS #55 rev5 chunk boundaries and C4 test; separate UTS #39 General Security Profile warning; exact Unicode 17.0.0 inputs in the source manifest (decisions 0011/0012) | Resolved (proposed) | L-08…L-11, decisions 0011/0012 |
+| A-45 | Which directional skeletons define identifier confusability? | For Plain, identifiers are confusable if any UTS #39 rev32 `bidiSkeleton` value for LTR, RTL, or FS matches; applies to PL0105 and proposed PL1101 C4 relation (decision 0012) | Resolved (proposed) | L-10/L-11, UTS #39 rev32 §4, UTS #55 rev5 §§5.1.1–5.1.2.2, decision 0012 |
+| A-46 | Does the pinned Unicode 17.0.0 data lock cover all identified inputs for joining contexts and diagnostics? | Add `IndicSyllabicCategory.txt` for UTS #39 rev32 §3.1.1.1(B); map 16 data/test inputs to adopted profile operations (decision 0012) | Resolved (proposed) | L-08/L-11, decision 0012 and source manifest |
+| A-47 | Can an out-of-profile warning be suppressed independently from confusable diagnostics? | UTS #55 rev5 §5.1.3 recommends independent suppression; propose `PL1104` enabled by default and independently suppressible from `PL0105`/`PL1101`, with the exact configuration mechanism deferred to the tooling/configuration phase (decision 0012) | Resolved (proposed) | L-11, UTS #55 rev5 §5.1.3, decision 0012 |
 
 ## 2. Summary
 
 | Status | Count | IDs |
 |---|---|---|
-| Resolved | 39 | A-01, A-02, A-03, A-05, A-06, A-07, A-08, A-09, A-10, A-11, A-13, A-14, A-15, A-16, A-17, A-18, A-19, A-20, A-22, A-24, A-25, A-27, A-28, A-29, A-30, A-31, A-32, A-33, A-34, A-35, A-36, A-37, A-38, A-39, A-40, A-41, A-43, A-44 |
+| Resolved (proposed) | 42 | A-01, A-02, A-03, A-05, A-06, A-07, A-08, A-09, A-10, A-11, A-13, A-14, A-15, A-16, A-17, A-18, A-19, A-20, A-22, A-24, A-25, A-27, A-28, A-29, A-30, A-31, A-32, A-33, A-34, A-35, A-36, A-37, A-38, A-39, A-40, A-41, A-43, A-44, A-45, A-46, A-47 |
 | Deferred | 5 | A-04, A-12, A-21, A-23, A-26 |
 | Open — requires a decision before Gate 1 | 0 | — |
-| **Total** | **44** | A-01 … A-44 |
+| **Total** | **47** | A-01 … A-47 |
 
 > Counts are reconciled at every revision; if the table and the summary
 > disagree, the table governs and the summary is a defect.
@@ -115,4 +118,5 @@
 | 2026-11-03 | 0.2 | Audit added A-27…A-43; corrected A-06/A-18/A-19/A-25 and limits; 43 total, 35 resolved, 5 deferred, 3 open. |
 | 2026-11-03 | 0.2.1 | Decision 0009 proposed resolutions for A-27/A-38; 43 total, 37 resolved, 5 deferred, 1 open (A-42). |
 | 2026-11-03 | 0.2.2 | Decision 0010 proposes hermetic core-only Gate 1 with later obligations unwaived; 43 total, 38 resolved, 5 deferred, 0 open. Owner/reviewer ratification remains a gate condition. |
-| 2026-11-03 | 0.2.3 | Decision 0011 specifies UTS #55 chunk diagnostics, out-of-profile warning, and hashes 15 Unicode 17.0.0 data/test inputs; 44 total, 39 resolved, 5 deferred, 0 open. |
+| 2026-11-03 | 0.2.3 | Decision 0011 specifies UTS #55 chunk diagnostics, out-of-profile warning, and pins the initial 15 Unicode 17.0.0 data/test inputs. |
+| 2026-11-03 | 0.2.4 | Decision 0012 proposes direction-aware LTR/RTL/FS confusability and adds the missing joining-context data input; 47 total, 42 resolved (proposed), 5 deferred, 0 open. |

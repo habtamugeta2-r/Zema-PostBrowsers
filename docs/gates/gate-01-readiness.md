@@ -7,7 +7,7 @@
 | **Status** | **Preparation only** — no implementation, fixtures, review result, or gate attempt |
 | **Evidence label** | **Proposed** for recommendations; **Established** for recorded conditions and repository state |
 | **Source grade** | A — project-primary records: `docs/gates/gate-00.md`, decisions 0004/0008/0009/0010, and the Plain draft |
-| **Purpose** | Put owner-controlled blockers and the three proposed scope/spec decisions in one response packet |
+| **Purpose** | Put owner-controlled blockers and proposed scope/spec decisions in one response packet |
 
 > **Do not treat this packet as a gate review or as authorization to build.**
 > Gate 0 conditions C1 and C5 still block Phase 1 build; C2 is due before
@@ -24,7 +24,10 @@ new decision record. Silence is not approval.
 | A-27 / decision 0009 | Pin the initial identifier/source profile to Unicode 17.0.0, UAX #31 rev43, UAX #15 rev57, UAX #9 rev51, UTS #39 rev32, and UTS #55 rev5, with a controlled, non-silent upgrade policy. | The profile is stable for implementation and fixture generation; the evidence/data version remains reportable. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
 | A-38 / decision 0009 | `Eq` is derived/sealed; `Ord` requires `Eq` and obeys stated total-order/equality-consistency laws; `Float` is neither; Map/Set/Hash stay deferred. | The Gate 1 type/evaluation profile has no unresolved generic equality/ordering rule. Laws remain review obligations, not a compiler proof. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
 | A-42 / decision 0010 | Gate 1 evaluates the hermetic Plain core only; later platform obligations remain binding and unwaived in their own phases. | Any eventual pass can claim only “Plain core passed Gate 1,” not platform security/completeness. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
-| A-44 / decision 0011 | Adopt UTS #55 rev5 chunk/C4 diagnostics, the independent UTS #39 General Security Profile warning, and the hashed Unicode 17.0.0 inputs. | PL1101/PL1104 behavior is precise and the profile is reproducible; conformance remains unrun. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
+| A-44 / decision 0011 | Adopt UTS #55 rev5 chunk/C4 diagnostics, the independent UTS #39 General Security Profile warning, and the Unicode 17.0.0 input lock. | PL1101/PL1104 policy is proposed; conformance remains unrun. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
+| A-45 / decision 0012 | Use LTR, RTL, and FS `bidiSkeleton` comparisons for Plain identifier confusability in PL0105 and the C4-based PL1101 relation. | UTS #39 guidance is applied as a proposed Plain extension; examples remain untested. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
+| A-46 / decision 0012 | Add and pin Unicode 17.0.0 `IndicSyllabicCategory.txt`; map the 16 input files to the selected operations/tests. | The identified context-B dependency is represented and file identities match; no implementation/conformance run. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
+| A-47 / decision 0012 | Keep `PL1104` enabled by default and independently suppressible from `PL0105`/`PL1101`; defer configuration syntax and UI to the tooling phase. | Preserves UTS #55 rev5 §5.1.3 advice without deciding future configuration mechanics. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
 
 ## 2. Owner-controlled Gate 0 conditions
 
@@ -44,7 +47,7 @@ has been adopted. C3 remains due before Phase 5.
 
 - No interpreter/compiler or conformance fixtures may be started until
   C1 and C5 are resolved.
-- No Gate 1 review may be scheduled until C2 and the A-27/A-38/A-42/A-44
+- No Gate 1 review may be scheduled until C2 and the A-27/A-38/A-42/A-44/A-45/A-46/A-47
   proposals are ratified or revised.
 - No Gate 1 result may be recorded until an executable core and the
   checked/optimized conformance suite pass the requirements in
@@ -58,7 +61,7 @@ This is a checklist of future evidence, not evidence already produced:
 
 - [ ] C1 and C5 recorded; build authorization is clear.
 - [ ] C2 recorded (book imported or chapter references retired).
-- [ ] A-27/A-38/A-42/A-44 ratified or replaced by signed decisions.
+- [ ] A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratified or replaced by signed decisions.
 - [ ] Core interpreter/compiler exists and is scoped to the accepted
   profile.
 - [ ] Every in-scope rule has at least one fixture; no uncovered rules.

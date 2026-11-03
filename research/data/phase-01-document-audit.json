@@ -131,9 +131,9 @@
   },
   "normative_rule_count_L_T_E": 100,
   "ambiguities": {
-    "count": 44,
+    "count": 47,
     "status": {
-      "resolved": 39,
+      "resolved": 42,
       "deferred": 5,
       "open": 0,
       "unknown": 0
@@ -357,7 +357,22 @@
       {
         "id": "A-44",
         "status": "Resolved (proposed)",
-        "spec_ref": "L-08…L-11, decision 0011"
+        "spec_ref": "L-08…L-11, decisions 0011/0012"
+      },
+      {
+        "id": "A-45",
+        "status": "Resolved (proposed)",
+        "spec_ref": "L-10/L-11, UTS #39 rev32 §4, UTS #55 rev5 §§5.1.1–5.1.2.2, decision 0012"
+      },
+      {
+        "id": "A-46",
+        "status": "Resolved (proposed)",
+        "spec_ref": "L-08/L-11, decision 0012 and source manifest"
+      },
+      {
+        "id": "A-47",
+        "status": "Resolved (proposed)",
+        "spec_ref": "L-11, UTS #55 rev5 §5.1.3, decision 0012"
       }
     ]
   },
@@ -472,11 +487,11 @@
     "sum": 307
   },
   "evidence": {
-    "count": 96,
+    "count": 100,
     "labels": {
       "H": 29,
-      "P": 21,
-      "E": 46
+      "P": 22,
+      "E": 49
     },
     "retracted": [
       "001",
@@ -535,7 +550,8 @@
       "severity": "error",
       "historical": false,
       "rules": [
-        "L-10"
+        "L-10",
+        "L-11"
       ],
       "documents": [
         "docs/plain/00-lexical-and-layout.md"
@@ -1081,7 +1097,7 @@
     }
   ],
   "cross_reference_check": {
-    "defined_count": 170,
+    "defined_count": 173,
     "undefined": {}
   },
   "grammar_check": {
@@ -1091,7 +1107,8 @@
   },
   "source_manifest_check": {
     "ok": true,
-    "count": 57,
+    "count": 58,
+    "unicode17_data_files": 16,
     "duplicate_ids": [],
     "invalid_entries": []
   },
