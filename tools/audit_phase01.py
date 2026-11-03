@@ -713,6 +713,71 @@ def task_audit_check() -> dict:
     }
 
 
+SOURCE_PREFIXES = ("docs/", "research/", "tools/", "tests/", "src/", "conformance/")
+
+
+def evidence_link_check() -> dict:
+    """Every Established row must be reachable, not merely named.
+
+    The register cites sources as prose titles: "Chromium *Release Cycle* [A]".
+    That is unreachable -- there is no route from the row to the document. The
+    research records hold the URLs in their [S##] Tables, so the first hop of
+    the evidence chain was broken.
+
+    A row is linked when its source cell contains at least one of:
+      - a repository path that exists,
+      - an http(s) URL,
+      - an [S##] pointer to a source that a research record defines.
+    """
+    text = read("docs/evidence-register.md")
+
+    defined_spans: set[str] = set()
+    for rel in sorted(str(p.relative_to(ROOT)) for p in (ROOT / "research").glob("*.md")):
+        for match in re.finditer(r"\|\s*(S\d+)\s*\|", read(rel)):
+            defined_spans.add(match.group(1))
+
+    rows = []
+    for line in text.splitlines():
+        match = re.match(r"\|\s*(\d{3})\s*\|", line)
+        if not match:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 5:
+            continue
+        rows.append({"id": cells[0], "label": cells[2], "source": cells[3]})
+
+    unlinked = []
+    for row in rows:
+        if row["label"] not in ("E", "P", "H"):
+            continue
+        source = row["source"]
+        linked = False
+        if re.search(r"https?://", source):
+            linked = True
+        if not linked:
+            for span in re.findall(r"\[S\d+\]", source):
+                if span.strip("[]") in defined_spans:
+                    linked = True
+                    break
+        if not linked:
+            for candidate in re.findall(r"`([^`]+)`", source):
+                candidate = candidate.strip()
+                if candidate.startswith(SOURCE_PREFIXES) and (ROOT / candidate).exists():
+                    linked = True
+                    break
+        if not linked:
+            unlinked.append({"id": row["id"], "label": row["label"], "source": source[:90]})
+
+    return {
+        "ok": True,  # informational: the defect is recorded, not gated
+        "rows_checked": len(rows),
+        "unlinked": len(unlinked),
+        "unlinked_ids": [u["id"] for u in unlinked],
+        "sample": unlinked[:5],
+        "spans_defined": len(defined_spans),
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -939,6 +1004,7 @@ def main() -> int:
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
+        "evidence_links": evidence_link_check(),
         "broken_relative_links": broken_links(),
     }
     out = ROOT / "research" / "data" / "phase-01-document-audit.json"
@@ -1041,6 +1107,10 @@ def main() -> int:
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "fault_namespace": report["fault_namespace"],
         "codeless_claims": report["codeless_claims"],
+        "evidence_links": {
+            "rows_checked": report["evidence_links"]["rows_checked"],
+            "unlinked": report["evidence_links"]["unlinked"],
+        },
         "task_audit": {
             "tasks_in_prompt": report["task_audit"]["tasks_in_prompt"],
             "tasks_with_a_row": report["task_audit"]["research_rows"],

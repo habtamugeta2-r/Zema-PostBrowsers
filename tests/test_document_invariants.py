@@ -32,6 +32,7 @@ gate_coverage_check = audit.gate_coverage_check
 gate_criteria = audit.gate_criteria
 task_audit_check = audit.task_audit_check
 master_tasks = audit.master_tasks
+evidence_link_check = audit.evidence_link_check
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -329,4 +330,33 @@ class TaskAuditTest(unittest.TestCase):
         result = task_audit_check()
         self.assertEqual(
             result["false_done"], [], "a task is marked done without verifiable evidence"
+        )
+
+
+class EvidenceLinkTest(unittest.TestCase):
+    """An Established claim a reader cannot reach is a Hypothesis mislabelled.
+
+    Measured before this existed: 0 of 135 rows cited a URL, and 42 cited a
+    document title with no route to it.
+    """
+
+    def test_every_row_is_examined(self):
+        result = evidence_link_check()
+        self.assertGreaterEqual(result["rows_checked"], 135)
+
+    def test_the_research_layer_defines_sources_to_point_at(self):
+        """EL-2 depends on these existing: the URLs live in the research records."""
+        result = evidence_link_check()
+        self.assertGreater(
+            result["spans_defined"], 0, "no [S##] source is defined anywhere"
+        )
+
+    def test_the_unlinked_count_does_not_grow(self):
+        """A ratchet, not an absolute: the historical defect is recorded, and
+        new rows must be linked or the count rises and this fails."""
+        result = evidence_link_check()
+        self.assertLessEqual(
+            result["unlinked"],
+            106,
+            f"unlinked rows grew to {result['unlinked']}: a new row cites nothing reachable",
         )
