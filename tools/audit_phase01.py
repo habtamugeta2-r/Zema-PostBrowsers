@@ -613,6 +613,106 @@ def gate_coverage_check() -> dict:
     }
 
 
+TASK_AUDIT_REL = "docs/zema-master-prompt/TASK-AUDIT.md"
+
+
+def master_tasks() -> list[dict]:
+    """Every research and build task in the Master Prompt.
+
+    Extracted so the audit cannot drift from the prompt it audits: a task added
+    there without a status here is a silent gap.
+    """
+    text = read(MASTER_REL)
+    parts = re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)
+    tasks: list[dict] = []
+    for index in range(1, len(parts), 3):
+        phase = int(parts[index + 1])
+        body = parts[index + 2]
+        for kind, pattern in (
+            ("R", r"### Research tasks(.*?)### Build tasks"),
+            ("B", r"### Build tasks(.*?)### Deliverables"),
+        ):
+            block = re.search(pattern, body, re.S)
+            if not block:
+                continue
+            items = re.findall(r"- \[ \] (.+?)(?=\n  [A-Za-z*]|\n- |\Z)", block.group(1), re.S)
+            for number, item in enumerate(items, start=1):
+                tasks.append(
+                    {
+                        "id": f"P{phase}.{kind}{number}",
+                        "phase": phase,
+                        "kind": kind,
+                        "text": re.sub(r"\s+", " ", item).strip(),
+                    }
+                )
+    return tasks
+
+
+def task_audit_check() -> dict:
+    """Every task has a status, and every `done` names a path that exists."""
+    tasks = master_tasks()
+    audit = read(TASK_AUDIT_REL)
+
+    statuses: dict[str, str] = {}
+    seen: list[str] = []
+    for line in audit.splitlines():
+        match = re.match(r"\|\s*(P\d{1,2}\.[RB]\d{1,2})\s*\|", line)
+        if not match:
+            continue
+        task_id = match.group(1)
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        if task_id in statuses:
+            seen.append(task_id)
+        statuses[task_id] = cells[2]
+        # build tasks are audited in aggregate by phase, so a row may name a
+        # phase rather than an individual ID; those are counted separately
+    missing = [t["id"] for t in tasks if t["id"] not in statuses and t["kind"] == "R"]
+    duplicated = sorted(set(seen))
+
+    # A `done` claim must name a path that exists. Without this, marking a
+    # not-started task done and citing a plausible research record passes --
+    # verified by mutation on 2026-11-04, which is why this loop exists.
+    false_done = []
+    for line in audit.splitlines():
+        match = re.match(r"\|\s*(P\d{1,2}\.[RB]\d{1,2})\s*\|", line)
+        if not match:
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 4 or cells[2] != "done":
+            continue
+        cited = re.findall(r"`([^`]+\.(?:md|json|py|txt))`", cells[3])
+        if not cited:
+            false_done.append({"id": match.group(1), "why": "no path cited"})
+            continue
+        for target in cited:
+            if not (ROOT / target).exists():
+                false_done.append({"id": match.group(1), "missing": target})
+
+    counted: dict[str, int] = {}
+    for status in statuses.values():
+        counted[status] = counted.get(status, 0) + 1
+
+    declared = {}
+    for line in audit.splitlines():
+        if line.startswith("| **Total** |"):
+            cells = [c.strip().replace("*", "") for c in line.strip().strip("|").split("|")]
+            for label, value in zip(cells[2::2], cells[3::2]):
+                if value.isdigit():
+                    declared[label] = int(value)
+    return {
+        "ok": not missing and not duplicated and not false_done,
+        "tasks_in_prompt": len(tasks),
+        "false_done": false_done,
+        "research_rows": len(statuses),
+        "missing_rows": missing,
+        "duplicate_rows": duplicated,
+        "counted": counted,
+        "declared_total": declared,
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -811,6 +911,7 @@ def main() -> int:
     codeless = codeless_claim_check()
     vtrace = vertical_trace_check()
     gcov = gate_coverage_check()
+    taudit = task_audit_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -834,6 +935,7 @@ def main() -> int:
         "codeless_claims": codeless,
         "vertical_trace": vtrace,
         "gate_coverage": gcov,
+        "task_audit": taudit,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -891,6 +993,12 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not taudit["ok"]:
+        problems.append(
+            f"task audit incomplete: missing rows {taudit['missing_rows']}, "
+            f"duplicate rows {taudit['duplicate_rows']}, "
+            f"unverifiable done claims {taudit['false_done']}"
+        )
     if not gcov["ok"]:
         problems.append(
             f"gate coverage incomplete: missing rows {gcov['missing_rows']}, "
@@ -933,6 +1041,11 @@ def main() -> int:
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "fault_namespace": report["fault_namespace"],
         "codeless_claims": report["codeless_claims"],
+        "task_audit": {
+            "tasks_in_prompt": report["task_audit"]["tasks_in_prompt"],
+            "tasks_with_a_row": report["task_audit"]["research_rows"],
+            "counted": report["task_audit"]["counted"],
+        },
         "gate_coverage": {
             "criteria": report["gate_coverage"]["criteria"],
             "dispositions": report["gate_coverage"]["dispositions"],

@@ -499,16 +499,16 @@
     "sum": 357
   },
   "evidence": {
-    "count": 132,
+    "count": 135,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 75
+      "E": 78
     },
     "declared_summary": {
-      "total": 132,
+      "total": 135,
       "labels": {
-        "E": 75,
+        "E": 78,
         "P": 27,
         "H": 30
       }
@@ -1426,6 +1426,24 @@
       "UNCOVERED": 7
     }
   },
+  "task_audit": {
+    "ok": true,
+    "tasks_in_prompt": 128,
+    "false_done": [],
+    "research_rows": 66,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "counted": {
+      "done": 10,
+      "not-started": 49,
+      "partial": 6,
+      "blocked: book": 1
+    },
+    "declared_total": {
+      "19": 7,
+      "101": 1
+    }
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1444,13 +1462,13 @@
   },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 60,
+    "markdown_files": 61,
     "python_files": 11,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 132,
+    "evidence_rows": 135,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,

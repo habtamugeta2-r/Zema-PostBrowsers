@@ -30,6 +30,8 @@ codeless_claim_check = audit.codeless_claim_check
 vertical_trace_check = audit.vertical_trace_check
 gate_coverage_check = audit.gate_coverage_check
 gate_criteria = audit.gate_criteria
+task_audit_check = audit.task_audit_check
+master_tasks = audit.master_tasks
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -297,4 +299,34 @@ class GateCoverageTest(unittest.TestCase):
             0,
             "zero uncovered is implausible while E1-E5 are undefined; "
             "if this fires, check whether an uncovered row was relabelled",
+        )
+
+
+class TaskAuditTest(unittest.TestCase):
+    """Every Master Prompt task has a status, and `done` is verifiable.
+
+    Measured before this existed: 128 tasks, 19 done, and the phase tracker
+    summarised all of Phase 1 in one status cell.
+    """
+
+    def test_the_prompt_defines_one_hundred_and_twenty_eight_tasks(self):
+        tasks = master_tasks()
+        self.assertEqual(len(tasks), 128, "66 research + 62 build")
+        self.assertEqual(sum(1 for t in tasks if t["kind"] == "R"), 66)
+        self.assertEqual(sum(1 for t in tasks if t["kind"] == "B"), 62)
+
+    def test_every_research_task_has_a_status_row(self):
+        result = task_audit_check()
+        self.assertEqual(result["missing_rows"], [], "a research task has no status")
+
+    def test_no_task_has_two_status_rows(self):
+        result = task_audit_check()
+        self.assertEqual(result["duplicate_rows"], [], "a task is statused twice")
+
+    def test_a_done_claim_names_a_file_that_exists(self):
+        """Regression: marking P2.R1 done and citing a nonexistent research
+        record passed every check until this loop was added."""
+        result = task_audit_check()
+        self.assertEqual(
+            result["false_done"], [], "a task is marked done without verifiable evidence"
         )

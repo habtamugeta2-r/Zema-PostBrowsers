@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.6 (Phase 1 audit) |
+| **Version** | 1.7 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -197,13 +197,16 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 130 | "Of the 50 gate exit criteria in the Master Prompt, 8 are discharged by an artifact that exists, 27 depend on an artifact that does not exist, 8 are outside Gate 1 by A-42, and 7 have no artifact anywhere that would discharge them." | E | `tools/audit_phase01.py` `gate_coverage_check()`; [`GATE-COVERAGE.md`](./zema-master-prompt/GATE-COVERAGE.md) §2 | 0 | 2026-11-04 | Confirmed by script. All 23 conformance areas are Phase-1 language areas, so the conformance plan can reach 8 of 50 criteria by design |
 | 131 | "Four of the seven uncovered criteria are one defect: experiments E1, E2, E4 and E5 are cited as gate deliverables and defined nowhere, because their definitions live in the research book that decision 0004 records as absent." | E | `ZEMA-Master-Research-and-Build-Prompt.md` phases 2, 4, 7, 9; no protocol record under `research/experiments/`; decision 0004 | 0 | 2026-11-04 | Confirmed by search. The book's absence was recorded as a traceability problem; it is also a delivery problem — four gate criteria are unopenable by anyone |
 | 132 | "The gate-coverage check was order-dependent in its first version: sections 3 and 4 also key rows by criterion ID, so the last table to mention an ID won and a three-column table silently erased section 2's disposition for G1.1-G1.3." | E | Mutation of `GATE-COVERAGE.md` against `gate_coverage_check()` on 2026-11-04 | 1 | 2026-11-04 | Confirmed while debugging a false failure. Fixed by scoping the parse to section 2; a duplicate-row counter now fails if a criterion appears twice there |
+| 133 | "The Master Prompt defines 128 tasks (66 research, 62 build); 19 are done, 7 partial, 101 not-started and 1 is blocked by the absent book — so 79.7% of the project's own task list is untouched, and 52 of 62 build tasks belong to phases with no research record." | E | `tools/audit_phase01.py` `task_audit_check()`; [`TASK-AUDIT.md`](./zema-master-prompt/TASK-AUDIT.md) | 0 | 2026-11-04 | Confirmed by extraction and file inspection. All nine completed build tasks are specification work, not implementation |
+| 134 | "Master Prompt task P1.B8 ('resolve all ambiguities in §12.1 of the research book') cannot be marked done without falsifying the record, because the book is absent and the project's 47 derived ambiguities are explicitly not the book's list." | E | `docs/plain/03-ambiguities.md` lines 11–17; decision 0004; `TASK-AUDIT.md` §4.2 | 0 | 2026-11-04 | Confirmed. It can only be marked `superseded`, which is an owner decision |
+| 135 | "The task-audit check's first version accepted a `done` claim citing a nonexistent file: marking P2.R1 done and naming `research/phase-02-01-reactive.md` produced no problem." | E | Mutation of `TASK-AUDIT.md` against `task_audit_check()` on 2026-11-04 | 1 | 2026-11-04 | Confirmed by mutation. Added a path-existence requirement for `done`; the new loop then immediately flagged two of my own rows (P0.R2, P12.R4) that cited no file |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 132 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace + 1 backlog + 3 gate-coverage) |
-| Established (E) | 75 |
+| Total rows | 135 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace + 1 backlog + 3 gate-coverage + 3 task-audit) |
+| Established (E) | 78 |
 | Proposed (P) | 27 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
