@@ -171,15 +171,26 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 098 | "UTS #39 rev32 §3.1.1.1(B) permits ZWJ after Letter + Mn* + Virama + Mn-with-nonzero-CCC* only when the next character is not `Indic_Syllabic_Category=Vowel_Dependent`; A1/A2/B also impose single-script and NFC conditions." | E | Unicode UTS #39 rev32 §3.1.1.1(A1/A2/B); Unicode 17.0.0 `IndicSyllabicCategory.txt`; retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed; missing from the original 15-file lock, added and pinned as file 16 |
 | 099 | "Plain should treat identifiers as confusable if any LTR, RTL, or FS `bidiSkeleton` matches, and apply that relation to `PL0105` and the UTS #55 C4-based `PL1101` check." | P | Decision 0012; proposed L-10/L-11; UTS #39 rev32 §4; UTS #55 rev5 §§5.1.1–5.1.2.2; grade A for source guidance, Proposed for Plain policy | 1 | 2026-11-03 | Proposed policy extension; ratification, fixture verification, and implementation remain pending |
 | 100 | "UTS #55 rev5 §5.1.3 recommends that an out-of-profile diagnostic be independently suppressible from confusable detection." | E | Unicode UTS #55 rev5 §5.1.3, retrieved 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed recommendation; Plain proposes an independently suppressible `PL1104`, but the configuration mechanism is deferred and owner/reviewer ratification remains pending |
+| 101 | "The proposed Phase 1 Gate 1 vehicle is a Python 3.11 standard-library-only reference interpreter; this does not select the Phase 3 production runtime." | P | Decision 0013; research `phase-01-06-implementation-feasibility.md`; environment check 2026-11-03 | 1 | 2026-11-03 | Proposed; owner/reviewer ratification and implementation validation pending |
+| 102 | "The proposed Unicode 17.0.0 pipeline fetches immutable manifest-pinned inputs, verifies Git blob ID/bytes/SHA-256, and generates project-owned tables; host Unicode APIs are not normative inputs." | P | Decision 0014; source manifest; Python 3.11 UCD documentation | 1 | 2026-11-03 | Proposed; fetch/verification and NFC/NFD corpus checking implemented; generated property tables and bidi/security algorithms remain pending |
+| 103 | "The proposed conformance runner uses checked AST evaluation and an independently lowered optimized instruction evaluator, with per-rule coverage reporting." | P | Decision 0015; `docs/plain/05-conformance-plan.md` | 1 | 2026-11-03 | Proposed; runner and profile parity not yet implemented |
+| 104 | "Better-back signed the frozen problem statement, target app class, and non-goals (C1) on 2026-11-03." | E | Owner response via Arena, recorded in `docs/gates/gate-00.md` §9 and `gate-01-readiness.md` §2 | 1 | 2026-11-03 | Confirmed; resolves C1 for Phase 1 build authorization |
+| 105 | "Better-back ruled PlainP a donor only on 2026-11-03; no PlainP code is adopted by this ruling." | E | Owner response via Arena, recorded in `docs/gates/gate-00.md` §9 and `gate-01-readiness.md` §2 | 1 | 2026-11-03 | Confirmed; C5 resolved. Any future code adoption still requires separate licensing/provenance review |
+| 106 | "The project-owned Unicode 17.0.0 NFC/NFD implementation matched every row in the pinned NormalizationTest.txt corpus: 20,034 rows, 200,340 assertions, zero failures." | E | `research/experiments/EN-unicode17-normalization/README.md` and `normalization-report.json`; pinned corpus in `phase-01-source-manifest.json`; grade A for Unicode normalization test corpus | 1 | 2026-11-03 | Confirmed for the complete published corpus tested; this is not a proof of all possible inputs or the full Unicode/bidi/security profile |
+| 107 | "The current `internalSkeleton` implementation produces the candidate outputs recorded for `aא1`, `a1א`, `Строкa`, `Δt`, and `HTTPसर्वर`." | H | `research/data/phase-01-internal-skeleton-examples.json`; implementation `src/plain/unicode17_security.py`; pinned Unicode inputs | 1 | 2026-11-03 | Open — computed internalSkeleton values only; independent algorithm review and all bidiSkeleton directions remain outstanding |
+| 108 | "Better-back selected importing the research book to resolve C2; the source has not yet been supplied, so C2 remains open." | E | Owner response via Arena, recorded in `docs/gates/gate-01-readiness.md` §2 | 1 | 2026-11-03 | Confirmed response; action pending book source |
+| 109 | "Better-back selected revision rather than ratification for the A-27/A-38/A-42/A-44/A-45/A-46/A-47 proposal set; no specific revisions have yet been supplied." | E | Owner response via Arena, recorded in `docs/gates/gate-01-readiness.md` §1 | 1 | 2026-11-03 | Confirmed response; all seven remain unratified until IDs and replacement text are specified |
+| 110 | "Script_Extensions values in Unicode 17.0.0 use ISO short aliases while Scripts.txt uses long names; the current source lock lacks PropertyValueAliases.txt to normalize the representations." | P | Decision 0016; pinned `Scripts.txt`/`ScriptExtensions.txt`; candidate PropertyValueAliases GitHub blob identity checked 2026-11-03 | 1 | 2026-11-03 | Proposed dependency finding; owner must approve an A-46/source-manifest amendment before this is used for Gate 1 security calculations |
+| 111 | "Six Unicode 17 property-accessor tests pass, covering XID, categories/CCC, Script, bidi class, status/type, joining/Indic properties, and the required Script alias guard." | E | `tests/test_unicode17_properties.py`; raw `research/data/phase-01-property-test-report.txt`; command `python3 -m unittest discover -s tests -v` | 1 | 2026-11-03 | Confirmed as smoke-test results for selected code points; not comprehensive property-file conformance |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 100 (63 at Gate 0 + 10 Phase 1 draft + 27 Phase 1 audit/decision) |
-| Established (E) | 49 |
-| Proposed (P) | 22 |
-| Hypothesis (H) | 29 |
+| Total rows | 111 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision) |
+| Established (E) | 55 |
+| Proposed (P) | 26 |
+| Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
 | Superseded | 4 — #065, #066, #068, #080 |
 | Blocked | 3 — #060, #061, #063 |
@@ -203,3 +214,9 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 2026-11-02 | Phase 1 added rows #064–#073 for the language specification's claims (no-null/no-exceptions posture, identifier normalization and confusables, checked arithmetic, capture rule, exhaustiveness, `Float`/`Eq`, and the specification-completeness observation). #065 and #070 flagged as unverified. |
 | 2026-11-03 | Phase 1 audit added #074–#086; retracted #057 universal negative and #073 overclaim; superseded #065/#066; corrected Elm/Kotlin/Unicode sources; summary recomputed. |
 | 2026-11-03 | Independent Unicode profile audit added #097–#099; #068 is retained but superseded by #099; all 16 Unicode 17.0.0 data/test blob identities independently verified. |
+| 2026-11-03 | Recorded Better-back's C1 sign-off and C5 PlainP donor-only ruling (#104–#105), plus proposed implementation, Unicode pipeline, and runner decisions (#101–#103). |
+| 2026-11-03 | Added #106 for full Unicode 17.0.0 normalization corpus result: 20,034 rows, 200,340 assertions, zero failures. |
+| 2026-11-03 | Added #107 as an unverified hypothesis for five computed UTS #39 internalSkeleton candidates; all bidi-aware results remain untested. |
+| 2026-11-03 | Recorded owner selections on C2 import and A-* revisions as #108–#109; both actions remain unresolved pending book source and exact proposal changes. |
+| 2026-11-03 | Added #110 as a proposed A-46 dependency gap: Script value aliases need a further pinned input; owner amendment pending. |
+| 2026-11-03 | Added #111 for six property-accessor smoke tests; raw output is saved. Total 111 rows. |

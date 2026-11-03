@@ -32,6 +32,7 @@ that folder navigable and states the rules the records follow.
 | 1 | [`phase-01-03-primary-source-audit.md`](./phase-01-03-primary-source-audit.md) | Which v0.1 language claims survive primary-source checking, and what Unicode source-handling profile should Plain use? |
 | 1 | [`phase-01-04-integrated-systems-and-plainp.md`](./phase-01-04-integrated-systems-and-plainp.md) | Which integrated systems are closest to ZEMA’s intersection, and what does a read-only PlainP audit establish? |
 | 1 | [`phase-01-05-specification-audit.md`](./phase-01-05-specification-audit.md) | What blocks Plain v0.1 from being implementation-ready, what changed in v0.2, and which citation/scope/Unicode-diagnostic issues were refined through v0.2.4? |
+| 1 | [`phase-01-06-implementation-feasibility.md`](./phase-01-06-implementation-feasibility.md) | What Phase 1 implementation and Unicode-data approaches are feasible in the verified environment, and what remains unauthorized or unratified? |
 | 1 | [`data/phase-01-source-manifest.json`](./data/phase-01-source-manifest.json) | Pinned source bytes/URLs, versions, hashes, and retrieval method for the Phase 1 audit |
 | 1 | [`data/phase-01-document-audit.json`](./data/phase-01-document-audit.json) | Machine-recomputed counts, link check, specification cross-reference check, grammar production closure, source-manifest structure check, and generated diagnostic-code registry (`python3 tools/audit_phase01.py --check`) |
 

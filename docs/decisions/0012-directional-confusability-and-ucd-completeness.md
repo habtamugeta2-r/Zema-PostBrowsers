@@ -152,8 +152,13 @@ A-45/A-46/A-47 are **Resolved (proposed)**; L-10/L-11 and the profile input lock
 - [Unicode 17.0.0 `IndicSyllabicCategory.txt`](https://www.unicode.org/Public/17.0.0/ucd/IndicSyllabicCategory.txt) — context-B data file (A).
 - [`phase-01-source-manifest.json`](../../research/data/phase-01-source-manifest.json) — immutable 16-file input lock.
 
+## Post-audit execution note (2026-11-03)
+
+The earlier statements in this record describe the state at the time Decision 0012 was prepared. Later on 2026-11-03, all 16 pinned Unicode files were fetched into an ignored cache and verified against manifest Git blob SHA-1, byte length, and SHA-256. A project-owned `internalSkeleton` implementation (NFD → remove Default_Ignorable_Code_Point → `confusables.txt` map → NFD) computed outputs for the five candidates in [`phase-01-internal-skeleton-examples.json`](../../research/data/phase-01-internal-skeleton-examples.json). These are **internalSkeleton only**, not `skeleton(X)` or LTR/RTL/FS `bidiSkeleton` outputs; no Plain confusability result, chunk/C4 diagnostic, or language fixture is asserted. The full NormalizationTest corpus passed via experiment EN-unicode17-normalization. C1/C5 were subsequently resolved; C2 and A-* ratifications remain outstanding before Gate 1.
+
 ## Change log
 
 | Date | Change |
 |---|---|
 | 2026-11-03 | Independent audit distinguishes UTS #55 source-order recommendations from UTS #39 all-direction guidance, proposes the broader Plain relation, clarifies exact joiner context B, and completes the Unicode 17.0.0 data/test input inventory. |
+| 2026-11-03 | Added post-audit note: all 16 inputs verified, full normalization corpus passed, and internalSkeleton values computed for five examples. Full bidiSkeleton/C4/Plain behavior remains unimplemented; C1/C5 now resolved, C2/A-* still pending for Gate 1. |

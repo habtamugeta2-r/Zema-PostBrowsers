@@ -1,0 +1,10 @@
+{
+  "checked_at_utc": "2026-11-03T18:47:39+00:00",
+  "input": "Unicode 17.0.0 NormalizationTest.txt",
+  "implementation": "src/plain/unicode17.py; no Python unicodedata import",
+  "rows_checked": 20034,
+  "assertions_checked": 200340,
+  "failure_count": 0,
+  "passed": true,
+  "failures_first_100": []
+}

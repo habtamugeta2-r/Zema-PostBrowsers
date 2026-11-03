@@ -1,6 +1,6 @@
 {
   "date": "2026-11-03",
-  "scope": "Read-only document audit; no Plain implementation or fixtures",
+  "scope": "Document audit; no Plain parser/evaluator or conformance fixtures",
   "rules": {
     "L": {
       "count": 34,
@@ -487,11 +487,19 @@
     "sum": 307
   },
   "evidence": {
-    "count": 100,
+    "count": 111,
     "labels": {
-      "H": 29,
-      "P": 22,
-      "E": 49
+      "H": 30,
+      "P": 26,
+      "E": 55
+    },
+    "declared_summary": {
+      "total": 111,
+      "labels": {
+        "E": 55,
+        "P": 26,
+        "H": 30
+      }
     },
     "retracted": [
       "001",

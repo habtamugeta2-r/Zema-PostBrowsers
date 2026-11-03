@@ -33,15 +33,7 @@ success and failure would each look like.
 **Phase 0 — Historical Foundations & Problem Definition: complete.
 Gate 0 passed with conditions (C1–C5).**
 
-**Phase 1 — The Unified Language ("Plain"): research deepened, draft
-v0.2.4 written, build blocked.** The specification
-([`docs/plain/`](docs/plain/README.md)) now has 100 numbered rules, 47
-derived ambiguities (42 resolved proposals, 5 deferred, 0 open; ratification pending), 20 deferrals, a 307-fixture
-planning budget, and a **non-normative** small-step semantics draft.
-There is **no interpreter and no conformance suite**, so **Gate 1 is
-deliberately not attempted** — build tasks wait on owner sign-off (C1)
-and the `PlainP` ruling (C5), with the research-book condition (C2) due
-before Gate 1.
+**Phase 1 — The Unified Language ("Plain"): draft v0.2.4; build authorized, in progress.** Better-back signed C1 and ruled PlainP a donor only on 2026-11-03 (recorded in [`gate-00.md`](docs/gates/gate-00.md) §9); the Phase 1 build may proceed against the proposed spec. The specification ([`docs/plain/`](docs/plain/README.md)) has 100 numbered rules, 47 derived ambiguities (42 resolved proposals, 5 deferred, 0 open; ratification pending), 20 deferrals, a 307-fixture planning budget, and a **non-normative** small-step semantics draft. The Phase 1 build has fetched and verified the 16 pinned Unicode inputs and implemented a project-owned NFC/NFD normalizer that passes all 20,034 rows / 200,340 assertions in the Unicode 17 normalization corpus. The lexer/parser/typechecker/evaluator, bidiSkeleton and full identifier-security algorithms, and conformance suite remain unimplemented; Script_Extensions comparisons are deliberately guarded pending proposed decision 0016 (an A-46 input-lock amendment). **Gate 1 is not attempted**. C2 and A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratifications are required before a Gate 1 attempt.
 
 | Phase 0 artifact | What it records |
 |---|---|
@@ -50,7 +42,7 @@ before Gate 1.
 | [Coordination-cost research](research/phase-00-03-coordination-cost.md) | Published measurements of today's stack, plus what they do *not* prove |
 | [Prior-art review](research/phase-00-04-prior-art.md) | Electron, Tauri, Flutter, React Native, PWAs — and the retraction of "world's first" |
 | [Book-import audit](research/phase-00-05-book-import-audit.md) | A reproducible negative finding: the research book is not in this repo or the owner's public repos |
-| [Evidence register](docs/evidence-register.md) | 100 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
+| [Evidence register](docs/evidence-register.md) | 111 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
 | [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book |
 | [Gate 0 review](docs/gates/gate-00.md) | The pass, its two retractions, its stopping-condition check, and conditions C1–C5 |
 | [Gate 1 readiness packet](docs/gates/gate-01-readiness.md) | Owner/reviewer response blocks for C1/C2/C5 and A-27/A-38/A-42/A-44/A-45/A-46/A-47; preparation only, not a gate attempt |
@@ -72,8 +64,13 @@ before Gate 1.
 | [Primary-source audit](research/phase-01-03-primary-source-audit.md) | Kotlin/Swift/Rust/Elm/Unicode corrections and UTS #55 source-handling profile |
 | [Integrated systems & PlainP](research/phase-01-04-integrated-systems-and-plainp.md) | Newspeak/Monte/Unison/Lamdera/Dark/Skip/Flutter matrix and read-only PlainP audit |
 | [Specification audit](research/phase-01-05-specification-audit.md) | 29 findings, counterexamples, count corrections, Unicode data lock, Gate 1 readiness |
+| [Implementation feasibility](research/phase-01-06-implementation-feasibility.md) | Python reference vehicle proposal, C1/C5 authorization state, and Unicode implementation progress |
 | [Source manifest](research/data/phase-01-source-manifest.json) | 58 versioned sources including 16 hash-pinned Unicode 17.0.0 data/test inputs |
-| [Decisions 0005–0012](docs/decisions/) | Surface doctrine · type/evaluation core · deferrals · v0.2 research continuation · Unicode/Eq/Ord proposal · Gate 1 scope · UTS #55 diagnostics/data profile · direction-aware confusability and completed UCD lock |
+| [Unicode input verification](research/data/phase-01-unicode-verification.json) | Fetch-time Git blob, byte-length, and SHA-256 checks for all 16 pinned files |
+| [Internal skeleton candidates](research/data/phase-01-internal-skeleton-examples.json) | Computed UTS #39 internalSkeleton only; not bidiSkeleton or final Plain results |
+| [Unicode property tests](tests/test_unicode17_properties.py) | Six source-accessor smoke tests; Script_Extensions comparisons are guarded without the pending alias input |
+| [Normalization experiment](research/experiments/EN-unicode17-normalization/README.md) | Project-owned NFC/NFD implementation passes the complete pinned Unicode 17 normalization corpus |
+| [Decisions 0005–0016](docs/decisions/) | Language doctrine, types/evaluation, scope, Unicode, proposed Python/data/runner implementation, and Script alias input decision |
 
 ## Method
 
@@ -88,7 +85,9 @@ outcome.
 proof). Retracted claims stay in the register forever.
 
 **Current status (2026-11-03):** Phase 0 passed with conditions; Phase 1
-research deepened and specification repaired as **draft v0.2.4**. No ZEMA
-code exists yet — by design. Next step: obtain owner/reviewer ratification
-of A-27/A-38/A-42/A-44/A-45/A-46/A-47 and resolve C2 before Gate 1.
-Build work remains blocked on C1/C5. Gate 1 is not attempted.
+draft v0.2.4. C1/C5 were resolved by owner responses; build is authorized
+and initial Unicode acquisition/normalization work is complete. A partial
+Unicode subsystem now exists, but there is no lexer/parser/typechecker/
+evaluator or conformance suite. Next: continue the proposed implementation;
+obtain owner/reviewer ratification of A-27/A-38/A-42/A-44/A-45/A-46/A-47
+and resolve C2 before Gate 1. Gate 1 is not attempted.

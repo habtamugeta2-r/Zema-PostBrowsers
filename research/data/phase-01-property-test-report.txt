@@ -1,0 +1,11 @@
+test_bidi_and_security_properties (test_unicode17_properties.Unicode17PropertyTests.test_bidi_and_security_properties) ... ok
+test_joining_and_indic_properties (test_unicode17_properties.Unicode17PropertyTests.test_joining_and_indic_properties) ... ok
+test_script_aliases_normalize_both_file_representations (test_unicode17_properties.Unicode17PropertyTests.test_script_aliases_normalize_both_file_representations) ... ok
+test_script_and_category_properties (test_unicode17_properties.Unicode17PropertyTests.test_script_and_category_properties) ... ok
+test_script_extensions_are_guarded_without_value_alias_table (test_unicode17_properties.Unicode17PropertyTests.test_script_extensions_are_guarded_without_value_alias_table) ... ok
+test_xid_properties (test_unicode17_properties.Unicode17PropertyTests.test_xid_properties) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.126s
+
+OK

@@ -1,0 +1,155 @@
+{
+  "verified_at_utc": "2026-11-03T18:13:20+00:00",
+  "manifest": "research/data/phase-01-source-manifest.json",
+  "repository": "unicode-org/unicodetools",
+  "commit": "3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c",
+  "source_count": 16,
+  "all_verified": true,
+  "cache_policy": "source bytes live only under ignored research/data/.cache/unicode17/",
+  "files": [
+    {
+      "id": "unicode17-identifierstatus",
+      "path": "unicodetools/data/security/17.0.0/IdentifierStatus.txt",
+      "bytes": 147969,
+      "git_blob_sha": "21a79503afea3e78276c72d181db4d0e47cf2919",
+      "sha256": "617228a16da13850bf8af28b6cd08f5e9b6595d2eb60404fe6eee2c85b4e4a35",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-identifiertype",
+      "path": "unicodetools/data/security/17.0.0/IdentifierType.txt",
+      "bytes": 527366,
+      "git_blob_sha": "90b6f116f4be3281dbc559601a8d77b181cd1f39",
+      "sha256": "924ac63faa97ed73420d6ac48d08279d90968c7da0502ab701e08bfbb9683c22",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-confusables",
+      "path": "unicodetools/data/security/17.0.0/confusables.txt",
+      "bytes": 745683,
+      "git_blob_sha": "d52b6278a42a3cb95771b052684f508e6f45d08c",
+      "sha256": "091c7f82fc39ef208faf8f94d29c244de99254675e09de163160c810d13ef22a",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-arabicshaping",
+      "path": "unicodetools/data/ucd/17.0.0/ArabicShaping.txt",
+      "bytes": 41441,
+      "git_blob_sha": "47bfbe991ab9662cf267503d8c9e5f75da87895d",
+      "sha256": "39afa01e680e27d0fd10b67a9b27be13fbaa3d0efecfb5be45991de9a0d267d0",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-bidibrackets",
+      "path": "unicodetools/data/ucd/17.0.0/BidiBrackets.txt",
+      "bytes": 8891,
+      "git_blob_sha": "c94fe35f89b327eb34f884a97c2a67b622eabe20",
+      "sha256": "dadbaf38a0d0246e5b805bf8725cb81b7c621f93d030595635f5ba2c2f179428",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-bidimirroring",
+      "path": "unicodetools/data/ucd/17.0.0/BidiMirroring.txt",
+      "bytes": 26827,
+      "git_blob_sha": "bb4ea24e46adb40d7f537f1e2c1676d589446f83",
+      "sha256": "a2f16fb873ab4fcdf3221cb1a8a85a134ddd6ed03603181823ff5206af3741ce",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-derivedcoreproperties",
+      "path": "unicodetools/data/ucd/17.0.0/DerivedCoreProperties.txt",
+      "bytes": 1134783,
+      "git_blob_sha": "f327784bf3956436efeb85e213fc637d7b3c0207",
+      "sha256": "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-derivednormalizationprops",
+      "path": "unicodetools/data/ucd/17.0.0/DerivedNormalizationProps.txt",
+      "bytes": 1377582,
+      "git_blob_sha": "448ba69d639987e3108ab46fd6fa3fdf49db269d",
+      "sha256": "71fd6a206a2c0cdd41feb6b7f656aa31091db45e9cedc926985d718397f9e488",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-normalizationtest",
+      "path": "unicodetools/data/ucd/17.0.0/NormalizationTest.txt",
+      "bytes": 2827429,
+      "git_blob_sha": "97b4e4e6202e595f88f07e3a94e8e71b180f66be",
+      "sha256": "5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-scriptextensions",
+      "path": "unicodetools/data/ucd/17.0.0/ScriptExtensions.txt",
+      "bytes": 20707,
+      "git_blob_sha": "98b8d0fb06e5ed7c3c2f20e0202f6cccf8a984e4",
+      "sha256": "ec2107e58825a1586acee8e0911ce18260394ac8b87e535ca325f1ccbeb06bc6",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-scripts",
+      "path": "unicodetools/data/ucd/17.0.0/Scripts.txt",
+      "bytes": 192460,
+      "git_blob_sha": "5574fdd6ae35ddc074397fdc60fbe2e27e795713",
+      "sha256": "9f5e50d3abaee7d6ce09480f325c706f485ae3240912527e651954d2d6b035bf",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-unicodedata",
+      "path": "unicodetools/data/ucd/17.0.0/UnicodeData.txt",
+      "bytes": 2198209,
+      "git_blob_sha": "fca68e3e154e62e49727ecf69f1df442582bfa96",
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-derivedbidiclass",
+      "path": "unicodetools/data/ucd/17.0.0/extracted/DerivedBidiClass.txt",
+      "bytes": 173433,
+      "git_blob_sha": "7ce483d2962de86f4cfe44c287fc2fb8dd0cc896",
+      "sha256": "4867b4b7f0731ed1bfcd34cc6251211ff1542541fce0734b6fbda139ee80b3a4",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-biditest",
+      "path": "unicodetools/data/ucd/17.0.0/BidiTest.txt",
+      "bytes": 7959988,
+      "git_blob_sha": "63c618d727e33cd5b68e1657470bd7558d86a90e",
+      "sha256": "888bdfc8090652272d1f859cdb00ae659e2dc6c26740be61ef1d03998a687620",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-bidicharactertest",
+      "path": "unicodetools/data/ucd/17.0.0/BidiCharacterTest.txt",
+      "bytes": 6880771,
+      "git_blob_sha": "646148d7d402e2eb96169d860d7a79f846d67bd0",
+      "sha256": "a3e6e905ab5afbe318a96df5401d0372a04cd73ef139ab5e3cf0ae241c255488",
+      "verified": true,
+      "retrieved_now": false
+    },
+    {
+      "id": "unicode17-indicsyllabiccategory",
+      "path": "unicodetools/data/ucd/17.0.0/IndicSyllabicCategory.txt",
+      "bytes": 86695,
+      "git_blob_sha": "43287cca65e978e4ca04a49faa7032dde3ddf250",
+      "sha256": "3fc122f4cf58b0c19268d5f810263b04ab4e1e67743386ec0e0ada9c76aec5be",
+      "verified": true,
+      "retrieved_now": false
+    }
+  ]
+}

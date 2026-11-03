@@ -17,6 +17,8 @@ Build Prompt** (*in what order and how* — Phases 0–14).
 | 3 | [`IMPROVEMENTS.md`](./IMPROVEMENTS.md) | The editorial record: exactly what was improved in each v1.1, why, and what was deliberately left unchanged. |
 | 4 | [`templates/`](./templates/) | Ready-to-copy recording templates the prompt itself requires (evidence register, decision record, experiment record, gate review). |
 
+**Current Phase 1 work order:** [`PHASE-01-EXECUTION-PROMPT.md`](./PHASE-01-EXECUTION-PROMPT.md) — conditional build, conformance, and Gate 1 instructions; not an authorization to bypass Gate 0 conditions.
+
 ## How to use it
 
 1. **Read** [`00-Core-Concerns.md`](./00-Core-Concerns.md) first (the
