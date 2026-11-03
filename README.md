@@ -42,7 +42,7 @@ Gate 0 passed with conditions (C1–C5).**
 | [Coordination-cost research](research/phase-00-03-coordination-cost.md) | Published measurements of today's stack, plus what they do *not* prove |
 | [Prior-art review](research/phase-00-04-prior-art.md) | Electron, Tauri, Flutter, React Native, PWAs — and the retraction of "world's first" |
 | [Book-import audit](research/phase-00-05-book-import-audit.md) | A reproducible negative finding: the research book is not in this repo or the owner's public repos |
-| [Evidence register](docs/evidence-register.md) | 114 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
+| [Evidence register](docs/evidence-register.md) | 116 numbered claims, each labeled Established / Proposed / Hypothesis, with source grades and retractions |
 | [Decision records](docs/decisions/) | Source grading · target OS · browser-service strategy · missing research book; index and two-field status vocabulary in [`docs/decisions/README.md`](docs/decisions/README.md) |
 | [Gate 0 review](docs/gates/gate-00.md) | The pass, its two retractions, its stopping-condition check, and conditions C1–C5 |
 | [Gate 1 readiness packet](docs/gates/gate-01-readiness.md) | Owner/reviewer response blocks for C1/C2/C5 and A-27/A-38/A-42/A-44/A-45/A-46/A-47; preparation only, not a gate attempt |

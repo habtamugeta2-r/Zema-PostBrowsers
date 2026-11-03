@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.0 |
+| **Version** | 1.1 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result |
@@ -60,7 +60,9 @@ documents:
 | Undefined rule/ambiguity references | 0 | same |
 | Duplicated result artifacts | 1 | same |
 | Split Markdown tables | 4 | `tests/test_document_invariants.py` |
-| False or stale status statements | 11 | manual reading, §4 below |
+| Rule sets tabulated in two documents | 2 → **0** (after §3.6) | `tools/audit_phase01.py` `duplicated_fact_check()` |
+| False or stale status statements | 11 | manual reading, §3.3 |
+| Typed prose numbers that disagree with the artifact | 2 ("580 words", "307 fixtures") | `--verify` |
 
 The mechanical layer was in good shape: links, grammar closure, cross-references,
 and the manifest all passed **before** this audit. The failures were one level
@@ -232,6 +234,65 @@ worth not "improving":
   executable core and no gate attempt exist. That discipline is the reason this
   audit could be done mechanically at all.
 
+### 3.6 Second pass: the audit's own repair reproduced the defect
+
+The first pass added four tables. One of them — the list of rules Gate 1 cannot
+verify — was written into **both** `05-conformance-plan.md` §5 and
+`07-traceability.md` §4, with the row set differing by one rule (`L-33`). That
+is the exact defect §3.1 describes, introduced by the document that describes
+it, within the same commit.
+
+It was found by re-running the duplication scan against the *new* files, not by
+review. Two consequences were recorded rather than quietly fixed:
+
+1. **The first duplicate-detection check was too weak.** It compared rule *sets*
+   for exact equality, so a three-row partial copy inside a larger table did not
+   trip it. Mutation-testing the check — reintroducing the duplicate and
+   observing it pass — exposed that. The check now measures *overlap* between
+   per-file rule sets (≥3 shared rules and ≥60 % of the smaller set), which is
+   the actual drift mode. `test_no_rule_set_is_tabulated_in_two_documents`
+   covers it.
+2. **The fact now has one owner.** `07-traceability.md` §4 owns the exclusion
+   table; the conformance plan links to that anchor and states the rule without
+   restating the table. `test_gate_one_exclusions_have_exactly_one_owner`
+   asserts the link exists and the copy does not.
+
+This is worth stating plainly in the record: the failure mode of append-only
+documentation is not limited to the original authors. **An audit that adds
+documents without the owner rule adds copies too.** That is the argument for
+PR-04 being mechanical rather than aspirational.
+
+### 3.7 Defects in the audit's own published numbers
+
+Three figures in v1.0 of this record were wrong, and the repair was the same
+class of error it was documenting:
+
+| Claim in v1.0 | Measured | Cause |
+|---|---|---|
+| "52 Markdown files", "8 Python files" | correct **at audit start**; 55/10 after | the record did not date its snapshot |
+| "The unexamined document had an underivable claim" — not stated, but true | `problem-statement.md` claimed "about 580 words of prose"; measured 519 prose / 866 total | a typed number, never computed |
+| the exclusion set contained `L-33` in one file and not the other | — | §3.6 |
+
+The remedy is now a tool mode rather than a resolution to be careful: 
+`python3 tools/audit_phase01.py --verify` prints the quantities prose is allowed
+to quote (`markdown_files`, `python_files`, `normative_rules_L_T_E`,
+`sugar_ids`, `ambiguities`, `deferrals`, `evidence_rows`, `decision_records`,
+`plain_documents`, `problem_statement_prose_words`,
+`problem_statement_total_words`, `conformance_fixtures_written`). That is PR-01
+in executable form.
+
+### 3.8 Two repairs completed that the first pass only started
+
+- **PR-06 (two-field decision status) was proposed and then not applied.** All
+  16 decision records now carry an `Owner ratification` field beside `Status`,
+  and `docs/decisions/README.md` mirrors it. Before this, three records said
+  "Accepted" while the readiness packet listed the same items as open for the
+  owner — the same word doing two jobs.
+- **Document-count drift.** The execution prompt told the executor to read "all
+  seven documents" in `docs/plain/`, which has held nine files (eight numbered
+  plus the index) since the traceability matrix was added. Corrected to "all
+  eight documents", with doc 7 identified as the work list.
+
 ## 4. The root cause
 
 One sentence: **the project had an evidence register but no artifact register.**
@@ -280,7 +341,11 @@ the right shape; it was simply checking only the claims layer.
 | `tools/audit_phase01.py` | 3 new checks: `traceability_matrix`, `conformance_area_coverage`, `duplicate_artifact_check`; fixture total now read from the plan and compared to the summed areas |
 | `tools/check_unicode17_normalization.py` | writes the canonical experiment report |
 | `research/data/phase-01-normalization-report.json` | **deleted** (duplicate) |
-| `tests/test_document_invariants.py` | **New.** 9 tests: audit green, rule methods, rule areas, no duplicates, declared-vs-summed fixture total, evidence summary match, no split table, unique numbered headings, gate-00 internal refs resolve |
+| `tests/test_document_invariants.py` | **New.** 11 tests: audit green, rule methods, rule areas, no duplicate results, no rule set tabulated twice, exclusion table has one owner, declared-vs-summed fixture total, evidence summary match, no split table, unique numbered headings, gate-00 internal refs resolve |
+| `docs/decisions/README.md` + all 16 decision records | Two-field status (`Status` + `Owner ratification`), mirrored in one index (PR-06) |
+| `docs/problem-statement.md` | Typed word count replaced by the measured one (519 prose / 866 total) |
+| `tools/audit_phase01.py` `--verify` | Prints the quantities prose may quote (PR-01 in executable form) |
+| `tools/audit_phase01.py` `duplicated_fact_check` | Overlap-based, not equality-based; §3.6 explains why the first version failed |
 
 ### 5.2 The checks were mutation-tested
 
@@ -293,6 +358,8 @@ broken and observed to fail:
 | Remove `L-05` from the comments area row | `unattributed: ['L-05']` → 2 tests fail |
 | Insert a blank line inside the ambiguity table | `docs/plain/03-ambiguities.md:54` → test fails |
 | Restore the deleted duplicate report | `duplicates: […]` → 2 tests fail (observed on the revert) |
+| Partially copy the exclusion table into the conformance plan | `duplicated_facts` clash on `['E-12','E-31','E-34']` → 2 tests fail (**only after the check was rewritten**; the first version passed this mutation, which is how the weakness was found) |
+| Add a `Status`-only decision record without `Owner ratification` | not yet mechanized — recorded as an open gap in §9 |
 
 So the repair is enforced, not merely recorded, for the four defect classes this
 audit found.
@@ -319,12 +386,12 @@ These are the durable fix; they need owner acceptance like any other proposal.
 
 | ID | Rule | Mechanizes |
 |---|---|---|
-| **PR-01** | Every number published in prose is computed by `tools/audit_phase01.py` from the artifact that owns it, and a mismatch fails `--check`. Prose may restate a computed number; it may not originate one | the 307/341 and any future count drift |
+| **PR-01** | Every number published in prose is computed by `tools/audit_phase01.py` from the artifact that owns it. Prose may restate a computed number; it may not originate one. `--verify` prints the allowed set; `--check` guards the ones with a mechanical owner | "580 words", "307 fixtures", and any future count drift |
 | **PR-02** | Every measurement has exactly one canonical file. A second copy is a defect, not a backup. Result files are named for their experiment and only the experiment owns them | the duplicated normalization result |
 | **PR-03** | Every rule ID appears in `07-traceability.md`, and a fixture's commit updates its row. "Allocated" and "verified" are distinct states that never collapse | 14 rules with no area |
 | **PR-04** | A status fact (condition resolved, gate result, decision ratified) has exactly one owning document. Others **link** to it and never restate it | 11 diverged statements |
 | **PR-05** | A superseded statement is corrected in place with a visible dated note; a decision record keeps its original text. Never silently edit, never leave a false sentence standing | the C1/C5 corrections |
-| **PR-06** | Decision status uses two fields, not one: **Agent decision** (none / Proposed / Accepted) and **Owner ratification** (pending / ratified / revised / deferred) | "Accepted" vs "open" confusion |
+| **PR-06** | Decision status uses two fields, not one: **Agent decision** (none / Proposed / Accepted) and **Owner ratification** (pending / ratified / revised / deferred). Applied to all 16 records and the index | "Accepted" vs "open" confusion |
 | **PR-07** | Markdown is checked as a structure, not only as prose: no split tables, no duplicate numbered headings, and resolvable internal `§` references | 4 split tables, duplicate §8 |
 | **PR-08** | Every check added for a defect is mutation-tested — the defect is reintroduced in a scratch copy and the check must fail — and the mutation is recorded | checks that cannot fail |
 
@@ -355,6 +422,18 @@ its own gate and still be wrong.
   the seven A-* proposals are ratified or revised, and 341 fixtures exist and
   pass in both profiles under an independent reviewer.
 
+## 8a. Open gaps this pass did **not** close
+
+Stated so the next reader does not assume the repair is total.
+
+| # | Gap | Why it was left | Who should close it |
+|---|---|---|---|
+| 1 | A decision record without an `Owner ratification` field is not rejected | The field is a document convention, not yet a schema | Add a check to `audit_phase01.py` when decision records stabilize |
+| 2 | `docs/evidence-register.md` status cells are free prose ("Confirmed as…", "Proposed; owner…"). No controlled vocabulary is enforced | A vocabulary is a project decision; PR-06 currently covers decisions only | Owner decision |
+| 3 | Prose numbers outside the `--verify` list are still unchecked (e.g. "56 productions" is checked; "29 findings" is not) | A general scraper produces false positives; each addition should be justified by a defect | Extend `--verify` per confirmed drift |
+| 4 | The 11 stale-status findings were found by reading, not by a check | Detecting "this sentence contradicts that file" needs a claim-level link, which is a bigger design than this pass | Consider a status-owner field in the tracker |
+| 5 | Phase 2–14 records do not exist, so none of these checks has been exercised past Phase 1 | Out of scope by the directory guide's rule 4 | Each phase, before its gate |
+
 ## 9. Sources
 
 | # | Source | Grade |
@@ -380,3 +459,4 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-03 | 1.1 | Second pass. §3.6 records that this audit's own repair duplicated the exclusion table and that the first duplicate-detection check was too weak to catch it — found by mutation-testing the check, not by review. §3.7 corrects three typed numbers in v1.0 (including the problem statement's "580 words" → 519 measured) and adds `--verify`. §3.8 completes PR-06 across all 16 decision records and fixes the "seven documents" count. §8a lists five gaps deliberately left open. Duplication check rewritten from set-equality to overlap. |

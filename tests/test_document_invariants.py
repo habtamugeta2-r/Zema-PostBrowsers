@@ -50,6 +50,20 @@ class DocumentInvariantTests(unittest.TestCase):
     def test_results_are_not_stored_twice(self) -> None:
         self.assertTrue(audit.duplicate_artifact_check()["ok"])
 
+    def test_no_rule_set_is_tabulated_in_two_documents(self) -> None:
+        # A partially copied table drifts: one copy gains a row, the other does
+        # not. This happened three times here (conformance areas, the Gate 1
+        # exclusion list, the decision index) before the check existed.
+        result = audit.duplicated_fact_check()
+        self.assertTrue(result["ok"], result["clashes"])
+
+    def test_gate_one_exclusions_have_exactly_one_owner(self) -> None:
+        # Section 4 of the traceability matrix owns this table; the conformance
+        # plan must link to it rather than restate it.
+        plan = audit.read("docs/plain/05-conformance-plan.md")
+        self.assertIn("07-traceability.md#4-rules-gate-1-cannot-fully-verify", plan)
+        self.assertNotIn("| `E-31` (task-survival clause) | No scheduler", plan)
+
     def test_declared_fixture_total_equals_summed_areas(self) -> None:
         plan = audit.read("docs/plain/05-conformance-plan.md")
         rows = audit.fixture_targets(plan)

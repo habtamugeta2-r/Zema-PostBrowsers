@@ -180,7 +180,8 @@ verification that must exist before Gate 1 can be attempted.
 | Sanctioned-sugar IDs (`S-0`…`S-5`) | 6 | §8 of doc 0 |
 | **Total rule IDs in this matrix** | **106** | §2 above |
 | Rules attributable to a conformance-plan area | 106 | plan §2, after the gap repair |
-| Rules that are **NV** at Gate 1 | 2 | `E-31` (partial), `E-34` |
+| Rules with **no** Gate 1 fixture (`NV`) | 2 | `E-31`, `E-34` — see §4 |
+| Rules only **partly** verifiable at Gate 1 | 2 | `E-12`, `L-33` — see §4 |
 | Planned fixture budget | 341 | conformance plan §2 |
 | Fixtures written | **0** | repository observation, 2026-11-03 |
 | Rule-level coverage now provable | **0 %** | there is nothing to run |
@@ -190,14 +191,18 @@ verification that must exist before Gate 1 can be attempted.
 > between allocation and verification is the entire remaining Phase 1 build.
 > Anyone quoting "341 fixtures" as progress is quoting a budget.
 
-## 4. Rules Gate 1 cannot verify
+## 4. Rules Gate 1 cannot fully verify
 
-| Rule | Why not at Gate 1 | Owner | Verified by |
-|---|---|---|---|
-| E-31 (task-survival clause) | There is no task, scheduler, or supervisor in a hermetic single-task core | Phase 3 | Gate 3 supervision fixtures |
-| E-34 (cost of checked arithmetic) | It is a performance claim; Gate 12 owns all numbers and Gate 1 asserts behavior only | Phases 2, 4, 12 | E1, E2, Gate 12 |
-| E-12 (no implied localization) | A design constraint, not an observable; enforced by review and by the absence of formatting APIs | Phase 7 | Gate 7 review |
-| L-33 (diagnostic wording) | Partly mechanical (banned-vocabulary check) and partly editorial | Phase 13 | Gate 13 tooling review |
+**This table is the single owner of this fact.** The conformance plan links here
+instead of restating it (process rule PR-04); two copies of a table about
+exclusions would drift, and this one already did once.
+
+| Rule | Gate 1 fixture? | Why not fully verifiable at Gate 1 | Owner | Verified by |
+|---|---|---|---|---|
+| E-31 (task-survival clause) | **none** | There is no task, scheduler, or supervisor in a hermetic single-task core; only "the fault terminates the computation" is observable | Phase 3 | Gate 3 supervision fixtures |
+| E-34 (cost of checked arithmetic) | **none** | It is a cost claim; Gate 1 asserts behavior only and Gate 12 owns every number | Phases 2, 4, 12 | E1, E2, Gate 12 |
+| E-12 (no implied localization) | partial (`AX`) | A design constraint, not an observable; enforced by review and by the absence of formatting APIs | Phase 7 | Gate 7 review |
+| L-33 (diagnostic wording) | partial (`DZ` + `AX`) | The mechanical half (banned-vocabulary) is checkable; the editorial half is a review judgement | Phase 13 | Gate 13 tooling review |
 
 Every other rule in §2 is verifiable by an executable fixture inside the
 hermetic core (decision 0010), which is exactly the scope A-42 proposes.

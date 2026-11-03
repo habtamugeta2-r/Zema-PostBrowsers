@@ -20,11 +20,11 @@ actions are tracked in [`../gates/gate-01-readiness.md`](../gates/gate-01-readin
 
 | # | Title | Agent decision | Owner ratification |
 |---|---|---|---|
-| [0001](./0001-source-grading.md) | Source grading (A/B/C) | Accepted | n/a — methodological |
-| [0002](./0002-target-os-linux.md) | Target OS = Linux (Ubuntu 24.04 LTS) | Proposed | **pending** (Gate 0 condition C3) |
-| [0003](./0003-browser-service-strategy.md) | Browser-service strategy | Accepted | n/a — revisitable per row |
-| [0004](./0004-research-book-missing.md) | Research book missing / E3 / Decision C | Accepted (interim) | superseded the moment the book is imported |
-| [0005](./0005-language-surface-doctrine.md) | Language surface doctrine | Proposed | pending (syntax freezes at Gate 1) |
+| [0001](./0001-source-grading.md) | Source grading (A/B/C) | Accepted | not applicable |
+| [0002](./0002-target-os-linux.md) | Target OS = Linux (Ubuntu 24.04 LTS) | Proposed | **pending** (C3) |
+| [0003](./0003-browser-service-strategy.md) | Browser-service strategy | Accepted | not required |
+| [0004](./0004-research-book-missing.md) | Research book missing / E3 / Decision C | Accepted | not required now |
+| [0005](./0005-language-surface-doctrine.md) | Language surface doctrine | Proposed | pending |
 | [0006](./0006-type-and-evaluation-core.md) | Type and evaluation core | Proposed | pending |
 | [0007](./0007-deferred-features.md) | Deferred-features register (20) | Proposed | pending |
 | [0008](./0008-phase-01-research-and-draft-v02.md) | Continue Phase 1 as research; adopt v0.2 corrections | Proposed | pending |
@@ -35,7 +35,7 @@ actions are tracked in [`../gates/gate-01-readiness.md`](../gates/gate-01-readin
 | [0013](./0013-phase-1-reference-interpreter.md) | Python reference interpreter | Proposed | pending |
 | [0014](./0014-unicode-data-pipeline.md) | Manifest-verified Unicode pipeline | Proposed | pending |
 | [0015](./0015-conformance-runner-and-profiles.md) | Conformance runner, checked/optimized profiles | Proposed | pending |
-| [0016](./0016-script-value-alias-input.md) | Script value-alias input (A-46 amendment) | Proposed | **pending** — blocks security calculations |
+| [0016](./0016-script-value-alias-input.md) | Script value-alias input (A-46 amendment) | Proposed | **pending** — blocks security calcs |
 
 ## Rules
 

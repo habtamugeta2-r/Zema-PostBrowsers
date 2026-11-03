@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 1 / Gate 1 (the semantics half) |
 | **Status** | **Proposed** — normative text, unfrozen; E1/E2 must price the checked-arithmetic and closure rules |
+| **Owner ratification** | **pending** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** (with **Established** citations for prior art) |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); owner ratification of the language decisions pending |
 | **Implements** | [`../plain/01-types.md`](../plain/01-types.md), [`../plain/02-evaluation.md`](../plain/02-evaluation.md) |

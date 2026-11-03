@@ -168,11 +168,11 @@ def conformance_area_coverage() -> dict:
     for rel, prefix in zip(RULE_DOC_RELS, ("L", "T", "E")):
         defined |= set(rule_ids(read(rel), prefix))
     defined |= set(sugar_ids(read(RULE_DOC_RELS[0])))
-    # §5 of the plan owns rules the hermetic suite deliberately excludes;
-    # they are attributed, not forgotten.
-    excluded = read("docs/plain/05-conformance-plan.md").split("## 5.", 1)
-    if len(excluded) == 2:
-        for match in re.finditer(r"`([LTE]-\d{2}|S-\d)`", excluded[1].split("## 6.", 1)[0]):
+    # Section 4 of the traceability matrix owns the rules this suite cannot
+    # verify. That table is the single source; the plan links to it.
+    trace = read("docs/plain/07-traceability.md").split("## 4.", 1)
+    if len(trace) == 2:
+        for match in re.finditer(r"^\|\s*(E-\d{2}|L-\d{2}|T-\d{2}|S-\d)\b", trace[1].split("## 5.", 1)[0], re.MULTILINE):
             covered.add(match.group(1))
     unattributed = sorted(defined - covered)
     return {
@@ -202,6 +202,92 @@ def duplicate_artifact_check() -> dict:
             }
         )
     return {"ok": not duplicates, "duplicates": duplicates}
+
+
+def duplicated_fact_check() -> dict:
+    """Detect two documents tabulating the same rule set.
+
+    A fact must have one owning table (process rule PR-04). The failure mode is
+    not a byte-identical copy -- it is a *partial* copy that then drifts: one
+    table gains a row, the other keeps the old list. This defect occurred three
+    times in this repository (conformance areas, the Gate 1 exclusion list, and
+    the decision-status table). Identical-set detection misses it, so overlap is
+    measured instead.
+
+    Threshold: two files clash when they share at least 3 rule rows and those
+    rows are at least 60% of the smaller table.
+    """
+    rule_re = re.compile(r"^\|\s*`?([LTE]-\d{2}|S-\d)\b")
+    per_file: dict[str, set[str]] = {}
+    for path in sorted(PLAIN.glob("*.md")):
+        rows = set()
+        for line in path.read_text(encoding="utf-8").splitlines():
+            match = rule_re.match(line)
+            if match:
+                rows.add(match.group(1))
+        if len(rows) >= 3:
+            per_file[str(path.relative_to(ROOT))] = rows
+
+    clashes = []
+    names = sorted(per_file)
+    for i, left in enumerate(names):
+        for right in names[i + 1:]:
+            shared = per_file[left] & per_file[right]
+            smaller = min(len(per_file[left]), len(per_file[right]))
+            if len(shared) >= 3 and len(shared) >= 0.6 * smaller:
+                clashes.append(
+                    {
+                        "files": [left, right],
+                        "shared_rules": sorted(shared),
+                        "shared_count": len(shared),
+                        "smaller_table": smaller,
+                        "owner": left,
+                        "duplicate": right,
+                    }
+                )
+    return {"ok": not clashes, "clashes": clashes}
+
+
+def measured_facts() -> dict:
+    """Quantities that prose is allowed to quote (process rule PR-01).
+
+    Prose may restate these; it may not originate them. Run with --verify to
+    print them, then compare against the documents. This is deliberately a
+    small, explicit list rather than a general number scraper: a scraper
+    produces false positives, and a check nobody trusts gets switched off.
+    """
+    def prose_words(rel: str) -> int:
+        text = read(rel)
+        body = text.split("---", 1)[1] if "---" in text else text
+        words = []
+        for line in body.splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith(("|", "#", "```", ">")):
+                continue
+            stripped = re.sub(r"\[[EPT]\]|\*\(.*?\)\*", "", stripped)
+            words += stripped.split()
+        return len(words)
+
+    def total_words(rel: str) -> int:
+        return len(re.findall(r"\b[\w'’-]+\b", read(rel)))
+
+    plain_docs = sorted(PLAIN.glob("*.md"))
+    return {
+        "markdown_files": len(list(ROOT.rglob("*.md"))),
+        "python_files": len(list(ROOT.rglob("*.py"))),
+        "normative_rules_L_T_E": len(rule_ids(read(RULE_DOC_RELS[0]), "L"))
+        + len(rule_ids(read(RULE_DOC_RELS[1]), "T"))
+        + len(rule_ids(read(RULE_DOC_RELS[2]), "E")),
+        "sugar_ids": len(sugar_ids(read(RULE_DOC_RELS[0]))),
+        "ambiguities": len(ambiguity_rows(read("docs/plain/03-ambiguities.md"))),
+        "deferrals": len(re.findall(r"^### (D-\d{2})", read("docs/plain/04-deferred-features.md"), re.MULTILINE)),
+        "evidence_rows": len(evidence_rows(read("docs/evidence-register.md"))),
+        "decision_records": len(list((ROOT / "docs" / "decisions").glob("0*.md"))),
+        "plain_documents": len(plain_docs),
+        "problem_statement_prose_words": prose_words("docs/problem-statement.md"),
+        "problem_statement_total_words": total_words("docs/problem-statement.md"),
+        "conformance_fixtures_written": len(list(ROOT.rglob("conformance/**/*.plain"))),
+    }
 
 
 def broken_links() -> list[dict]:
@@ -344,6 +430,7 @@ def diagnostic_registry() -> list[dict]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--verify", action="store_true", help="print the numbers prose may quote")
     args = parser.parse_args()
 
     lexical = read(RULE_DOC_RELS[0])
@@ -381,6 +468,7 @@ def main() -> int:
     traceability = traceability_matrix()
     areas = conformance_area_coverage()
     duplicates = duplicate_artifact_check()
+    fact_clashes = duplicated_fact_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -398,6 +486,7 @@ def main() -> int:
         "traceability": traceability,
         "conformance_area_coverage": areas,
         "duplicate_artifacts": duplicates,
+        "duplicated_facts": fact_clashes,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -453,6 +542,9 @@ def main() -> int:
         problems.append(f"rules with no conformance-plan area: {areas['unattributed']}")
     if not duplicates["ok"]:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
+    if not fact_clashes["ok"]:
+        problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    report["measured_facts"] = measured_facts()
     report["check"] = {"ok": not problems, "problems": problems}
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps({
@@ -470,10 +562,13 @@ def main() -> int:
         },
         "conformance_area_coverage": areas,
         "duplicate_artifacts": duplicates["duplicates"],
+        "duplicated_facts": fact_clashes["clashes"],
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
     }, indent=2, ensure_ascii=False))
+    if args.verify:
+        print(json.dumps(report["measured_facts"], indent=2))
     return 1 if args.check and problems else 0
 
 

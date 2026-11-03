@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — scope recommendation by the agent; owner/reviewer ratification remains required |
+| **Owner ratification** | **pending — A-42** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** for scope; **Established** for repository phase/gate definitions |
 | **Source grade** | Repository primary documents: Master Prompt Phase 1 gate text and derived conformance plan; supporting semantics and prior-art records are not external authority for project scope |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); Gate 1 reviewer/owner may ratify or overrule |

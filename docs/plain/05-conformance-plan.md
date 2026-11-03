@@ -88,18 +88,12 @@ external-effect compensation (Phase 9). Each remains an explicit later
 gate obligation. A Gate 1 signature must say “Plain core passed Gate 1,” not “the
 platform passed.” Later obligations are not waived.
 
-**Normative rules excluded from this suite, with an owner.** These are rules
-in docs 00–02 that cannot be verified by a hermetic core fixture. They are
-listed so no reader mistakes their absence for an oversight:
-
-| Rule | Why it is not here | Owner | Verified by |
-|---|---|---|---|
-| `E-31` (task-survival clause) | No scheduler or supervisor exists in a single-task hermetic core | Phase 3 | Gate 3 supervision fixtures |
-| `E-34` (cost of checked arithmetic) | A performance claim; Gate 1 asserts behavior only and Gate 12 owns every number | Phases 2, 4, 12 | E1, E2, Gate 12 |
-| `E-12` (no implied localization) | A design constraint, observable only by review of the API surface | Phase 7 | Gate 7 review |
-
-`tools/audit_phase01.py --check` requires every rule to appear in an area
-above **or** in this table, so a new rule cannot fall between the two.
+**Normative rules this suite cannot verify.** Four rules in docs 00–02 resist a
+hermetic core fixture; each has a named owner and a later gate that verifies it.
+The list lives in exactly one place — [`07-traceability.md` §4](./07-traceability.md#4-rules-gate-1-cannot-fully-verify) —
+and is deliberately **not** repeated here. `tools/audit_phase01.py --check`
+requires every rule to appear in an area above **or** in that table, so a new
+rule cannot fall between the two.
 
 ## 6. What this plan deliberately does not cover
 

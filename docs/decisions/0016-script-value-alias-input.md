@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — owner revision/ratification required; the manifest and A-46 text are unchanged |
+| **Owner ratification** | **pending — blocks security calculations** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | Established for the source-file format and immutable GitHub object identity; Proposed for adding it to Plain's input lock |
 | **Deciders** | ZEMA research agent; Better-back selected revision of the A-* group but has not specified/approved this amendment |
 

@@ -179,13 +179,15 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 112 | "At the start of the 2026-11-03 process audit, 14 of the 106 normative rule IDs (`L-05`, `L-06`, `L-07`, `L-28`, `L-29`, `T-01`, `T-02`, `T-03`, `T-04`, `T-05`, `T-28`, `E-13`, `E-34`, `E-36`) were named by no conformance-plan area, so an area-level fixture budget could have been met without those rules being exercised." | E | `research/phase-01-07-process-gap-audit.md` §3.1; `tools/audit_phase01.py` `conformance_area_coverage()`; reproduced by parsing the area table in `docs/plain/05-conformance-plan.md` | 1 | 2026-11-03 | Confirmed as a repository observation; repaired — all 106 rules are now attributed, and the check fails on regression |
 | 113 | "The normalization result was stored in two files differing only by timestamp, and four Markdown tables plus one duplicated `## 8` heading were malformed at the start of the audit." | E | `research/phase-01-07-process-gap-audit.md` §3.2; `tools/audit_phase01.py` `duplicate_artifact_check()`; `tests/test_document_invariants.py` | 1 | 2026-11-03 | Confirmed; repaired — one canonical result file remains and the structural checks fail on regression |
 | 114 | "Eleven statements across nine documents still asserted that Phase 1 build was blocked by C1/C5 after the owner resolved both conditions on 2026-11-03." | E | `research/phase-01-07-process-gap-audit.md` §3.3 (table of locations); `docs/gates/gate-00.md` §10 | 1 | 2026-11-03 | Confirmed by reading; every instance corrected with a visible dated note, and the original text retained where it is a decision record |
+| 115 | "The first version of the duplication check compared rule sets for exact equality and therefore did not detect a three-row partial copy of the Gate 1 exclusion table." | E | `research/phase-01-07-process-gap-audit.md` §3.6; mutation of `docs/plain/05-conformance-plan.md` against `tools/audit_phase01.py` `duplicated_fact_check()` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by mutation test; the check was rewritten to measure overlap (≥3 shared rules, ≥60% of the smaller set) and the mutation now fails |
+| 116 | "`docs/problem-statement.md` declares about 580 words of prose; the measured figure is 519 prose words and 866 words in total." | E | `python3 tools/audit_phase01.py --verify`; `docs/problem-statement.md` | 0 | 2026-11-03 | Confirmed; the declared length was replaced with the measured one and the measurement is now reproducible |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 114 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 3 process-audit) |
-| Established (E) | 58 |
+| Total rows | 116 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit) |
+| Established (E) | 60 |
 | Proposed (P) | 26 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
@@ -218,3 +220,4 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 2026-11-03 | Added #110 as a proposed A-46 dependency gap: Script value aliases need a further pinned input; owner amendment pending. |
 | 2026-11-03 | Added #111 for six property-accessor smoke tests; raw output is saved. Total 111 rows. |
 | 2026-11-03 | Process-gap audit added #112–#114 for the traceability gap, the duplicated/malformed artifacts, and the stale C1/C5 statements. Total 114 rows (E 58 / P 26 / H 30). Joined four split tables that had been rendering as separate blocks. |
+| 2026-11-03 | Audit second pass added #115–#116: the duplication check was too weak to catch a partial copy (found by mutation), and the problem statement's word count was typed rather than measured. Total 116 rows (E 60 / P 26 / H 30). |

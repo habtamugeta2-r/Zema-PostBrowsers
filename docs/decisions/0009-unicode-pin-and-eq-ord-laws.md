@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — specification decision by the agent; owner ratification reserved at Gate 1 |
+| **Owner ratification** | **pending — A-27/A-38** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** for the pin/laws; **Established** for cited Unicode facts |
 | **Source grade** | A — Unicode primary specifications for version/profile facts; project-primary Plain rules and source-audit records for design context |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); Gate 1 reviewer/owner may ratify or overrule |

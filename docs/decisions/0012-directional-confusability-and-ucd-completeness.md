@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — independently checked against pinned primary sources; owner/reviewer ratification reserved |
+| **Owner ratification** | **pending — A-45/A-46/A-47** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Established** for cited Unicode clauses and repository/hash observations; **Proposed** for Plain policy |
 | **Source grade** | A — Unicode Consortium standards and Unicode 17.0.0 data |
 | **Resolves** | A-45, A-46, and A-47 as proposals; refines A-44, decision 0011, and L-08/L-10/L-11 |

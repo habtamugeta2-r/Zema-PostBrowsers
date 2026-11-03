@@ -5,6 +5,7 @@
 | **Date** | 2026-11-02 |
 | **Phase / gate** | Phase 0 / Gate 0 (recorded now because the choice constrains Phases 5, 6, 8, 11) |
 | **Status** | **Proposed** — requires owner confirmation (Gate 0 condition C3, which is still open; C1 was the unrelated sign-off condition and was resolved 2026-11-03) |
+| **Owner ratification** | **pending — Gate 0 condition C3** — the target OS is unconfirmed |
 | **Evidence label** | **Proposed** |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); project owner (Better-back) to confirm |
 

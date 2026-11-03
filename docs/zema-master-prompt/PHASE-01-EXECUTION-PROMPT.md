@@ -34,7 +34,7 @@ phase slice: **Phase 1 → Gate 1**, and nothing else.
 2. [Master Prompt](./ZEMA-Master-Research-and-Build-Prompt.md) §1–§3 and Phase 1 — the loop, the labels, the gate criteria.
 3. [`gate-00.md`](../gates/gate-00.md) — conditions C1–C5 and their consequences.
 4. [`gate-01-readiness.md`](../gates/gate-01-readiness.md) — the owner response packet.
-5. [`docs/plain/`](../plain/README.md) — all seven documents. The rule text is the specification you must satisfy; this prompt never overrides it.
+5. [`docs/plain/`](../plain/README.md) — all eight documents. Docs 0–4 and 6 are the rule text and the decision registers; **doc 7** ([traceability](../plain/07-traceability.md)) is the work list your fixtures must close out. The rule text is the specification you must satisfy; this prompt never overrides it.
 6. This file, §2 preflight, before writing any code.
 
 **Conflict precedence:** Master Prompt > Gate 0 conditions and recorded
@@ -76,7 +76,8 @@ Success additionally requires (conformance plan §1, §3):
   asserting code, span, and fix presence where required (L-30, L-34);
 - Unicode 17.0.0 inputs match their recorded SHA-256 values before use;
 - C1, C5, C2, and the A-27/A-38/A-42/A-44/A-45/A-46/A-47 ratifications
-  are recorded (readiness packet §4).
+  are recorded (readiness packet §4). C3 (target OS) is *not* a Gate 1
+  precondition; it is due before Phase 5.
 
 ---
 
@@ -114,7 +115,7 @@ if the environment differs, record the difference and revisit WP-1.
 | Node v22.22.3 present; **no Rust toolchain** (`rustc`, `cargo`, `rustup` absent) | `command -v` checks | A Rust implementation cannot be built or tested here without a toolchain this sandbox cannot reach (`static.rust-lang.org` is outside the network allowlist) |
 | Network allowlist: `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | Environment constraint | `unicode.org` is unreachable from the sandbox; the pinned GitHub mirror is the data source |
 | The pinned Unicode data commit is reachable | `api.github.com` returned HTTP 200 for blob `21a79503…` and commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c` (`unicode-org/unicodetools`) | WP-2 fetch-and-verify is feasible here |
-| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 341 fixture targets, 106/106 rules traced to a verification method and an area, 114 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
+| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 341 fixture targets, 106/106 rules traced to a verification method and an area, 116 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
 
 **Recommendation (Proposed — to be recorded as decision 0013):** the
 Gate 1 vehicle is a **Python 3.11 standard-library-only reference

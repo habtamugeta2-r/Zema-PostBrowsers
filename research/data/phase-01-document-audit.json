@@ -499,16 +499,16 @@
     "sum": 341
   },
   "evidence": {
-    "count": 114,
+    "count": 116,
     "labels": {
       "H": 30,
       "P": 26,
-      "E": 58
+      "E": 60
     },
     "declared_summary": {
-      "total": 114,
+      "total": 116,
       "labels": {
-        "E": 58,
+        "E": 60,
         "P": 26,
         "H": 30
       }
@@ -1145,6 +1145,10 @@
     "ok": true,
     "duplicates": []
   },
+  "duplicated_facts": {
+    "ok": true,
+    "clashes": []
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1162,6 +1166,20 @@
     "invalid_entries": []
   },
   "broken_relative_links": [],
+  "measured_facts": {
+    "markdown_files": 55,
+    "python_files": 10,
+    "normative_rules_L_T_E": 100,
+    "sugar_ids": 6,
+    "ambiguities": 47,
+    "deferrals": 20,
+    "evidence_rows": 116,
+    "decision_records": 16,
+    "plain_documents": 9,
+    "problem_statement_prose_words": 519,
+    "problem_statement_total_words": 868,
+    "conformance_fixtures_written": 0
+  },
   "check": {
     "ok": true,
     "problems": []

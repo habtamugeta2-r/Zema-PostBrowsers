@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — implementation profile drafted from primary standards; owner/reviewer ratification reserved |
+| **Owner ratification** | **pending — A-44** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Established** for Unicode standard clauses and retrieved file bytes; **Proposed** for Plain’s diagnostic policy |
 | **Source grade** | A — Unicode Consortium standards and Unicode 17.0.0 data; repository source manifest pins exact mirror bytes |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); Gate 1 reviewer/owner may ratify or revise |

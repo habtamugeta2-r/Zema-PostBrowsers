@@ -5,6 +5,7 @@
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 / Gate 1 |
 | **Status** | **Proposed** — research method accepted by the agent. (C1/C5 were resolved on 2026-11-03, after this record was written; the decisions below still await ratification.) |
+| **Owner ratification** | **pending** — see [`README.md`](./README.md) for the status vocabulary |
 | **Evidence label** | **Proposed** for design corrections; **Established** for cited primary-source facts |
 | **Deciders** | ZEMA research agent (Arena.ai Agent Mode); owner decisions reserved |
 | **Implements** | Research records 03–05; Plain draft v0.2 |
