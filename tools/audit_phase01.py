@@ -83,6 +83,17 @@ def evidence_rows(text: str) -> list[dict]:
     return rows
 
 
+def evidence_summary(text: str) -> dict:
+    """Read the declared counts so any legitimate evidence-register growth can be checked."""
+    total = re.search(r"^\|\s*Total rows\s*\|\s*(\d+)", text, re.MULTILINE)
+    counts = {}
+    for label, name in (("E", "Established"), ("P", "Proposed"), ("H", "Hypothesis")):
+        match = re.search(rf"^\|\s*{re.escape(name)}\s*\({label}\)\s*\|\s*(\d+)\s*\|", text, re.MULTILINE)
+        if match:
+            counts[label] = int(match.group(1))
+    return {"total": int(total.group(1)) if total else None, "labels": counts}
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -254,6 +265,7 @@ def main() -> int:
     fixtures = fixture_targets(conformance)
     ev = evidence_rows(evidence)
     labels = Counter(r["label"] for r in ev)
+    declared_evidence = evidence_summary(evidence)
     deferral_ids = sorted(set(re.findall(r"^### (D-\d{2})", deferrals, re.MULTILINE)))
     registry = diagnostic_registry()
     xref = cross_reference_check()
@@ -262,13 +274,13 @@ def main() -> int:
 
     report = {
         "date": "2026-11-03",
-        "scope": "Read-only document audit; no Plain implementation or fixtures",
+        "scope": "Document audit; no Plain parser/evaluator or conformance fixtures",
         "rules": {k: {"count": len(v), "ids": v} for k, v in rules.items()},
         "normative_rule_count_L_T_E": sum(len(rules[k]) for k in ("L", "T", "E")),
         "ambiguities": {"count": len(amb), "status": {k: amb_status.get(k, 0) for k in ("resolved", "deferred", "open", "unknown")}, "rows": amb},
         "deferrals": {"count": len(deferral_ids), "ids": deferral_ids},
         "conformance_fixture_targets": {"rows": fixtures, "sum": sum(r["target"] for r in fixtures)},
-        "evidence": {"count": len(ev), "labels": dict(labels), "retracted": [r["id"] for r in ev if r["status"].lower().startswith("retracted")]},
+        "evidence": {"count": len(ev), "labels": dict(labels), "declared_summary": declared_evidence, "retracted": [r["id"] for r in ev if r["status"].lower().startswith("retracted")]},
         "diagnostic_registry": registry,
         "cross_reference_check": xref,
         "grammar_check": grammar,
@@ -287,8 +299,14 @@ def main() -> int:
         problems.append(f"expected 20 deferrals, found {len(deferral_ids)}")
     if report["conformance_fixture_targets"]["sum"] != 307:
         problems.append("fixture target sum is not 307")
-    if len(ev) != 100 or labels.get("E") != 49 or labels.get("P") != 22 or labels.get("H") != 29:
-        problems.append(f"evidence counts drift: {len(ev)} rows, labels={dict(labels)}")
+    if (
+        declared_evidence["total"] != len(ev)
+        or declared_evidence["labels"] != {key: labels.get(key, 0) for key in ("E", "P", "H")}
+    ):
+        problems.append(
+            f"evidence register summary drift: actual={len(ev)} rows / {dict(labels)}, "
+            f"declared={declared_evidence}"
+        )
     if report["broken_relative_links"]:
         problems.append(f"broken links: {report['broken_relative_links']}")
     if xref["undefined"]:

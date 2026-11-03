@@ -1,0 +1,94 @@
+{
+  "computed_at_utc": "2026-11-03T18:26:44+00:00",
+  "unicode_version": "17.0.0",
+  "algorithm": "UTS #39 rev32 internalSkeleton only: NFD, remove Default_Ignorable_Code_Point, map confusables.txt, NFD",
+  "not_implemented": "UAX #9 bidi processing; outputs are not skeleton(X) or bidiSkeleton(d, X) results",
+  "results": [
+    {
+      "input": "aא1",
+      "input_codepoints": [
+        "U+0061",
+        "U+05D0",
+        "U+0031"
+      ],
+      "internal_skeleton": "aאl",
+      "internal_skeleton_codepoints": [
+        "U+0061",
+        "U+05D0",
+        "U+006C"
+      ]
+    },
+    {
+      "input": "a1א",
+      "input_codepoints": [
+        "U+0061",
+        "U+0031",
+        "U+05D0"
+      ],
+      "internal_skeleton": "alא",
+      "internal_skeleton_codepoints": [
+        "U+0061",
+        "U+006C",
+        "U+05D0"
+      ]
+    },
+    {
+      "input": "Строкa",
+      "input_codepoints": [
+        "U+0421",
+        "U+0442",
+        "U+0440",
+        "U+043E",
+        "U+043A",
+        "U+0061"
+      ],
+      "internal_skeleton": "Cᴛpoĸa",
+      "internal_skeleton_codepoints": [
+        "U+0043",
+        "U+1D1B",
+        "U+0070",
+        "U+006F",
+        "U+0138",
+        "U+0061"
+      ]
+    },
+    {
+      "input": "Δt",
+      "input_codepoints": [
+        "U+0394",
+        "U+0074"
+      ],
+      "internal_skeleton": "Δt",
+      "internal_skeleton_codepoints": [
+        "U+0394",
+        "U+0074"
+      ]
+    },
+    {
+      "input": "HTTPसर्वर",
+      "input_codepoints": [
+        "U+0048",
+        "U+0054",
+        "U+0054",
+        "U+0050",
+        "U+0938",
+        "U+0930",
+        "U+094D",
+        "U+0935",
+        "U+0930"
+      ],
+      "internal_skeleton": "HTTPसर्वर",
+      "internal_skeleton_codepoints": [
+        "U+0048",
+        "U+0054",
+        "U+0054",
+        "U+0050",
+        "U+0938",
+        "U+0930",
+        "U+094D",
+        "U+0935",
+        "U+0930"
+      ]
+    }
+  ]
+}
