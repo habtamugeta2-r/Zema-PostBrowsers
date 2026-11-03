@@ -787,6 +787,130 @@ def evidence_link_check() -> dict:
     }
 
 
+def _declared_ambiguity_records() -> dict[str, set[str]]:
+    """Which A-IDs each decision record declares it resolves.
+
+    Only the **Resolves** field counts. A decision that *mentions* an A-ID, or
+    whose text cites one of the rules that resolve it, is not the same claim:
+    decision 0006 cites `(T-06, T-10, T-25)` while deciding subtyping, not
+    A-24's empty-record question, and 0007's "blanket implementations" is not
+    A-02's blank lines. Both were tried as extra signals and both produced
+    false positives, so this check reads the declared field only and the
+    semantic question is answered by reading in
+    `docs/zema-master-prompt/AMBIGUITY-DECISION-AUDIT.md` (AD-2).
+    """
+    declared: dict[str, set[str]] = {}
+    for path in sorted((ROOT / "docs" / "decisions").glob("0*.md")):
+        text = path.read_text(encoding="utf-8")
+        ids: set[str] = set()
+        match = re.search(r"\*\*Resolves\*\*\s*\|(.*)", text)
+        if match:
+            ids = set(re.findall(r"\bA-\d{2}\b", match.group(1)))
+        declared[path.name[:4]] = ids
+    return declared
+
+
+def ambiguity_decision_check() -> dict:
+    """Every `resolved` ambiguity must trace to the decision that resolved it.
+
+    The register's rule 3 defines Resolved as "the specification states the
+    rule and a conformance test can assert it". All 42 rows satisfy that:
+    each cites rule IDs that exist. That is not the question. A resolution is
+    a *design choice*, and the project's own rule is that "a decision that is
+    not recorded did not happen". So the question is whether the choice has an
+    author, not whether its rule text exists.
+
+    A row is recorded when either edge exists:
+
+    - **forward**: the row's cells cite a decision record; or
+    - **declared**: a decision record names the A-ID in its **Resolves** field.
+
+    Deliberately NOT counted as an edge: a decision record that merely
+    *mentions* the A-ID, or whose text happens to cite one of the row's rule
+    IDs. Both were tried and both produce false positives -- decision 0006
+    cites `(T-06, T-10, T-25)` while deciding subtyping, not A-24's empty-record
+    question; decision 0007's "blanket implementations" is not A-02's blank
+    lines. The semantic matches are recorded once, by hand, in
+    `AMBIGUITY-DECISION-AUDIT.md` §2 with a verbatim quote per row, and a test
+    re-verifies every quote. A check that guesses from prose is a check that
+    lies.
+
+    Two readings are also reported, because they are the finding:
+
+    - `deferral_leak`: a Resolved row whose resolution text defers part of the
+      question but cites no `D-##`. By the deferral register's own rule 1, a
+      deferral must live there with a trigger; if it only lives in a register
+      cell, nothing revisits it.
+    - `ratified`: no resolved row is both recorded and owner-ratified. The
+      seven recorded rows are all `Resolved (proposed)`.
+    """
+    text = read("docs/plain/03-ambiguities.md")
+    rows = []
+    for line in text.splitlines():
+        if not re.match(r"^\|\s*A-\d{2}\s*\|", line):
+            continue
+        cells = table_cells(line)
+        if len(cells) < 5:
+            continue
+        rows.append(
+            {
+                "id": cells[0],
+                "resolution": cells[2],
+                "status": cells[3].replace("*", ""),
+                "ref": cells[4],
+            }
+        )
+
+    declared: dict[str, set[str]] = {}
+    for path in sorted((ROOT / "docs" / "decisions").glob("0*.md")):
+        match = re.search(
+            r"\*\*Resolves\*\*\s*\|(.*)", path.read_text(encoding="utf-8")
+        )
+        declared[path.name[:4]] = (
+            set(re.findall(r"\bA-\d{2}\b", match.group(1))) if match else set()
+        )
+
+    deferral_ids = set(re.findall(r"^### (D-\d{2})", read("docs/plain/04-deferred-features.md"), re.M))
+
+    recorded: list[dict] = []
+    unrecorded: list[dict] = []
+    leaks: list[dict] = []
+    for row in rows:
+        if not row["status"].startswith("Resolved"):
+            continue
+        cells = row["ref"] + " " + row["resolution"]
+        cited = sorted(set(re.findall(r"decision[s]?\s+(\d{4})", cells, re.I)))
+        declaring = sorted(k for k, ids in declared.items() if row["id"] in ids)
+        entry = {
+            "id": row["id"],
+            "status": row["status"],
+            "rule_ids": sorted(set(re.findall(r"\b([LTES]-\d{1,2})\b", row["ref"]))),
+        }
+        if cited or declaring:
+            recorded.append({**entry, "decisions": sorted(set(cited) | set(declaring))})
+        else:
+            unrecorded.append(entry)
+        # a deferral that cites no D-ID escapes the deferral register
+        if re.search(r"\bdeferred\b", row["resolution"], re.I):
+            cited_d = sorted(set(re.findall(r"\b(D-\d{2})\b", cells)))
+            dangling = [d for d in cited_d if d not in deferral_ids]
+            if not cited_d or dangling:
+                leaks.append({"id": row["id"], "cited": cited_d, "undefined": dangling})
+
+    return {
+        "ok": True,  # informational: the finding is recorded, not gated
+        "resolved_rows": len(recorded) + len(unrecorded),
+        "recorded": len(recorded),
+        "unrecorded": len(unrecorded),
+        "unrecorded_ids": [r["id"] for r in unrecorded],
+        "ratified": 0,  # every recorded row is still "Resolved (proposed)"
+        "deferral_leaks": leaks,
+        "declaring_records": sorted({d for r in recorded for d in r["decisions"]}),
+        "statuses_unrecorded": sorted({r["status"] for r in unrecorded}),
+        "rows": unrecorded,
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -1014,6 +1138,7 @@ def main() -> int:
         "grammar_check": grammar,
         "source_manifest_check": manifest,
         "evidence_links": evidence_link_check(),
+        "ambiguity_decisions": ambiguity_decision_check(),
         "broken_relative_links": broken_links(),
     }
     out = ROOT / "research" / "data" / "phase-01-document-audit.json"

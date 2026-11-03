@@ -499,16 +499,16 @@
     "sum": 357
   },
   "evidence": {
-    "count": 138,
+    "count": 141,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 81
+      "E": 84
     },
     "declared_summary": {
-      "total": 138,
+      "total": 141,
       "labels": {
-        "E": 81,
+        "E": 84,
         "P": 27,
         "H": 30
       }
@@ -1462,7 +1462,7 @@
   },
   "evidence_links": {
     "ok": true,
-    "rows_checked": 138,
+    "rows_checked": 141,
     "unlinked": 101,
     "unlinked_ids": [
       "002",
@@ -1596,15 +1596,347 @@
     ],
     "spans_defined": 18
   },
+  "ambiguity_decisions": {
+    "ok": true,
+    "resolved_rows": 42,
+    "recorded": 7,
+    "unrecorded": 35,
+    "unrecorded_ids": [
+      "A-01",
+      "A-02",
+      "A-03",
+      "A-05",
+      "A-06",
+      "A-07",
+      "A-08",
+      "A-09",
+      "A-10",
+      "A-11",
+      "A-13",
+      "A-14",
+      "A-15",
+      "A-16",
+      "A-17",
+      "A-18",
+      "A-19",
+      "A-20",
+      "A-22",
+      "A-24",
+      "A-25",
+      "A-28",
+      "A-29",
+      "A-30",
+      "A-31",
+      "A-32",
+      "A-33",
+      "A-34",
+      "A-35",
+      "A-36",
+      "A-37",
+      "A-39",
+      "A-40",
+      "A-41",
+      "A-43"
+    ],
+    "ratified": 0,
+    "deferral_leaks": [
+      {
+        "id": "A-13",
+        "cited": [],
+        "undefined": []
+      },
+      {
+        "id": "A-47",
+        "cited": [],
+        "undefined": []
+      }
+    ],
+    "declaring_records": [
+      "0009",
+      "0010",
+      "0011",
+      "0012"
+    ],
+    "statuses_unrecorded": [
+      "Resolved",
+      "Resolved (partial)",
+      "Resolved (risk accepted)"
+    ],
+    "rows": [
+      {
+        "id": "A-01",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-03",
+          "L-20"
+        ]
+      },
+      {
+        "id": "A-02",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-23"
+        ]
+      },
+      {
+        "id": "A-03",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-06"
+        ]
+      },
+      {
+        "id": "A-05",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-09"
+        ]
+      },
+      {
+        "id": "A-06",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-28"
+        ]
+      },
+      {
+        "id": "A-07",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-18"
+        ]
+      },
+      {
+        "id": "A-08",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-07",
+          "T-23"
+        ]
+      },
+      {
+        "id": "A-09",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-05",
+          "E-36"
+        ]
+      },
+      {
+        "id": "A-10",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-06"
+        ]
+      },
+      {
+        "id": "A-11",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-08",
+          "E-09"
+        ]
+      },
+      {
+        "id": "A-13",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-15"
+        ]
+      },
+      {
+        "id": "A-14",
+        "status": "Resolved (risk accepted)",
+        "rule_ids": [
+          "T-27"
+        ]
+      },
+      {
+        "id": "A-15",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-09"
+        ]
+      },
+      {
+        "id": "A-16",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-19",
+          "T-13"
+        ]
+      },
+      {
+        "id": "A-17",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-18"
+        ]
+      },
+      {
+        "id": "A-18",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-04"
+        ]
+      },
+      {
+        "id": "A-19",
+        "status": "Resolved (partial)",
+        "rule_ids": [
+          "L-10",
+          "L-11"
+        ]
+      },
+      {
+        "id": "A-20",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-22"
+        ]
+      },
+      {
+        "id": "A-22",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-28"
+        ]
+      },
+      {
+        "id": "A-24",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-16",
+          "T-06"
+        ]
+      },
+      {
+        "id": "A-25",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-25",
+          "E-27"
+        ]
+      },
+      {
+        "id": "A-28",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-11",
+          "L-04"
+        ]
+      },
+      {
+        "id": "A-29",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-12"
+        ]
+      },
+      {
+        "id": "A-30",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-12",
+          "L-29"
+        ]
+      },
+      {
+        "id": "A-31",
+        "status": "Resolved",
+        "rule_ids": [
+          "L-19",
+          "L-22"
+        ]
+      },
+      {
+        "id": "A-32",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-29"
+        ]
+      },
+      {
+        "id": "A-33",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-21"
+        ]
+      },
+      {
+        "id": "A-34",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-03",
+          "S-2"
+        ]
+      },
+      {
+        "id": "A-35",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-19",
+          "E-21",
+          "T-13"
+        ]
+      },
+      {
+        "id": "A-36",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-20",
+          "E-22"
+        ]
+      },
+      {
+        "id": "A-37",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-26",
+          "E-27"
+        ]
+      },
+      {
+        "id": "A-39",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-32"
+        ]
+      },
+      {
+        "id": "A-40",
+        "status": "Resolved",
+        "rule_ids": [
+          "E-30",
+          "E-33"
+        ]
+      },
+      {
+        "id": "A-41",
+        "status": "Resolved (partial)",
+        "rule_ids": [
+          "L-02",
+          "L-31"
+        ]
+      },
+      {
+        "id": "A-43",
+        "status": "Resolved",
+        "rule_ids": [
+          "T-30"
+        ]
+      }
+    ]
+  },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 62,
+    "markdown_files": 63,
     "python_files": 11,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 138,
+    "evidence_rows": 141,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,

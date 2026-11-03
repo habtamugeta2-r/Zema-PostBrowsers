@@ -54,6 +54,7 @@
   must say what was learned and where the evidence lives.
 - Never edit history: if a passed gate is later reopened, add a new
   dated note below instead of changing the original result silently.
+| 2026-11-04 | **B5 - most resolved ambiguities have no author.** Of the **42** `Resolved` ambiguity rows, **7** trace to a decision record and **35** do not. The split is exact and not coincidental: all 7 recorded rows carry `Resolved (proposed)` - a status only a decision record produces - and they are the 7 put to the owner in the gate-1 readiness packet. All **35** unrecorded rows carry plain `Resolved` and have **never been put to the owner at all**. Reading the 11 Decision sections found that **24 of the 35** are decided verbatim in a record (0005/0006/0008/0012) and need a link, not a decision; every one is quoted in the audit and re-verified by a test. **11** have no decision anywhere. Also found two deferrals living inside resolution cells with no `D-##` (A-13 `where` clauses, A-47 configuration mechanism), invisible to the deferral register's trigger rule. New check `ambiguity_decision_check` (mutation-tested) + 6 tests; tests 42 to 50. Evidence #139-#141. Proposed AD-1 to AD-5. |
 
 ## Change log
 

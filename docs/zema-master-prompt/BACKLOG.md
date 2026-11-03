@@ -40,7 +40,7 @@
 | B2 | Verify the 23 conformance areas actually cover the 50 gate exit criteria | A table maps each of the 50 criteria to ≥1 area or records it as uncovered; uncovered count reported | — | **done** |
 | B3 | Check the 66 research + 62 build tasks for completion against the repo | Each task marked done / not-done with a file citation; the not-done list is the real remaining scope | — | **done** |
 | B4 | Verify every `E` evidence row's cited source actually says what the row claims | A sample of 20 rows re-read against their sources; disagreements corrected with dated notes | — | **done** |
-| B5 | Check the 47 ambiguities for any silently resolved without a decision record | Every `resolved` ambiguity cites a decision; missing ones listed | — | **ready** |
+| B5 | Check the 47 ambiguities for any silently resolved without a decision record | Every `resolved` ambiguity cites a decision; missing ones listed | — | **done** |
 
 ## C. Definition work — no owner input needed
 
@@ -85,3 +85,4 @@
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-04 | 1.0.0 | Created: 5 owner rows, 5 verification rows, 4 definition rows, 5 build rows, 3 housekeeping rows. B1–B5 and C1–C4 are `ready`. |
+| 2026-11-04 | 1.0.1 | B1–B5 done. Section B is complete; the queue moves to C1 (fixture format). |

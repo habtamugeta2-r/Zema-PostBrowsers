@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.8 |
+| **Version** | 1.9 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result. Version 1.2 adds §3.9 and revises §4: the deeper finding is not only missing artifact governance but an **unspecified failure vocabulary** |
@@ -626,6 +626,7 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-04 | 1.9 | Ran backlog item B5: audited whether each `Resolved` ambiguity has a recorded decision behind it. 42 resolved; **7 recorded, 35 unrecorded**. The status word correlates perfectly with the gap - every recorded row is `Resolved (proposed)`, every unrecorded row is plain `Resolved` or a qualifier - so 32 rows claim to be settled in a status no decision record can produce. The 7 recorded rows are exactly the 7 in the readiness packet; the owner has never been asked about the other 35. 24 of the 35 are decided verbatim in decisions 0005/0006/0008/0012 (quoted and test-verified) - a linkage gap, the same shape as B4 one layer down. 11 have no decision anywhere. Also: two deferrals (`where` clauses, diagnostic-configuration mechanism) live inside resolution cells and cite no `D-##`, escaping decision 0007's trigger rule. Records one self-correction: A-01 was first written up as untested because the conformance plan's range `L-19...L-27` excludes L-03 and L-20; the traceability matrix covers both by ID, so the plan's range notation, not the rule, was the gap. |
 | 2026-11-04 | 1.8 | Ran backlog item B4: audited whether register rows trace to their sources. 0 of 135 cite a URL; 42 cite a title with no route. The research layer is properly cited (78 URLs in `[S##]` tables) - the register's citation cell is prose, and prose is not a link. 13 rows re-read: 3 verified, 9 correct-but-unreachable, 1 stale (row 124, invalidated by its own audit pass). Adds the finding that a claim can go stale because of the work that records it. |
 | 2026-11-04 | 1.7 | Ran backlog item B3: marked all 128 Master Prompt tasks. 19 done / 7 partial / 101 not-started / 1 blocked. Confirms the §3.10 handoff gap one level down: the phase tracker is a phase view, the prompt is a task view, and nothing joined them. Also records the task-audit check's first version accepting a `done` claim that cited a nonexistent file, found by mutation. |
 | 2026-11-04 | 1.6 | Ran backlog item B2: mapped all 50 gate exit criteria to a disposition. 8 covered / 27 future / 8 platform / 7 uncovered. Four of the seven uncovered are the undefined experiments E1/E2/E4/E5 — the missing book reaching a gate criterion. Records that the coverage check's first version was order-dependent, found while debugging a false failure. |
