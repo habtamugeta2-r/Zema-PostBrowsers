@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.5 |
+| **Version** | 1.6 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result. Version 1.2 adds §3.9 and revises §4: the deeper finding is not only missing artifact governance but an **unspecified failure vocabulary** |
@@ -626,6 +626,7 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-04 | 1.6 | Ran backlog item B2: mapped all 50 gate exit criteria to a disposition. 8 covered / 27 future / 8 platform / 7 uncovered. Four of the seven uncovered are the undefined experiments E1/E2/E4/E5 — the missing book reaching a gate criterion. Records that the coverage check's first version was order-dependent, found while debugging a false failure. |
 | 2026-11-04 | 1.5 | Ran backlog item B1: audited the 38 codeless verdicts in `08-diagnostics-and-faults.md` §6 against the rule text. 19 behaviour / 10 implementation constraint / 7 coded elsewhere / 1 gap. The gap was E-15 — ordering a non-`Ord` type had no code — now `PL0237`. Confirms the §8a.8 item was worth keeping open: a machine cross-check found five contradictions, and a human read found one gap the machine could not see. |
 | 2026-11-03 | 1.4 | Read the two founding documents in depth for the first time. Added §3.10: the three document layers (19 concerns / 50 gate criteria / 128 evidence rows) are unjoined — 3 of 19 concerns traced, 0 gate documents mention a concern, 0 occurrences of "Concern" in the Master Prompt, 365 ambiguous bare gate references, 2 of 8 stopping conditions named in one file. Created `VERTICAL-TRACE.md` with a check. Evidence #124–#128 |
 | 2026-11-03 | 1.3 | Self-audit of the catalog against its own registry. Found five §6 rows that called a rule codeless while it owned a code (T-18, E-19, E-33), and found that no generic syntax-error code existed although the spec twice said "syntax error"; `PL0001` added in a new `PL00nn` range. Two mistakes appended to §3.9.2 (now five). Counts 73 codes / 72 active / budget 356 / evidence 123. Two new checks: `codeless_claim_check`, `fault_namespace_check` |

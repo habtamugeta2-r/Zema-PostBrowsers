@@ -28,6 +28,8 @@ conformance_area_coverage = audit.conformance_area_coverage
 fault_namespace_check = audit.fault_namespace_check
 codeless_claim_check = audit.codeless_claim_check
 vertical_trace_check = audit.vertical_trace_check
+gate_coverage_check = audit.gate_coverage_check
+gate_criteria = audit.gate_criteria
 
 
 class DocumentInvariantTests(unittest.TestCase):
@@ -255,4 +257,44 @@ class VerticalTraceTest(unittest.TestCase):
         self.assertEqual(result["concerns_defined"], 19, "Concern IDs are permanent")
         self.assertEqual(
             result["rows_in_trace"], 19, "the trace must carry every concern"
+        )
+
+
+class GateCoverageTest(unittest.TestCase):
+    """Every gate exit criterion must have a disposition, and it must be honest.
+
+    Measured before this existed: 50 criteria rested on a conformance plan whose
+    23 areas are all Phase-1 language areas, so it can reach 8 of them.
+    """
+
+    def test_all_fifty_criteria_have_a_disposition(self):
+        result = gate_coverage_check()
+        self.assertEqual(result["criteria"], 50, "the Master Prompt defines 50 criteria")
+        self.assertEqual(result["missing_rows"], [], "a criterion has no disposition")
+
+    def test_no_disposition_is_unrecognised(self):
+        result = gate_coverage_check()
+        self.assertEqual(result["bad_disposition"], [], "a row has no valid disposition")
+
+    def test_a_covered_claim_points_at_a_real_file(self):
+        """Regression: a `covered` row citing a nonexistent path passed silently."""
+        result = gate_coverage_check()
+        self.assertEqual(result["false_covered"], [], "a `covered` claim cites a missing file")
+
+    def test_the_disposition_table_is_not_duplicated(self):
+        """Regression: the check was order-dependent when it parsed the whole file.
+
+        Sections 3 and 4 also key rows by criterion ID, so whichever table came
+        last silently won. The disposition table is now scoped to section 2.
+        """
+        result = gate_coverage_check()
+        self.assertEqual(result["duplicate_rows"], [], "a criterion appears twice in section 2")
+
+    def test_uncovered_criteria_are_counted_not_hidden(self):
+        result = gate_coverage_check()
+        self.assertGreater(
+            result["dispositions"]["UNCOVERED"],
+            0,
+            "zero uncovered is implausible while E1-E5 are undefined; "
+            "if this fires, check whether an uncovered row was relabelled",
         )

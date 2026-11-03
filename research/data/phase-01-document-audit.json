@@ -499,16 +499,16 @@
     "sum": 357
   },
   "evidence": {
-    "count": 129,
+    "count": 132,
     "labels": {
       "H": 30,
       "P": 27,
-      "E": 72
+      "E": 75
     },
     "declared_summary": {
-      "total": 129,
+      "total": 132,
       "labels": {
-        "E": 72,
+        "E": 75,
         "P": 27,
         "H": 30
       }
@@ -1411,6 +1411,21 @@
       17
     ]
   },
+  "gate_coverage": {
+    "ok": true,
+    "criteria": 50,
+    "rows": 50,
+    "missing_rows": [],
+    "duplicate_rows": [],
+    "bad_disposition": [],
+    "false_covered": [],
+    "dispositions": {
+      "covered": 8,
+      "future": 27,
+      "platform": 8,
+      "UNCOVERED": 7
+    }
+  },
   "cross_reference_check": {
     "defined_count": 173,
     "undefined": {}
@@ -1429,13 +1444,13 @@
   },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 59,
+    "markdown_files": 60,
     "python_files": 11,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 129,
+    "evidence_rows": 132,
     "decision_records": 16,
     "plain_documents": 10,
     "problem_statement_prose_words": 519,

@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.5 (Phase 1 audit) |
+| **Version** | 1.6 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -194,13 +194,16 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 127 | "Concern 17 requires 'never a bare Gate 2', yet the repository contains 7 'Book Gate' references, 7 'Prompt Gate' references and 365 bare `Gate N` references in the colliding range 0–5." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. The rule is stated correctly and violated three orders of magnitude because it is a prose caution with no check behind it |
 | 128 | "Two of Phase 14's eight named stopping conditions — install friction too high, and platform/app-store restrictions — appear in no file outside the Master Prompt, so no gate review has ever had to consider them." | E | Script over all `*.md`, 2026-11-03 | 0 | 2026-11-03 | Confirmed. Recorded in `VERTICAL-TRACE.md` §3.3 with the per-risk counts |
 | 129 | "Auditing the catalog's 38 'needs no code' verdicts against the rule text found one genuine gap: E-15 requires `Ord` for the ordering operators but no code covered applying one to a non-`Ord` type." | E | Backlog item B1; `docs/plain/02-evaluation.md` E-15; `docs/plain/08-diagnostics-and-faults.md` §6 on 2026-11-04 | 1 | 2026-11-04 | Confirmed by reading all 38 rules. Added `PL0237`. Verdict split: 19 behaviour, 10 implementation constraint, 7 rejection-coded-elsewhere, 1 gap (closed). The B/C boundary remains a judgement and is recorded as such |
+| 130 | "Of the 50 gate exit criteria in the Master Prompt, 8 are discharged by an artifact that exists, 27 depend on an artifact that does not exist, 8 are outside Gate 1 by A-42, and 7 have no artifact anywhere that would discharge them." | E | `tools/audit_phase01.py` `gate_coverage_check()`; [`GATE-COVERAGE.md`](./zema-master-prompt/GATE-COVERAGE.md) §2 | 0 | 2026-11-04 | Confirmed by script. All 23 conformance areas are Phase-1 language areas, so the conformance plan can reach 8 of 50 criteria by design |
+| 131 | "Four of the seven uncovered criteria are one defect: experiments E1, E2, E4 and E5 are cited as gate deliverables and defined nowhere, because their definitions live in the research book that decision 0004 records as absent." | E | `ZEMA-Master-Research-and-Build-Prompt.md` phases 2, 4, 7, 9; no protocol record under `research/experiments/`; decision 0004 | 0 | 2026-11-04 | Confirmed by search. The book's absence was recorded as a traceability problem; it is also a delivery problem — four gate criteria are unopenable by anyone |
+| 132 | "The gate-coverage check was order-dependent in its first version: sections 3 and 4 also key rows by criterion ID, so the last table to mention an ID won and a three-column table silently erased section 2's disposition for G1.1-G1.3." | E | Mutation of `GATE-COVERAGE.md` against `gate_coverage_check()` on 2026-11-04 | 1 | 2026-11-04 | Confirmed while debugging a false failure. Fixed by scoping the parse to section 2; a duplicate-row counter now fails if a criterion appears twice there |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 129 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace + 1 backlog) |
-| Established (E) | 72 |
+| Total rows | 132 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap + 3 self-audit + 5 vertical-trace + 1 backlog + 3 gate-coverage) |
+| Established (E) | 75 |
 | Proposed (P) | 27 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |

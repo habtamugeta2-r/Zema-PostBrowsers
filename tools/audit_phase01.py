@@ -504,6 +504,115 @@ def vertical_trace_check() -> dict:
     }
 
 
+GATE_COVERAGE_REL = "docs/zema-master-prompt/GATE-COVERAGE.md"
+
+GATE_DISPOSITIONS = ("covered", "future", "platform", "UNCOVERED")
+
+
+def gate_criteria() -> list[dict]:
+    """Every gate exit criterion in the Master Prompt, with its phase.
+
+    Extracted rather than listed: the prompt is the authority, and a criterion
+    added there without a disposition here is a silent gap -- which is the
+    exact failure this check exists to prevent.
+    """
+    text = read(MASTER_REL)
+    criteria: list[dict] = []
+    for chunk in re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)[1:]:
+        pass
+    parts = re.split(r"\n## (Phase (\d+) —[^\n]*)\n", text)
+    for index in range(1, len(parts), 3):
+        phase = int(parts[index + 1])
+        body = parts[index + 2]
+        gate = re.search(r"### Gate \d+ — Exit criteria[^\n]*\n(.*?)(?=\n---|\n## )", body, re.S)
+        if not gate:
+            continue
+        items = re.findall(r"- \[ \] (.+?)(?=\n  [A-Za-z*]|\n- |\Z)", gate.group(1), re.S)
+        for number, item in enumerate(items, start=1):
+            criteria.append(
+                {
+                    "id": f"G{phase}.{number}",
+                    "phase": phase,
+                    "text": re.sub(r"\s+", " ", item).strip(),
+                }
+            )
+    # the phase number is captured as the criterion's own prefix; when a phase
+    # has no gate the numbering must still descend, so verify uniqueness here
+    seen: set[str] = set()
+    for criterion in criteria:
+        if criterion["id"] in seen:
+            criterion["id"] += "b"
+        seen.add(criterion["id"])
+    return criteria
+
+
+def gate_coverage_check() -> dict:
+    """Every criterion has a disposition, and `covered` names an existing path.
+
+    The disposition table is the only place that says whether a gate criterion
+    can actually be discharged. It is checked against the Master Prompt in both
+    directions: no criterion without a row, and no `covered` claim pointing at
+    a document that does not exist.
+    """
+    criteria = gate_criteria()
+    coverage_text = read(GATE_COVERAGE_REL)
+
+    # Only section 2 carries dispositions. Sections 3 and 4 also key rows by
+    # criterion ID for readability, so parsing the whole file made the result
+    # depend on table order: the last row to mention an ID won, and §4's
+    # three-column table silently erased §2's disposition for G1.1-G1.3.
+    disposition_table = coverage_text.split("## 2.", 1)[-1].split("\n## 3.", 1)[0]
+    rows: dict[str, str] = {}
+    duplicates: list[str] = []
+    for line in disposition_table.splitlines():
+        match = re.match(r"\|\s*(G\d{1,2}\.\d)\s*\|", line)
+        if match:
+            if match.group(1) in rows:
+                duplicates.append(match.group(1))
+            rows[match.group(1)] = line
+
+    missing = [c["id"] for c in criteria if c["id"] not in rows]
+
+    bad_disposition = []
+    for criterion in criteria:
+        line = rows.get(criterion["id"])
+        if not line:
+            continue
+        if not any(f"| {d} " in line or f"| {d} |" in line or f"**{d}**" in line for d in GATE_DISPOSITIONS):
+            bad_disposition.append(criterion["id"])
+
+    # a `covered` row must cite a repository path that exists
+    false_covered = []
+    for criterion in criteria:
+        line = rows.get(criterion["id"], "")
+        if not re.search(r"\|\s*covered\s*\|", line):
+            continue
+        paths = re.findall(r"\]\(([^)]+\.(?:md|json|py|txt))\)", line)
+        for target in paths:
+            resolved = (ROOT / GATE_COVERAGE_REL).parent / target
+            if not resolved.exists():
+                false_covered.append({"id": criterion["id"], "missing": target})
+
+    counts = {d: 0 for d in GATE_DISPOSITIONS}
+    for criterion in criteria:
+        line = rows.get(criterion["id"], "")
+        for disposition in GATE_DISPOSITIONS:
+            if re.search(r"\|\s*" + disposition + r"\s*\|", line, re.I):
+                counts[disposition] += 1
+                break
+
+    return {
+        "ok": not missing and not duplicates and not bad_disposition and not false_covered,
+        "criteria": len(criteria),
+        "rows": len(rows),
+        "missing_rows": missing,
+        "duplicate_rows": duplicates,
+        "bad_disposition": bad_disposition,
+        "false_covered": false_covered,
+        "dispositions": counts,
+    }
+
+
 def broken_links() -> list[dict]:
     broken = []
     pattern = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -701,6 +810,7 @@ def main() -> int:
     fault_ns = fault_namespace_check()
     codeless = codeless_claim_check()
     vtrace = vertical_trace_check()
+    gcov = gate_coverage_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -723,6 +833,7 @@ def main() -> int:
         "fault_namespace": fault_ns,
         "codeless_claims": codeless,
         "vertical_trace": vtrace,
+        "gate_coverage": gcov,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -780,6 +891,12 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not gcov["ok"]:
+        problems.append(
+            f"gate coverage incomplete: missing rows {gcov['missing_rows']}, "
+            f"duplicate rows {gcov['duplicate_rows']}, "
+            f"bad disposition {gcov['bad_disposition']}, false covered {gcov['false_covered']}"
+        )
     if not vtrace["ok"]:
         problems.append(
             f"vertical trace incomplete: missing rows {vtrace['missing_rows']}, "
@@ -816,6 +933,11 @@ def main() -> int:
         "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "fault_namespace": report["fault_namespace"],
         "codeless_claims": report["codeless_claims"],
+        "gate_coverage": {
+            "criteria": report["gate_coverage"]["criteria"],
+            "dispositions": report["gate_coverage"]["dispositions"],
+            "uncovered": report["gate_coverage"]["dispositions"].get("UNCOVERED", 0),
+        },
         "vertical_trace": {
             "concerns_defined": report["vertical_trace"]["concerns_defined"],
             "rows_in_trace": report["vertical_trace"]["rows_in_trace"],
