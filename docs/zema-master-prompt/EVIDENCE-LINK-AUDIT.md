@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | Evidence-link audit: whether each register row can be traced to the document it cites |
-| **Version** | 1.0.0 |
+| **Version** | 1.0.1 |
 | **Date** | 2026-11-04 |
 | **Status** | Active. Produced by backlog item **B4** |
 | **Machine check** | `evidence_link_check()` — counts linked vs unlinked rows; the count is reported by `--check`. Not a gate, because the defect is historical and repairing 106 rows is a mechanical pass that needs a decision first (§5) |
@@ -33,7 +33,7 @@ The register does not use that convention. Measured:
 | Cite an `[S##]` pointer that a research record defines | **1** |
 | Cite a repository path that exists | **31** |
 | **Cite a title with no route to it** | **42** |
-| **Unlinked per the check, including rows whose source is a Phase or book reference** | **106** |
+| **Unlinked per the check, including rows whose source is a Phase or book reference** | **101** |
 
 So 42 `E`/`P`/`H` rows name a document — "Chromium *Release Cycle* [A]", "Tauri v2
 documentation [A]", "HarfBuzz repository [A]" — and give no way to find it. The
@@ -120,7 +120,7 @@ prose is not a link.**
 
 | # | Proposal | Why it is a proposal, not an action |
 |---|---|---|
-| **EL-1** | Change the register's source-cell convention: a row must cite either a repository path, a URL, or an `[S##]` pointer that a research record defines. Add the check as a gate once the backlog row is repaired | 106 rows would change. That is a large mechanical edit to the project's central evidence artifact and needs the owner to accept the new convention first |
+| **EL-1** | Change the register's source-cell convention: a row must cite either a repository path, a URL, or an `[S##]` pointer that a research record defines. Add the check as a gate once the backlog row is repaired | 101 rows would change. That is a large mechanical edit to the project's central evidence artifact and needs the owner to accept the new convention first |
 | **EL-2** | Give every register row an `[S##]` back-pointer into the research record that holds the URL, for the 18 rows where one exists | Cheap and mechanical, but it changes what the register *means*, so it waits with EL-1 |
 | **EL-3** | A row whose claim can be recomputed states the command in its source cell (as rows 106, 111, 124 and 130 already do) | This is PR-01 applied to evidence: it is what would have caught row 124 |
 | **EL-4** | Row 124 is corrected in place with a dated note; the original wording is retained | Correcting a stale row is allowed now; rewriting history is not |
@@ -129,4 +129,5 @@ prose is not a link.**
 
 | Date | Version | Change |
 |---|---|---|
-| 2026-11-04 | 1.0.0 | Created by backlog item B4. Measured: 0 of 135 rows cite a URL, 1 cites a defined `[S##]`, 42 cite a title with no route, 106 unlinked overall. 13 rows re-read: 3 verified, 9 correct, 1 stale (row 124, self-invalidated by its own audit). Records that the research layer is properly cited and the project's own measurements reproduce exactly. Proposes EL-1…EL-4. |
+| 2026-11-04 | 1.0.1 | The check's first version counted only backticked paths, not markdown links, so it flagged row 138 — which cites its own audit record as a markdown link. Caught by the ratchet test. Unlinked figure 106 → 101. |
+| 2026-11-04 | 1.0.0 | Created by backlog item B4. Measured: 0 of 135 rows cite a URL, 1 cites a defined `[S##]`, 42 cite a title with no route, 101 unlinked overall by the check (which counts a row unlinked when its source names a phase, an experiment, or a book chapter that is not a document in this repository). 13 rows re-read: 3 verified, 9 correct, 1 stale (row 124, self-invalidated by its own audit). Records that the research layer is properly cited and the project's own measurements reproduce exactly. Proposes EL-1…EL-4. |

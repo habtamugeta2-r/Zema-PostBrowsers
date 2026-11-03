@@ -766,6 +766,15 @@ def evidence_link_check() -> dict:
                     linked = True
                     break
         if not linked:
+            # markdown links are equally valid routes; the first version only
+            # read backticked paths and flagged row 138, which cites its own
+            # audit record with [text](path). Found by the ratchet test.
+            for candidate in re.findall(r"\]\(([^)\s]+\.(?:md|json|py|txt))\)", source):
+                resolved = (ROOT / "docs" / "evidence-register.md").parent / candidate
+                if resolved.exists():
+                    linked = True
+                    break
+        if not linked:
             unlinked.append({"id": row["id"], "label": row["label"], "source": source[:90]})
 
     return {

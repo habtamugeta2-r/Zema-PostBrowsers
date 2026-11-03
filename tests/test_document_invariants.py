@@ -357,6 +357,28 @@ class EvidenceLinkTest(unittest.TestCase):
         result = evidence_link_check()
         self.assertLessEqual(
             result["unlinked"],
-            106,
+            101,
             f"unlinked rows grew to {result['unlinked']}: a new row cites nothing reachable",
         )
+
+    def test_a_markdown_link_counts_as_a_route(self):
+        """Regression: the first version read only backticked paths, so a row
+        citing a markdown link was counted unlinked. Caught by the ratchet."""
+        rows = audit.evidence_link_check()
+        linked_by_markdown = []
+        for line in read("docs/evidence-register.md").splitlines():
+            match = re.match(r"\|\s*(\d{3})\s*\|", line)
+            if not match:
+                continue
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) < 5:
+                continue
+            if re.search(r"\]\([^)]+\.md\)", cells[3]):
+                linked_by_markdown.append(cells[0])
+        self.assertTrue(linked_by_markdown, "no row uses a markdown link any more")
+        for row_id in linked_by_markdown:
+            self.assertNotIn(
+                row_id,
+                rows["unlinked_ids"],
+                f"row {row_id} cites a markdown link but is reported unlinked",
+            )
