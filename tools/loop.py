@@ -223,13 +223,18 @@ def cmd_done(item_id: str) -> int:
                 print(f"  FAIL {check['name']}")
         return 1
 
-    text = BACKLOG.read_text(encoding="utf-8")
-    pattern = re.compile(r"(^\|\s*" + re.escape(item_id) + r"\s*\|.*\|\s*)(\*\*)?[^|]*?(\*\*)?\s*\|\s*$")
-    updated, count = pattern.subn(lambda m: f"{m.group(1)}**{DONE}** |", text, count=1)
-    if count == 0:
-        print(f"could not rewrite the row for {item_id}")
-        return 1
-    BACKLOG.write_text(updated, encoding="utf-8")
+    lines = BACKLOG.read_text(encoding="utf-8").splitlines()
+    for index, line in enumerate(lines):
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if not line.startswith("|") or not cells or cells[0] != item_id:
+            continue
+        cells[-1] = f"**{DONE}**"
+        lines[index] = "| " + " | ".join(cells) + " |"
+        BACKLOG.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"{item_id} marked done.")
+        return 0
+    print(f"could not rewrite the row for {item_id}")
+    return 1
     print(f"{item_id} marked done.")
     return 0
 
