@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.4 (draft) — text unchanged since 0.2.3; the version follows the specification's document set, not this file's edit history |
+| **Version** | 0.2.5 (draft) — v0.2.5 adds diagnostic codes to T-03, T-08, T-09, T-16, T-25; no rule's meaning changed |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | Proposed — normative text, not frozen |
 | **Rules** | `T-nn` |
@@ -13,7 +13,7 @@
 
 - **T-01** `let` introduces an immutable binding. It **MUST NOT** be reassigned (`PL0201`).
 - **T-02** `mut` introduces a mutable binding. Only a `mut` binding may appear on the left of `=` (`PL0202`). Mutability is a property of the *binding*, not of the value: there are no reference types in the core, so no mutable aliasing exists.
-- **T-03** `mut` bindings are **block-local**. Passing a `mut` binding to a function passes its current value. There is no borrowing, no shared mutability, and therefore no data race inside the language (concurrency safety is Phase 4's problem at task boundaries).
+- **T-03** `mut` bindings are **block-local**; use outside the declaring block is `PL0232`. Passing a `mut` binding to a function passes its current value. There is no borrowing, no shared mutability, and therefore no data race inside the language (concurrency safety is Phase 4's problem at task boundaries).
 
 > **Note on ID order.** Rule IDs are permanent and records cite them, so a rule
 > added later keeps its number and is placed next to the rules it belongs with.
@@ -47,8 +47,8 @@
 
 - **T-06** A record type is written `{ field: Type, … }` and is **structural**: two record types with identical field names and types are the same type, and there is no record declaration form. Records **MUST** have at least one field (`{}` is `PL0107`; use `()`).
 - **T-07** A record value is written `{ field: expr, … }`; every field of the type **MUST** be present exactly once (`PL0203`). Field order in a literal **MUST NOT** matter for typing; it does determine evaluation order (E-02).
-- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types — and **closed**: a value is one of the declared variants, permanently (T-10).
-- **T-09** A variant carries **at most one** value: either a single type (`Some(a)`) or a record when more than one field is needed (`Archived({ reason: Text })`). There is **no positional field list**, so there is no field-order/field-swap hazard, and matching reuses record patterns rather than inventing a second one (A-05).
+- **T-08** A union type **MUST** be declared: `type Status = Active | Done | Archived({ reason: Text })`. Unions are **nominal** — two identically-shaped unions are different types — and **closed**: a value is one of the declared variants, permanently (T-10). Violations are `PL0233`.
+- **T-09** A variant carries **at most one** value: either a single type (`Some(a)`) or a record when more than one field is needed (`Archived({ reason: Text })`). There is **no positional field list**, so there is no field-order/field-swap hazard, and matching reuses record patterns rather than inventing a second one (A-05). Violations are `PL0234`.
 - **T-10** A union **MUST NOT** be extended after declaration. Modelling "one more case" requires a new union; this is what makes exhaustive matching (E-14) a real guarantee.
 
 ## 4. Absence, failure, and errors
@@ -61,7 +61,7 @@
 
 - **T-14** A type parameter **MUST** be declared in the declaration that uses it: `fn map<a, b>(xs: List<a>, f: fn(a) -> b) -> List<b>`. Unbound type variables are `PL0206`.
 - **T-15** Generic code **MUST** declare the interfaces it relies on as bounds: `fn display_all<a: Display>(xs: List<a>) -> List<Text>`. Use of an interface operation on an unbounded parameter is `PL0207` with the missing bound as a fix. For a single-parameter interface, `a: Display` is shorthand for `a: Display<a>`; explicit type arguments are required otherwise. Prelude interfaces in the Gate 1 core: `Eq`, `Ord`, `Display`. `Ord` requires `Eq` (decision 0009). `Hash` is deferred until Phase 9 needs it (D-19).
-- **T-16** An interface declares signatures only: `interface Display<a>:` with `fn display(value: a) -> Text`. Interfaces carry no default bodies in v0.1.
+- **T-16** An interface declares signatures only: `interface Display<a>:` with `fn display(value: a) -> Text`. Interfaces carry no default bodies in v0.1. Violations are `PL0236`.
 - **T-17** An implementation is `impl Display<Task> for Task:` (or `impl<a> Display<a> for List<a>:` where the interface/type heads require parameters) followed by the required functions. Implementations **MUST** be complete (`PL0208`) and **MUST NOT** add functions beyond the interface (`PL0209`).
 - **T-18** **Coherence rules (normative):**
   1. **Orphan rule** — an `impl` **MUST** live in the module that declares the type or the interface (`PL0210`).
@@ -83,7 +83,7 @@
 - **T-22** The following are **not** in the language and **MUST** be rejected by name rather than by accident: higher-rank polymorphism, higher-kinded types, implicit parameters, ad-hoc overloading (one name, many types), polymorphic recursion, defaulting beyond T-23, and implicit numeric widening (`PL0216`).
 - **T-23** Numeric literals: an integer literal has type `Int` unless the expected type is `Float`, in which case it is a **compile error**, not a conversion (`PL0217`); write `1.0`. There is no other defaulting.
 - **T-24** An empty list literal with no expected type **MUST** be an error asking for an annotation (`PL0218`). Guessing the element type is how "it compiles but the data is wrong" starts.
-- **T-25** There is **no subtyping** in v0.1 — not for records, not for unions, not for interfaces. Variance questions do not exist because there is no subtyping relation to be variant about.
+- **T-25** There is **no subtyping** in v0.1 — not for records, not for unions, not for interfaces. Variance questions do not exist because there is no subtyping relation to be variant about. Violations are `PL0235`.
 
 ## 7. Equality and ordering types
 

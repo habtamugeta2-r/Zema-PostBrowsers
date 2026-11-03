@@ -150,6 +150,15 @@ expectation.
   The diagnostics allocation rises from 20 to 52, taking the planning
   total from 275 to 307 fixtures; this remains a target, not coverage.
   The registry also adds `PL1104`.
+
+> **Dated correction, 2026-11-03 (later the same day).** The figures above are
+> the state at the time Decision 0011 was prepared and are retained as written.
+> The diagnostic-identity pass later added [`plain/08-diagnostics-and-faults.md`](../plain/08-diagnostics-and-faults.md):
+> the registry now holds **72 codes** (63 error, 5 fault, 4 warning) including the
+> historical `PL0106`, so **71 active-code fixtures** are required, the
+> diagnostics allocation is **66** (fault codes are fixtured in the faults row,
+> not counted twice), and the planning total is **355**. The decision's *rule*
+> is unchanged; only the counts it quoted moved.
 - The hashed Unicode data manifest is reproducible by immutable commit
   and can be independently checked. Hashing data is not an implementation
   or conformance run.

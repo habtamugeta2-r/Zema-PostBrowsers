@@ -493,22 +493,22 @@
       },
       {
         "area": "Diagnostics quality",
-        "target": 52
+        "target": 66
       }
     ],
-    "sum": 341
+    "sum": 355
   },
   "evidence": {
-    "count": 116,
+    "count": 120,
     "labels": {
       "H": 30,
       "P": 26,
-      "E": 60
+      "E": 64
     },
     "declared_summary": {
-      "total": 116,
+      "total": 120,
       "labels": {
-        "E": 60,
+        "E": 64,
         "P": 26,
         "H": 30
       }
@@ -708,6 +708,105 @@
       "historical": false,
       "rules": [
         "L-15"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0118",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-08"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0119",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-09"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0120",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-13"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0121",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-14"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0122",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-20"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0123",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-22"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0124",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-25"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0125",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-06"
+      ],
+      "documents": [
+        "docs/plain/00-lexical-and-layout.md"
+      ]
+    },
+    {
+      "code": "PL0126",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "L-02"
       ],
       "documents": [
         "docs/plain/00-lexical-and-layout.md"
@@ -1072,6 +1171,61 @@
       ]
     },
     {
+      "code": "PL0232",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-03"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0233",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-08"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0234",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-09"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0235",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-25"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
+      "code": "PL0236",
+      "severity": "error",
+      "historical": false,
+      "rules": [
+        "T-16"
+      ],
+      "documents": [
+        "docs/plain/01-types.md"
+      ]
+    },
+    {
       "code": "PL1101",
       "severity": "warning",
       "historical": false,
@@ -1114,6 +1268,61 @@
       "documents": [
         "docs/plain/00-lexical-and-layout.md"
       ]
+    },
+    {
+      "code": "PLFL01",
+      "severity": "fault",
+      "historical": false,
+      "rules": [
+        "E-05"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PLFL02",
+      "severity": "fault",
+      "historical": false,
+      "rules": [
+        "E-05"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PLFL03",
+      "severity": "fault",
+      "historical": false,
+      "rules": [
+        "E-06"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PLFL04",
+      "severity": "fault",
+      "historical": false,
+      "rules": [
+        "E-06"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
+    },
+    {
+      "code": "PLFL05",
+      "severity": "fault",
+      "historical": false,
+      "rules": [
+        "E-33"
+      ],
+      "documents": [
+        "docs/plain/02-evaluation.md"
+      ]
     }
   ],
   "traceability": {
@@ -1147,7 +1356,17 @@
   },
   "duplicated_facts": {
     "ok": true,
-    "clashes": []
+    "clashes": [],
+    "tables_scanned": 11
+  },
+  "uncoded_obligations": {
+    "ok": true,
+    "unexplained": [],
+    "explained_count": 38
+  },
+  "fault_namespace": {
+    "ok": true,
+    "offenders": []
   },
   "cross_reference_check": {
     "defined_count": 173,
@@ -1167,18 +1386,32 @@
   },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 55,
+    "markdown_files": 56,
     "python_files": 10,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
     "deferrals": 20,
-    "evidence_rows": 116,
+    "evidence_rows": 120,
     "decision_records": 16,
-    "plain_documents": 9,
+    "plain_documents": 10,
     "problem_statement_prose_words": 519,
-    "problem_statement_total_words": 868,
-    "conformance_fixtures_written": 0
+    "problem_statement_total_words": 828,
+    "conformance_fixtures_written": 0,
+    "code_accounting": {
+      "codes_cited_by_rules": 71,
+      "historical_codes": 1,
+      "fault_codes_defined": 5,
+      "all_active_codes": 76
+    },
+    "rules_requiring_rejection_without_a_code": [
+      "L-23",
+      "T-10",
+      "E-10",
+      "E-22",
+      "E-32",
+      "E-36"
+    ]
   },
   "check": {
     "ok": true,

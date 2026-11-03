@@ -3,10 +3,10 @@
 | Field | Detail |
 |---|---|
 | **Document** | `research/phase-01-07-process-gap-audit.md` |
-| **Version** | 1.1 |
+| **Version** | 1.2 |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
-| **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result |
+| **Status** | Complete for this audit pass. It records a **defect inventory and its repair**, not a conformance result. Version 1.2 adds §3.9 and revises §4: the deeper finding is not only missing artifact governance but an **unspecified failure vocabulary** |
 | **Evidence label** | **E** for repository observations (each reproducible by a named command) · **P** for the proposed process rules below · **H** for the claims about what the gap will cost later |
 | **Method** | Full read of all 52 Markdown files and 8 Python files; mechanical re-derivation of every published count; mutation testing of the repaired checks; comparison against published conformance-suite and repository-hygiene practice |
 | **Author** | ZEMA research agent (Arena AI Agent Mode) on behalf of Better-back |
@@ -291,11 +291,99 @@ in executable form.
 - **Document-count drift.** The execution prompt told the executor to read "all
   seven documents" in `docs/plain/`, which has held nine files (eight numbered
   plus the index) since the traceability matrix was added. Corrected to "all
-  eight documents", with doc 7 identified as the work list.
+  eight documents", with doc 7 identified as the work list. **It then drifted
+  again in the same pass**: adding doc 8 made the true figure nine, so the fix
+  for a stale count immediately became stale. That is the argument for
+  computing the count rather than writing it, and the reason §3.9 exists.
+
+## 3.9 The deeper defect: the specification could not be built because its failure modes were unnamed
+
+Sections 3.1–3.8 are about documents disagreeing with each other. This one is
+about a document being *unimplementable while internally consistent* — which is
+worse, because no cross-document check can find it.
+
+Three obligations pointed at an artifact that did not exist:
+
+| Where the requirement is written | What it requires | What existed |
+|---|---|---|
+| `00-lexical-and-layout.md` L-30 | every diagnostic carries a stable code | a code for 39 of 100 rules |
+| `05-conformance-plan.md` §3.3 | fault fixtures assert "an exact fault code, not a message string" | **no fault code namespace at all** |
+| `05-conformance-plan.md` §2 | one fixture per active diagnostic code (52) | 12 rules that require rejection and name no code |
+
+Measured, before repair:
+
+- **61 of 100** L/T/E rules cited no diagnostic code.
+- **12 of those** *required the implementation to reject something* — `L-02`,
+  `L-09`, `L-13`, `L-14`, `L-23`, `L-25`, `T-10`, `E-10`, `E-22`, `E-32`,
+  `E-33`, `E-36`. A runner that asserts exact codes cannot fixture a rejection
+  that has no identifier. The only way forward is to invent codes *during*
+  implementation, which is precisely how a specification and its tests diverge.
+- **Zero fault identifiers.** E-30 enumerates the core faults, E-32 and E-33
+  constrain their behavior, and the plan demands fixtures for them — but nothing
+  ever said what a fault is *called*. The fault fixture, the most mechanical test
+  in the plan, was unnameable.
+
+Two of those twelve turned out to be the opposite error once read closely:
+`E-10`, `E-22`, `E-32`, `E-33`, `E-36` are **implementation constraints** — no
+user program can violate "no fast-math" or "meaning must not depend on build
+profile". They need no code, but they need to *say* they need none, or the next
+auditor will re-derive the gap. That distinction — **a rule that refuses a
+construct versus a rule that constrains the implementation** — did not exist in
+the document set and had to be added.
+
+### 3.9.1 Why this is the same root cause, one level down
+
+Section 4 said: claims were governed, artifacts were not. The diagnostic gap is
+the same failure applied to *identifiers*. An identifier is an artifact. Nothing
+owned the namespace, so:
+
+| Because nothing owned… | …this happened |
+|---|---|
+| the diagnostic namespace | codes were cited ad hoc from rule prose, 61 rules never citing one |
+| the fault namespace | the plan required exact fault codes while E-30 gave faults no name |
+| the rule "one code, one owner" | three codes were cited by two rules each with no owner recorded |
+| the distinction between "no code needed" and "code not yet decided" | 12 uncoded refusals were indistinguishable from 5 genuinely codeless constraints |
+
+### 3.9.2 The repair, and the three mistakes made while repairing it
+
+`docs/plain/08-diagnostics-and-faults.md` (v0.3.1) now owns all four namespaces:
+`PL01nn` lexical, `PL02nn` types, **`PLFLnn` faults (new)**, `PL11nn` warnings.
+It assigns 19 new identifiers — 14 errors, 5 Gate 1 faults — and adds §6, the
+explicit list of rules that correctly need no code.
+
+The repair itself reproduced the disease three times, and all three are recorded
+rather than quietly fixed:
+
+1. **Two hand-counted drafts of §8 were wrong.** Draft one claimed +16 error
+   codes and 68 active; draft two claimed 62. The measured answer is 19 new
+   identifiers and 71 active. A count typed into prose is a *claim*; only a
+   computed number is a *fact*. This is PR-01, demonstrated on the audit itself.
+2. **A fault code renamed out of its namespace passed every test.** Changing
+   `PLFL03` to `PL0399` broke no check, because the same rule still cited
+   `PLFL04`. The namespace test asserted that *a* fault exists, not that every
+   code named as a fault is in it. Fixed by reading the appositive — "the fault
+   \`X\`" — which then produced five false positives before being narrowed.
+3. **The conformance budget was arithmetically inconsistent with its own
+   rows.** Raising the total to 360 without repricing the areas tripped the audit
+   tool, correctly. The diagnostics row had been "52+" — a floor written to avoid
+   committing to a number. Repriced to 66; total 355.
+
+The pattern in all three: **a check that only verifies existence will pass while
+the substance is wrong.** The mutation test is what converted each from a silent
+defect into a failing test.
 
 ## 4. The root cause
 
-One sentence: **the project had an evidence register but no artifact register.**
+One sentence: **the project had an evidence register but no artifact register
+— and an identifier is an artifact.**
+
+Version 1.2 sharpens this. The drift in §3.1–3.8 and the unbuildability in §3.9
+are one failure at two levels: nothing governed the *things* the documents rely
+on. Copies, status lines, and numbers were ungoverned; so were diagnostic codes.
+The evidence register shows exactly what the missing layer looks like when it
+exists — a rule ("every claim needs a row"), a label vocabulary, a permanent
+retraction record, and a tool that recomputes the summary. None of that was
+applied to artifacts.
 
 `docs/evidence-register.md` governs *claims*: every claim needs a row, a label,
 a source grade, a status, and retraction is permanent. Nothing governs
@@ -341,11 +429,13 @@ the right shape; it was simply checking only the claims layer.
 | `tools/audit_phase01.py` | 3 new checks: `traceability_matrix`, `conformance_area_coverage`, `duplicate_artifact_check`; fixture total now read from the plan and compared to the summed areas |
 | `tools/check_unicode17_normalization.py` | writes the canonical experiment report |
 | `research/data/phase-01-normalization-report.json` | **deleted** (duplicate) |
-| `tests/test_document_invariants.py` | **New.** 11 tests: audit green, rule methods, rule areas, no duplicate results, no rule set tabulated twice, exclusion table has one owner, declared-vs-summed fixture total, evidence summary match, no split table, unique numbered headings, gate-00 internal refs resolve |
+| `tests/test_document_invariants.py` | **New.** 24 tests. v1.1 had 11: audit green, rule methods, rule areas, no duplicate results, no rule set tabulated twice, exclusion table has one owner, declared-vs-summed fixture total, evidence summary match, no split table, unique numbered headings, gate-00 internal refs resolve. v1.2 adds 13 for the diagnostic layer: faults stay in `PLFL`, every fault rule names a fault, no refusal rule is uncoded-or-unexplained, every code has an owning rule, a code named as *the fault* is in the fault namespace, the catalog quotes the measured registry size, and the budget matches its rows |
 | `docs/decisions/README.md` + all 16 decision records | Two-field status (`Status` + `Owner ratification`), mirrored in one index (PR-06) |
-| `docs/problem-statement.md` | Typed word count replaced by the measured one (519 prose / 866 total) |
+| `docs/problem-statement.md` | Typed word count replaced by the measured one (519 prose / 828 total). v1.2 excludes the Length row from its own count, because the row quotes the number and counting it made the figure self-referential |
 | `tools/audit_phase01.py` `--verify` | Prints the quantities prose may quote (PR-01 in executable form) |
-| `tools/audit_phase01.py` `duplicated_fact_check` | Overlap-based, not equality-based; §3.6 explains why the first version failed |
+| `tools/audit_phase01.py` `duplicated_fact_check` | Overlap-based, not equality-based; §3.6 explains why the first version failed. v1.2 narrowed it to tables with **matching headers**, because comparing rule-ID sets flagged two tables that list the same rules about different things |
+| `docs/plain/08-diagnostics-and-faults.md` | **New (v1.2).** Owns all four code namespaces, assigns 19 new identifiers, defines the `PLFL` fault namespace, and lists the 38 rules that correctly need no code |
+| `docs/plain/00-lexical-and-layout.md`, `01-types.md`, `02-evaluation.md` | **Changed (v1.2).** 14 new codes and 5 fault codes inserted into the normative rule text, so a fixture can name what it tests |
 
 ### 5.2 The checks were mutation-tested
 
@@ -367,7 +457,7 @@ audit found.
 ### 5.3 What the repair deliberately did **not** do
 
 - **It did not write a fixture.** Every rule is *allocated*, none is *verified*.
-  Writing 341 fixtures is the Phase 1 build, and pretending a matrix is progress
+  Writing 355 fixtures is the Phase 1 build, and pretending a matrix is progress
   would repeat the exact error this audit is about.
 - **It did not renumber a rule ID.** `T-28` still sits between `T-03` and `T-04`,
   with a note instead of a renumber. IDs are cited by decisions, evidence rows,
@@ -419,7 +509,7 @@ its own gate and still be wrong.
   they pass their pinned corpora. No lexer, parser, type checker, evaluator, or
   runner exists.
 - **Gate 1** — **not attempted**, and cannot be attempted until C2 is recorded,
-  the seven A-* proposals are ratified or revised, and 341 fixtures exist and
+  the seven A-* proposals are ratified or revised, and 355 fixtures exist and
   pass in both profiles under an independent reviewer.
 
 ## 8a. Open gaps this pass did **not** close
@@ -433,6 +523,11 @@ Stated so the next reader does not assume the repair is total.
 | 3 | Prose numbers outside the `--verify` list are still unchecked (e.g. "56 productions" is checked; "29 findings" is not) | A general scraper produces false positives; each addition should be justified by a defect | Extend `--verify` per confirmed drift |
 | 4 | The 11 stale-status findings were found by reading, not by a check | Detecting "this sentence contradicts that file" needs a claim-level link, which is a bigger design than this pass | Consider a status-owner field in the tracker |
 | 5 | Phase 2–14 records do not exist, so none of these checks has been exercised past Phase 1 | Out of scope by the directory guide's rule 4 | Each phase, before its gate |
+| 6 | **The catalog's 19 new identifiers are a proposal; none has owner ratification** | Naming is the most visible part of a compiler and the cheapest thing to change before fixtures exist | Owner reviews `08-diagnostics-and-faults.md` §9 |
+| 7 | **No message text, span convention, or fix exists for any of the 72 codes** | L-30 fixes the fields and L-34 demands a fixture per code, but writing 72 messages is implementation work | Phase 1 build |
+| 8 | 38 rules are recorded as needing no code, and that classification is unverified | Telling a *rejection* from an *implementation constraint* is a judgement; a wrong call either invents a pointless code or hides a missing one | Re-read §6 against the rule text at Gate 1 |
+| 9 | `PLFL05` (fuel exhaustion) sits in the fault namespace but may read better as a diagnostic | Either choice is defensible and the rule text does not decide it | Owner decision, §9 item 6 |
+| 10 | Three codes are cited by two rules each (`PL0107`, `PL0114`, `PL0219`, `PL0228`) with no recorded owner | The catalog names an owner in prose; the registry structure does not carry one | Add an `owner` field to `diagnostic_registry()` when the compiler starts consuming it |
 
 ## 9. Sources
 
@@ -459,4 +554,5 @@ practice-level, not clause-level.
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-03 | 1.0 | Audit created. Records the rule→fixture traceability gap (14 of 106 rules with no conformance area), three broken invariants (duplicated result, 4 split tables, duplicate §8), 11 stale status statements, 6 structural defects, the root cause, the repair, mutation-test evidence, and 8 proposed process rules. |
+| 2026-11-03 | 1.2 | Added §3.9 (the specification could not be built because its failure modes were unnamed) and revised §4 to the sharper root cause: an identifier is an artifact, and nothing governed the identifier namespaces. Created `docs/plain/08-diagnostics-and-faults.md`; assigned 19 identifiers into normative rule text; added 13 tests; recorded three mistakes made during the repair. Open gaps 8a.6–8a.10 added |
 | 2026-11-03 | 1.1 | Second pass. §3.6 records that this audit's own repair duplicated the exclusion table and that the first duplicate-detection check was too weak to catch it — found by mutation-testing the check, not by review. §3.7 corrects three typed numbers in v1.0 (including the problem statement's "580 words" → 519 measured) and adds `--verify`. §3.8 completes PR-06 across all 16 decision records and fixes the "seven documents" count. §8a lists five gaps deliberately left open. Duplication check rewritten from set-equality to overlap. |

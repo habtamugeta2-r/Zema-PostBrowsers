@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Document** | Phase 1 execution prompt — the work order that turns draft v0.2.4 into an executable core and a Gate 1 result |
+| **Document** | Phase 1 execution prompt — the work order that turns draft v0.2.5 into an executable core and a Gate 1 result |
 | **Version** | 1.1 (2026-11-03: repaired internal section pointers and refreshed the verified-facts table after the traceability pass; no work package changed) |
 | **Date** | 2026-11-03 |
 | **Status** | Ready for execution — **conditional on the owner authorizations in §2**. This document is a plan, not an authorization |
@@ -34,7 +34,7 @@ phase slice: **Phase 1 → Gate 1**, and nothing else.
 2. [Master Prompt](./ZEMA-Master-Research-and-Build-Prompt.md) §1–§3 and Phase 1 — the loop, the labels, the gate criteria.
 3. [`gate-00.md`](../gates/gate-00.md) — conditions C1–C5 and their consequences.
 4. [`gate-01-readiness.md`](../gates/gate-01-readiness.md) — the owner response packet.
-5. [`docs/plain/`](../plain/README.md) — all eight documents. Docs 0–4 and 6 are the rule text and the decision registers; **doc 7** ([traceability](../plain/07-traceability.md)) is the work list your fixtures must close out. The rule text is the specification you must satisfy; this prompt never overrides it.
+5. [`docs/plain/`](../plain/README.md) — all nine documents. Docs 0–4 and 6 are the rule text and the decision registers; **doc 7** ([traceability](../plain/07-traceability.md)) is the work list your fixtures must close out; **doc 8** ([diagnostics and faults](../plain/08-diagnostics-and-faults.md)) names every code a fixture asserts — without it a rejection cannot be fixtured at all. The rule text is the specification you must satisfy; this prompt never overrides it.
 6. This file, §2 preflight, before writing any code.
 
 **Conflict precedence:** Master Prompt > Gate 0 conditions and recorded
@@ -115,7 +115,7 @@ if the environment differs, record the difference and revisit WP-1.
 | Node v22.22.3 present; **no Rust toolchain** (`rustc`, `cargo`, `rustup` absent) | `command -v` checks | A Rust implementation cannot be built or tested here without a toolchain this sandbox cannot reach (`static.rust-lang.org` is outside the network allowlist) |
 | Network allowlist: `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | Environment constraint | `unicode.org` is unreachable from the sandbox; the pinned GitHub mirror is the data source |
 | The pinned Unicode data commit is reachable | `api.github.com` returned HTTP 200 for blob `21a79503…` and commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c` (`unicode-org/unicodetools`) | WP-2 fetch-and-verify is feasible here |
-| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 341 fixture targets, 106/106 rules traced to a verification method and an area, 116 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
+| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 L/T/E rules + 6 sugars (106 rule IDs), 47 ambiguities (42/5/0), 20 deferrals, 355 fixture targets, 106/106 rules traced to a verification method and an area, 120 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 72 diagnostic codes (63 error / 5 fault / 4 warning) + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
 
 **Recommendation (Proposed — to be recorded as decision 0013):** the
 Gate 1 vehicle is a **Python 3.11 standard-library-only reference
@@ -324,9 +324,12 @@ fuel tests are repeatable across runs.
 
 ### WP-7 — BUILD: diagnostics and source locations
 
-**Inputs:** L-30…L-34; generated `diagnostic_registry` in
-`research/data/phase-01-document-audit.json` (52 active entries; PL0106
-historical); all errors/warnings surfaced by WP-3…WP-6.
+**Inputs:** L-30…L-34; [`../plain/08-diagnostics-and-faults.md`](../plain/08-diagnostics-and-faults.md)
+(the authoritative catalog: 71 active codes — 66 error/warning, 5 fault — plus
+`PLFL06`–`PLFL08` reserved for later phases, and PL0106 historical); the derived
+`diagnostic_registry` in `research/data/phase-01-document-audit.json`; all
+errors/warnings surfaced by WP-3…WP-6. Fault codes use the `PLFL` namespace and
+must not be catchable (T-12).
 
 **Tasks:** implement source spans in the spec's coordinate convention,
 caret lines, normalized diagnostic objects, safe quoting of bidi/control

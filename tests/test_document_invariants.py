@@ -21,6 +21,12 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import audit_phase01 as audit  # noqa: E402
 
+read = audit.read
+registry = audit.diagnostic_registry
+uncoded_obligation_check = audit.uncoded_obligation_check
+conformance_area_coverage = audit.conformance_area_coverage
+fault_namespace_check = audit.fault_namespace_check
+
 
 class DocumentInvariantTests(unittest.TestCase):
     def test_audit_reports_no_problems(self) -> None:
@@ -134,3 +140,70 @@ class DocumentInvariantTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FaultNamespaceTest(unittest.TestCase):
+    """A fault must never be reportable as an ordinary diagnostic.
+
+    E-30 makes faults terminating and T-12 makes them uncatchable. If a fault
+    code looked like an error code, implementers would write a `catch` for it.
+    """
+
+    def test_faults_have_their_own_namespace(self):
+        faults = [e for e in registry() if e["severity"] == "fault"]
+        self.assertTrue(faults, "no fault codes exist: fault fixtures are unnameable")
+        for entry in faults:
+            self.assertTrue(
+                entry["code"].startswith("PLFL"),
+                f"{entry['code']} is a fault but is not in the PLFL namespace",
+            )
+
+    def test_every_gate_one_fault_rule_names_a_fault(self):
+        for rule in ("E-05", "E-06", "E-33"):
+            codes = [e["code"] for e in registry() if rule in e["rules"]]
+            self.assertTrue(
+                any(code.startswith("PLFL") for code in codes),
+                f"{rule} produces a fault but names no PLFL code",
+            )
+
+
+class UncodedObligationTest(unittest.TestCase):
+    """A rule that refuses a construct must be fixturable.
+
+    Conformance plan 3.3 asserts exact codes, so an uncoded refusal cannot be
+    tested without inventing an identifier during implementation.
+    """
+
+    def test_no_refusal_rule_is_left_without_a_code_or_an_explanation(self):
+        result = uncoded_obligation_check()
+        self.assertTrue(
+            result["ok"],
+            f"rules demand refusal with no code and no §6 entry: {result['unexplained']}",
+        )
+
+    def test_a_code_named_as_the_fault_is_in_the_fault_namespace(self):
+        """Regression: renaming PLFL03 to PL0399 passed every other test.
+
+        The registry still held a fault (PLFL04 on the same rule) and the
+        namespace test still passed, so only reading the sentence caught it.
+        """
+        result = fault_namespace_check()
+        self.assertEqual(
+            result["offenders"], [], "a code is named as a fault outside the PLFL namespace"
+        )
+
+    def test_every_registry_code_has_an_owning_rule(self):
+        orphans = [e["code"] for e in registry() if not e["rules"]]
+        self.assertEqual(orphans, [], "codes exist that no rule owns")
+
+
+class DiagnosticCatalogTest(unittest.TestCase):
+    """The catalog is the artifact that makes 71 codes fixturable."""
+
+    def test_catalog_quotes_the_measured_registry_size(self):
+        text = read("docs/plain/08-diagnostics-and-faults.md")
+        self.assertIn(str(len(registry())), text, "catalog does not quote the registry size")
+
+    def test_conformance_budget_matches_area_rows(self):
+        coverage = conformance_area_coverage()
+        self.assertTrue(coverage["ok"], coverage)

@@ -2,7 +2,7 @@
 
 | Field | Detail |
 |---|---|
-| **Version** | 0.2.4 |
+| **Version** | 0.2.5 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Status** | **Plan only.** No test file exists yet; this document exists so the build task has a specification to satisfy |
 | **Rules covered** | L-01…L-34, S-0…S-5, T-01…T-30, E-01…E-36 — full rule-level allocation is in [`07-traceability.md`](./07-traceability.md) |
@@ -52,15 +52,15 @@
 | `defer` | E-20…E-22 | 8 | LIFO order, non-`()` defer rejection, runs on `?`, not guaranteed on fault |
 | Matching | E-23…E-27 | 14 | Missing variant, unreachable arm, explicit `_`, literal match with `_` |
 | `if` | E-28, E-29 | 6 | Unit-typed `if` without `else`; mismatched branch types |
-| Faults and termination | E-30…E-33 | 10 | Core arithmetic/fuel faults and task-local discard; supervisor/other-task survival is a Phase 3 platform fixture |
-| Diagnostics quality | L-30…L-34 | 52+ | Generated registry ([`../../research/data/phase-01-document-audit.json`](../../research/data/phase-01-document-audit.json), `diagnostic_registry`): every active code, span, caret line, safe bidi quoting, no cascade, terminology; 20 is a floor, not a cap |
-| **Currently allocated** | — | **341 fixtures** | Sum of the rows above; a planning budget, **not** a coverage proof. The 52 minimum is the current active diagnostic-code registry; new rules and A-42 scope may increase it. `E-34` is deliberately **not** in this table: it is a cost claim that Gate 12 owns (see §5) |
+| Faults and termination | E-30…E-33 | 10 | One fixture per Gate 1 fault code — `PLFL01` overflow, `PLFL02` `Int.min / -1`, `PLFL03` division by zero, `PLFL04` remainder by zero, `PLFL05` fuel exhaustion — plus task-local discard; `PLFL06`–`PLFL08` are reserved and must **not** be asserted at Gate 1. Supervisor/other-task survival is a Phase 3 platform fixture |
+| Diagnostics quality | L-30…L-34 | 66 | Every active **error and warning** code — one fixture each, derived from the [`08-diagnostics-and-faults.md`](08-diagnostics-and-faults.md) catalog: span, caret line, safe bidi quoting, no cascade, terminology. Fault codes are *not* counted here; they are fixtured in the row below, so no code is counted twice |
+| **Currently allocated** | — | **355 fixtures** | Sum of the rows above; a planning budget, **not** a coverage proof. The 71 minimum is the active diagnostic-code registry in [`08-diagnostics-and-faults.md`](08-diagnostics-and-faults.md); new rules and A-42 scope may increase it. It was 341 while the registry held 52 codes and the fault namespace did not exist; 355 is 341 − 52 + 66, i.e. the diagnostics row repriced against a real registry rather than a hand-typed 52. `E-34` is deliberately **not** in this table: it is a cost claim that Gate 12 owns (see §5) |
 
 ## 3. Runner requirements
 
 1. **CLI**: `plain test conformance/ --profile checked|optimized --report json`.
 2. **Report**: per-rule pass/fail/uncovered, plus a machine-readable list of uncovered rule IDs.
-3. **Fault fixtures** assert an exact fault code, not a message string.
+3. **Fault fixtures** assert an exact fault code, not a message string. Faults use the `PLFL` namespace, never `PLnnnn`: a fault terminates the task and cannot be caught (E-30, T-12), so reusing the error space would invite a `catch` the language forbids. See [`08-diagnostics-and-faults.md`](08-diagnostics-and-faults.md) §4.
 4. **Diagnostic fixtures** compare against a normalized diagnostic object (code, severity, span, fix presence).
 5. **Hermetic**: no network, no wall-clock semantics, no filesystem beyond fixtures. Core faults use deterministic fuel/step quotas. Host capabilities are stubbed by a test broker only for explicitly included platform fixtures (Phase 3 stub, Phase 5 real).
 

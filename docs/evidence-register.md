@@ -3,7 +3,7 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.1 (Phase 1 audit) |
+| **Version** | 1.2 (Phase 1 audit) |
 | **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
@@ -181,13 +181,17 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 114 | "Eleven statements across nine documents still asserted that Phase 1 build was blocked by C1/C5 after the owner resolved both conditions on 2026-11-03." | E | `research/phase-01-07-process-gap-audit.md` §3.3 (table of locations); `docs/gates/gate-00.md` §10 | 1 | 2026-11-03 | Confirmed by reading; every instance corrected with a visible dated note, and the original text retained where it is a decision record |
 | 115 | "The first version of the duplication check compared rule sets for exact equality and therefore did not detect a three-row partial copy of the Gate 1 exclusion table." | E | `research/phase-01-07-process-gap-audit.md` §3.6; mutation of `docs/plain/05-conformance-plan.md` against `tools/audit_phase01.py` `duplicated_fact_check()` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by mutation test; the check was rewritten to measure overlap (≥3 shared rules, ≥60% of the smaller set) and the mutation now fails |
 | 116 | "`docs/problem-statement.md` declares about 580 words of prose; the measured figure is 519 prose words and 866 words in total." | E | `python3 tools/audit_phase01.py --verify`; `docs/problem-statement.md` | 0 | 2026-11-03 | Confirmed; the declared length was replaced with the measured one and the measurement is now reproducible |
+| 117 | "Twelve normative rules required the implementation to reject a construct while naming no diagnostic code, so a runner that asserts exact codes (conformance plan §3.3) could not fixture them without inventing identifiers during implementation." | E | `docs/plain/00-lexical-and-layout.md`, `01-types.md`, `02-evaluation.md` (rule text); `docs/plain/08-diagnostics-and-faults.md` §6; `tools/audit_phase01.py --verify` → `rules_requiring_rejection_without_a_code` | 0 | 2026-11-03 | Confirmed by script over rule text. Six were genuine code gaps and now carry codes; six are implementation constraints that no user program can violate and are recorded as needing none. The set is now empty and a check fails if it grows |
+| 118 | "The specification required fault fixtures to assert an exact fault code, but no fault-code namespace existed anywhere in the documents; E-30 enumerated the core faults without naming one." | E | `docs/plain/05-conformance-plan.md` §3.3; `docs/plain/02-evaluation.md` E-30; exhaustive search of `docs/` and `research/` for a fault identifier scheme | 0 | 2026-11-03 | Confirmed. The `PLFL` namespace was introduced and `PLFL01`–`PLFL05` assigned to E-05/E-06/E-33; three further numbers are reserved so later phases do not renumber |
+| 119 | "Renaming a fault code out of the fault namespace (`PLFL03` → `PL0399`) passed every existing document test, because the same rule still cited another `PLFL` code." | E | Mutation applied to `docs/plain/02-evaluation.md` against `tests/test_document_invariants.py` on 2026-11-03 | 1 | 2026-11-03 | Confirmed by mutation. A sentence-level check was added; a coarse version produced five false positives before being narrowed to the "the fault `X`" appositive |
+| 120 | "Hand-counted figures in this project were wrong three times in one document: the catalog's first two drafts both overstated the number of new codes, and draft two understated the conformance budget's arithmetic." | E | `docs/plain/08-diagnostics-and-faults.md` §8; `python3 tools/audit_phase01.py --verify` | 1 | 2026-11-03 | Confirmed by recomputation. Every count is now printed by `--verify`; both wrong drafts are retained in the document rather than overwritten |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 116 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit) |
-| Established (E) | 60 |
+| Total rows | 120 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision + 5 process-audit + 4 diagnostic-gap) |
+| Established (E) | 64 |
 | Proposed (P) | 26 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
@@ -220,4 +224,5 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 2026-11-03 | Added #110 as a proposed A-46 dependency gap: Script value aliases need a further pinned input; owner amendment pending. |
 | 2026-11-03 | Added #111 for six property-accessor smoke tests; raw output is saved. Total 111 rows. |
 | 2026-11-03 | Process-gap audit added #112–#114 for the traceability gap, the duplicated/malformed artifacts, and the stale C1/C5 statements. Total 114 rows (E 58 / P 26 / H 30). Joined four split tables that had been rendering as separate blocks. |
+| 2026-11-03 | Diagnostic-gap pass added #117–#120: uncoded refusal rules, the missing fault namespace, a fault-namespace mutation that passed every test, and three hand-count errors in one new document. Total 120 rows (E 64 / P 26 / H 30). Created `docs/plain/08-diagnostics-and-faults.md` and assigned 19 new identifiers. |
 | 2026-11-03 | Audit second pass added #115–#116: the duplication check was too weak to catch a partial copy (found by mutation), and the problem statement's word count was typed rather than measured. Total 116 rows (E 60 / P 26 / H 30). |

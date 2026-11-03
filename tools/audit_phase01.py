@@ -26,6 +26,7 @@ RULE_DOC_RELS = [
     "docs/plain/01-types.md",
     "docs/plain/02-evaluation.md",
 ]
+CATALOG_REL = "docs/plain/08-diagnostics-and-faults.md"
 
 
 def read(rel: str) -> str:
@@ -204,57 +205,128 @@ def duplicate_artifact_check() -> dict:
     return {"ok": not duplicates, "duplicates": duplicates}
 
 
-def duplicated_fact_check() -> dict:
-    """Detect two documents tabulating the same rule set.
+def uncoded_rejection_rules() -> list[str]:
+    """Rules that demand a refusal but name no code.
 
-    A fact must have one owning table (process rule PR-04). The failure mode is
-    not a byte-identical copy -- it is a *partial* copy that then drifts: one
-    table gains a row, the other keeps the old list. This defect occurred three
-    times in this repository (conformance areas, the Gate 1 exclusion list, and
-    the decision-status table). Identical-set detection misses it, so overlap is
-    measured instead.
-
-    Threshold: two files clash when they share at least 3 rule rows and those
-    rows are at least 60% of the smaller table.
+    This is the measure of 'unbuildable as specified': the plan says a fault
+    fixture asserts an exact code, so an obligation without a code cannot be
+    fixtured without inventing one.
     """
-    rule_re = re.compile(r"^\|\s*`?([LTE]-\d{2}|S-\d)\b")
-    per_file: dict[str, set[str]] = {}
-    for path in sorted(PLAIN.glob("*.md")):
-        rows = set()
-        for line in path.read_text(encoding="utf-8").splitlines():
-            match = rule_re.match(line)
-            if match:
-                rows.add(match.group(1))
-        if len(rows) >= 3:
-            per_file[str(path.relative_to(ROOT))] = rows
+    refuse = re.compile(
+        r"MUST NOT|\bis an error\b|\bare errors\b|MUST be (?:an )?error"
+        r"|\brejected\b|\bforbidden\b"
+    )
+    found = []
+    for rel in RULE_DOC_RELS:
+        for line in read(rel).splitlines():
+            match = re.match(r"^- \*\*([LTE]-\d{2})\*\*(.*)", line)
+            if not match:
+                continue
+            rule_id, body = match.group(1), match.group(2)
+            if re.search(r"PL(?:FL)?\d{2,4}", body):
+                continue
+            if refuse.search(body):
+                found.append(rule_id)
+    return found
+
+
+def duplicated_fact_check() -> dict:
+    """Detect two documents owning the *same* table about the same rules.
+
+    The earlier version compared rule-ID sets and produced a false positive:
+    the traceability matrix and the diagnostic catalog both list rule IDs, but
+    they state different facts about them (method/area vs. why-no-code). Two
+    tables are the same fact only when their **header rows match** and their
+    rule sets overlap.
+
+    The defect this catches is the real one: a table copied into a second file
+    with the same columns, which then drifts when one copy gains a row. That
+    happened twice here (the conformance areas, the Gate 1 exclusion list).
+    """
+    targets = sorted(PLAIN.glob("*.md"))
+    tables: list[dict] = []
+    for path in targets:
+        lines = path.read_text(encoding="utf-8").splitlines()
+        index = 0
+        while index < len(lines) - 2:
+            header = lines[index]
+            separator = lines[index + 1]
+            if header.startswith("|") and re.fullmatch(r"\|[\s:|-]+\|", separator.strip()):
+                rules: set[str] = set()
+                cursor = index + 2
+                while cursor < len(lines) and lines[cursor].startswith("|"):
+                    match = re.match(r"\|\s*`?([LTE]-\d{2}|S-\d)\b", lines[cursor])
+                    if match:
+                        rules.add(match.group(1))
+                    # range cells like "L-01…L-04"
+                    for span in re.finditer(r"([LTE])-(\d{2})\s*…\s*(?:[LTE]-)?(\d{2})", lines[cursor]):
+                        pre, low, high = span.group(1), int(span.group(2)), int(span.group(3))
+                        rules.update(f"{pre}-{i:02d}" for i in range(low, high + 1))
+                    cursor += 1
+                if len(rules) >= 3:
+                    tables.append(
+                        {
+                            "file": str(path.relative_to(ROOT)),
+                            "header": header.strip(),
+                            "rules": rules,
+                            "line": index + 1,
+                        }
+                    )
+                index = cursor
+            else:
+                index += 1
 
     clashes = []
-    names = sorted(per_file)
-    for i, left in enumerate(names):
-        for right in names[i + 1:]:
-            shared = per_file[left] & per_file[right]
-            smaller = min(len(per_file[left]), len(per_file[right]))
-            if len(shared) >= 3 and len(shared) >= 0.6 * smaller:
+    for i, left in enumerate(tables):
+        for right in tables[i + 1:]:
+            if left["header"] != right["header"]:
+                continue
+            shared = left["rules"] & right["rules"]
+            if len(shared) >= 3:
                 clashes.append(
                     {
-                        "files": [left, right],
+                        "header": left["header"],
+                        "files": [f'{left["file"]}:{left["line"]}', f'{right["file"]}:{right["line"]}'],
                         "shared_rules": sorted(shared),
-                        "shared_count": len(shared),
-                        "smaller_table": smaller,
-                        "owner": left,
-                        "duplicate": right,
+                        "owner": left["file"],
+                        "duplicate": right["file"],
                     }
                 )
-    return {"ok": not clashes, "clashes": clashes}
+    return {"ok": not clashes, "clashes": clashes, "tables_scanned": len(tables)}
+
+
+def uncoded_obligation_check() -> dict:
+    """Every rule that demands a refusal must name a code or be explained.
+
+    A rule that refuses a construct without an identifier cannot be fixtured by
+    a runner that asserts exact codes (conformance plan 3.3). Section 6 of the
+    catalog is the explicit allowlist for rules that correctly need no code.
+    """
+    catalog = ROOT / CATALOG_REL
+    explained: set[str] = set()
+    if catalog.exists():
+        text = catalog.read_text(encoding="utf-8")
+        section = text.split("## 6.", 1)
+        if len(section) == 2:
+            body = section[1].split("## 7.", 1)[0]
+            for line in body.splitlines():
+                if not line.startswith("|"):
+                    continue
+                first_cell = line.split("|")[1]
+                for match in re.finditer(r"\b([LTE]-\d{2})\b", first_cell):
+                    explained.add(match.group(1))
+                for match in re.finditer(r"([LTE])-(\d{2})\s*…\s*([LTE])?-(\d{2})", line):
+                    prefix, low, high = match.group(1), int(match.group(2)), int(match.group(4))
+                    explained.update(f"{prefix}-{i:02d}" for i in range(low, high + 1))
+    unresolved = [r for r in uncoded_rejection_rules() if r not in explained]
+    return {"ok": not unresolved, "unexplained": unresolved, "explained_count": len(explained)}
 
 
 def measured_facts() -> dict:
     """Quantities that prose is allowed to quote (process rule PR-01).
 
     Prose may restate these; it may not originate them. Run with --verify to
-    print them, then compare against the documents. This is deliberately a
-    small, explicit list rather than a general number scraper: a scraper
-    produces false positives, and a check nobody trusts gets switched off.
+    print them, then compare against the documents.
     """
     def prose_words(rel: str) -> int:
         text = read(rel)
@@ -269,9 +341,33 @@ def measured_facts() -> dict:
         return len(words)
 
     def total_words(rel: str) -> int:
-        return len(re.findall(r"\b[\w'’-]+\b", read(rel)))
+        """Every word except the leading control block's own Length row.
 
-    plain_docs = sorted(PLAIN.glob("*.md"))
+        The Length cell quotes this number, so counting it makes the figure
+        depend on itself: correcting 866 to 868 changed the total to 868 and
+        the "corrected" value was wrong again. Excluding the row it lives in
+        makes the measurement a stable fixed point.
+        """
+        lines = [
+            line
+            for line in read(rel).splitlines()
+            if not line.startswith("| **Length**")
+        ]
+        return len(re.findall(r"\b[\w'’-]+\b", "\n".join(lines)))
+
+    def code_accounting() -> dict:
+        """Codes cited by rule text, plus faults defined only in the catalog."""
+        registry = diagnostic_registry()
+        active = {e["code"] for e in registry if not e["historical"]}
+        historical = {e["code"] for e in registry if e["historical"]}
+        faults = {e["code"] for e in registry if e["severity"] == "fault"}
+        return {
+            "codes_cited_by_rules": len(active),
+            "historical_codes": len(historical),
+            "fault_codes_defined": len(faults),
+            "all_active_codes": len(active) + len(faults),
+        }
+
     return {
         "markdown_files": len(list(ROOT.rglob("*.md"))),
         "python_files": len(list(ROOT.rglob("*.py"))),
@@ -283,11 +379,33 @@ def measured_facts() -> dict:
         "deferrals": len(re.findall(r"^### (D-\d{2})", read("docs/plain/04-deferred-features.md"), re.MULTILINE)),
         "evidence_rows": len(evidence_rows(read("docs/evidence-register.md"))),
         "decision_records": len(list((ROOT / "docs" / "decisions").glob("0*.md"))),
-        "plain_documents": len(plain_docs),
+        "plain_documents": len(list(PLAIN.glob("*.md"))),
         "problem_statement_prose_words": prose_words("docs/problem-statement.md"),
         "problem_statement_total_words": total_words("docs/problem-statement.md"),
         "conformance_fixtures_written": len(list(ROOT.rglob("conformance/**/*.plain"))),
+        "code_accounting": code_accounting(),
+        "rules_requiring_rejection_without_a_code": uncoded_rejection_rules(),
     }
+
+
+def fault_namespace_check() -> dict:
+    """A code introduced as *the fault* must be in the fault namespace.
+
+    A sentence-level search is too coarse: these rule lines are long, and
+    "fault" often appears in a different clause from the code ("Faults are not
+    recoverable failures ... (`PL0204`)"), which produced five false positives.
+    The real signal is the appositive — "the fault `X`", "a fault `X`" — where a
+    code is *named as* a fault. Only that construction is checked.
+    """
+    pattern = re.compile(r"\b(?:the|a|an)\s+fault\s+`?(PL[\w]+)`?", re.IGNORECASE)
+    offenders = []
+    for rel in RULE_DOC_RELS:
+        for line in read(rel).splitlines():
+            for match in pattern.finditer(line):
+                code = match.group(1)
+                if not code.startswith("PLFL"):
+                    offenders.append({"file": rel, "code": code, "text": match.group(0)})
+    return {"ok": not offenders, "offenders": offenders}
 
 
 def broken_links() -> list[dict]:
@@ -391,6 +509,20 @@ def source_manifest_check() -> dict:
     return {"ok": not duplicates and not invalid, "count": len(sources), "unicode17_data_files": len(unicode17_files), "duplicate_ids": duplicates, "invalid_entries": invalid}
 
 
+def fault_severity(code: str) -> str:
+    """Severity is part of a code's identity (catalog 1, rule 4).
+
+    A fault terminates the task and cannot be caught, so it must never be
+    reported as an ordinary error: that would invite a `catch` for it, which
+    T-12 forbids.
+    """
+    if code.startswith("PLFL"):
+        return "fault"
+    if code.startswith("PL1"):
+        return "warning"
+    return "error"
+
+
 def diagnostic_registry() -> list[dict]:
     """Extract diagnostic codes from normative rule text.
 
@@ -408,7 +540,7 @@ def diagnostic_registry() -> list[dict]:
                 current = m.group(1)
             if line.startswith("#"):
                 current = None
-            for code in re.findall(r"PL\d{4}", line):
+            for code in re.findall(r"PL(?:FL)?\d{2,4}", line):
                 entry = codes[code]
                 if current:
                     entry["rules"].add(current)
@@ -419,7 +551,7 @@ def diagnostic_registry() -> list[dict]:
     for code, entry in sorted(codes.items()):
         registry.append({
             "code": code,
-            "severity": "warning" if code.startswith("PL1") else "error",
+            "severity": fault_severity(code),
             "historical": entry["historical"],
             "rules": sorted(entry["rules"]),
             "documents": sorted(entry["documents"]),
@@ -469,6 +601,8 @@ def main() -> int:
     areas = conformance_area_coverage()
     duplicates = duplicate_artifact_check()
     fact_clashes = duplicated_fact_check()
+    uncoded = uncoded_obligation_check()
+    fault_ns = fault_namespace_check()
     xref = cross_reference_check()
     grammar = grammar_check()
     manifest = source_manifest_check()
@@ -487,6 +621,8 @@ def main() -> int:
         "conformance_area_coverage": areas,
         "duplicate_artifacts": duplicates,
         "duplicated_facts": fact_clashes,
+        "uncoded_obligations": uncoded,
+        "fault_namespace": fault_ns,
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
@@ -544,6 +680,16 @@ def main() -> int:
         problems.append(f"duplicated result artifacts: {duplicates['duplicates']}")
     if not fact_clashes["ok"]:
         problems.append(f"the same rule set is tabulated in more than one file: {fact_clashes['clashes']}")
+    if not fault_ns["ok"]:
+        problems.append(
+            "a code is introduced as a fault but is not in the PLFL namespace: "
+            f"{[o['file'] + ' -> ' + o['code'] for o in fault_ns['offenders']]}"
+        )
+    if not uncoded["ok"]:
+        problems.append(
+            "rules demand a refusal but name no diagnostic code and are not explained "
+            f"in {CATALOG_REL} §6: {uncoded['unexplained']}"
+        )
     report["measured_facts"] = measured_facts()
     report["check"] = {"ok": not problems, "problems": problems}
     out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -554,6 +700,10 @@ def main() -> int:
         "deferrals": report["deferrals"]["count"],
         "evidence": report["evidence"]["labels"],
         "diagnostic_codes": len(registry),
+        "diagnostic_codes_by_severity": dict(
+            sorted(Counter(e["severity"] for e in registry).items())
+        ),
+        "codes_without_owning_rule": sorted(e["code"] for e in registry if not e["rules"]),
         "traceability": {
             "rows": traceability["rows"],
             "covered": traceability["covered"],
@@ -563,6 +713,7 @@ def main() -> int:
         "conformance_area_coverage": areas,
         "duplicate_artifacts": duplicates["duplicates"],
         "duplicated_facts": fact_clashes["clashes"],
+        "uncoded_obligations": uncoded['unexplained'],
         "cross_reference_check": xref,
         "grammar_check": grammar,
         "source_manifest_check": manifest,
