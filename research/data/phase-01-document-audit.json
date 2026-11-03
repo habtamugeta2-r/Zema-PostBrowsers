@@ -487,17 +487,17 @@
     "sum": 307
   },
   "evidence": {
-    "count": 109,
+    "count": 111,
     "labels": {
       "H": 30,
-      "P": 25,
-      "E": 54
+      "P": 26,
+      "E": 55
     },
     "declared_summary": {
-      "total": 109,
+      "total": 111,
       "labels": {
-        "E": 54,
-        "P": 25,
+        "E": 55,
+        "P": 26,
         "H": 30
       }
     },

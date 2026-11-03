@@ -114,7 +114,7 @@ if the environment differs, record the difference and revisit WP-1.
 | Node v22.22.3 present; **no Rust toolchain** (`rustc`, `cargo`, `rustup` absent) | `command -v` checks | A Rust implementation cannot be built or tested here without a toolchain this sandbox cannot reach (`static.rust-lang.org` is outside the network allowlist) |
 | Network allowlist: `github.com`, `codeload.github.com`, `api.github.com`, `registry.npmjs.org`, `pypi.org`, `files.pythonhosted.org` | Environment constraint | `unicode.org` is unreachable from the sandbox; the pinned GitHub mirror is the data source |
 | The pinned Unicode data commit is reachable | `api.github.com` returned HTTP 200 for blob `21a79503…` and commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c` (`unicode-org/unicodetools`) | WP-2 fetch-and-verify is feasible here |
-| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 rules, 47 ambiguities (42/5/0), 20 deferrals, 307 fixture targets, 109 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
+| `python3 tools/audit_phase01.py --check` passes | Ran it: 100 rules, 47 ambiguities (42/5/0), 20 deferrals, 307 fixture targets, 111 evidence rows, 56 grammar productions, 58 sources, 16 Unicode files, 52 active diagnostic codes + historical PL0106 | Keep it green; extend it, never hand-edit its outputs |
 
 **Recommendation (Proposed — to be recorded as decision 0013):** the
 Gate 1 vehicle is a **Python 3.11 standard-library-only reference
@@ -201,7 +201,7 @@ with options priced, not just chosen. Research record indexed in
 ### WP-2 — BUILD: Unicode data pipeline
 
 **Inputs:** [`phase-01-source-manifest.json`](../../research/data/phase-01-source-manifest.json)
-(16 pinned files), decisions 0011/0012/0014, UTS #39 rev32, UTS #55 rev5,
+(16 pinned files; see proposed decision 0016 for a potential A-46 alias-input amendment), decisions 0011/0012/0014/0016, UTS #39 rev32, UTS #55 rev5,
 UAX #31 rev43, UAX #15 rev57.
 
 **Tasks:**
@@ -225,6 +225,13 @@ UAX #31 rev43, UAX #15 rev57.
   `bidiSkeleton(LTR, X)`. Implement UTS #55 §5.1.2 chunking and the full
   C4 test; implement the §3.1.1.1 ZWJ/ZWNJ context rules including the
   global single-script/NFC restrictions and Indic context-B data.
+- **Blocking input issue discovered during execution:** before any
+  Script_Extensions/resolved-script-set comparison, resolve decision
+  0016. `Scripts.txt` uses long Script names while `ScriptExtensions.txt`
+  uses ISO short aliases; do not compare these raw strings. If the owner
+  approves the proposed amendment, add and hash-pin
+  `PropertyValueAliases.txt` and update A-46/source-manifest counts. Until
+  then, keep the code path guarded and do not claim PL1101/C4 results.
 
 **Acceptance:** hash verification log green; NormalizationTest 100%
 pass; skeleton/bidiSkeleton outputs for the decision-0012 example pairs

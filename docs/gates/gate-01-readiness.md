@@ -30,7 +30,7 @@ new decision record. Silence is not approval.
 | A-46 / decision 0012 | Add and pin Unicode 17.0.0 `IndicSyllabicCategory.txt`; map the 16 input files to the selected operations/tests. | The identified context-B dependency is represented and file identities match; no implementation/conformance run. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
 | A-47 / decision 0012 | Keep `PL1104` enabled by default and independently suppressible from `PL0105`/`PL1101`; defer configuration syntax and UI to the tooling phase. | Preserves UTS #55 rev5 §5.1.3 advice without deciding future configuration mechanics. | ☐ Ratify ☐ Revise ☐ Defer — name/date: ____________________ |
 
-**Owner response (2026-11-03):** Better-back selected **Revise** for the A-27/A-38/A-42/A-44/A-45/A-46/A-47 proposal set, but has not yet specified which A-IDs or replacement wording. No proposal is ratified or revised in the specification until those details are recorded.
+**Owner response (2026-11-03):** Better-back selected **Revise** for the A-27/A-38/A-42/A-44/A-45/A-46/A-47 proposal set, but has not yet specified which A-IDs or replacement wording. No proposal is ratified or revised in the specification until those details are recorded. Execution has since surfaced a potential A-46 input amendment: decision 0016 proposes pinning `PropertyValueAliases.txt` because Script and Script_Extensions values otherwise use different name forms. This remains a proposal pending owner direction.
 
 ## 2. Owner-controlled Gate 0 conditions
 

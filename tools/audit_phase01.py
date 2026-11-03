@@ -127,7 +127,7 @@ def cross_reference_check() -> dict:
     scan = [ROOT / rel for rel in RULE_DOC_RELS]
     scan += sorted(PLAIN.glob("*.md"))
     scan += sorted((ROOT / "research").glob("phase-01-*.md"))
-    scan += sorted((ROOT / "docs" / "decisions").glob("000[5-9]-*.md"))
+    scan += sorted((ROOT / "docs" / "decisions").glob("*.md"))
     missing = defaultdict(set)
     ref_re = re.compile(r"\b([LTE]-\d{2}|S-\d|A-\d{2}|D-\d{2})\b")
     for path in sorted(set(scan)):

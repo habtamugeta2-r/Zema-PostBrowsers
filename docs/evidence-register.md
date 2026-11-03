@@ -180,14 +180,16 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 107 | "The current `internalSkeleton` implementation produces the candidate outputs recorded for `aא1`, `a1א`, `Строкa`, `Δt`, and `HTTPसर्वर`." | H | `research/data/phase-01-internal-skeleton-examples.json`; implementation `src/plain/unicode17_security.py`; pinned Unicode inputs | 1 | 2026-11-03 | Open — computed internalSkeleton values only; independent algorithm review and all bidiSkeleton directions remain outstanding |
 | 108 | "Better-back selected importing the research book to resolve C2; the source has not yet been supplied, so C2 remains open." | E | Owner response via Arena, recorded in `docs/gates/gate-01-readiness.md` §2 | 1 | 2026-11-03 | Confirmed response; action pending book source |
 | 109 | "Better-back selected revision rather than ratification for the A-27/A-38/A-42/A-44/A-45/A-46/A-47 proposal set; no specific revisions have yet been supplied." | E | Owner response via Arena, recorded in `docs/gates/gate-01-readiness.md` §1 | 1 | 2026-11-03 | Confirmed response; all seven remain unratified until IDs and replacement text are specified |
+| 110 | "Script_Extensions values in Unicode 17.0.0 use ISO short aliases while Scripts.txt uses long names; the current source lock lacks PropertyValueAliases.txt to normalize the representations." | P | Decision 0016; pinned `Scripts.txt`/`ScriptExtensions.txt`; candidate PropertyValueAliases GitHub blob identity checked 2026-11-03 | 1 | 2026-11-03 | Proposed dependency finding; owner must approve an A-46/source-manifest amendment before this is used for Gate 1 security calculations |
+| 111 | "Six Unicode 17 property-accessor tests pass, covering XID, categories/CCC, Script, bidi class, status/type, joining/Indic properties, and the required Script alias guard." | E | `tests/test_unicode17_properties.py`; raw `research/data/phase-01-property-test-report.txt`; command `python3 -m unittest discover -s tests -v` | 1 | 2026-11-03 | Confirmed as smoke-test results for selected code points; not comprehensive property-file conformance |
 
 ## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 109 (63 at Gate 0 + 10 Phase 1 draft + 36 Phase 1 audit/decision) |
-| Established (E) | 54 |
-| Proposed (P) | 25 |
+| Total rows | 111 (63 at Gate 0 + 10 Phase 1 draft + 38 Phase 1 audit/decision) |
+| Established (E) | 55 |
+| Proposed (P) | 26 |
 | Hypothesis (H) | 30 |
 | Retracted | 4 — #001, #057, #062, #073 |
 | Superseded | 4 — #065, #066, #068, #080 |
@@ -215,4 +217,6 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | 2026-11-03 | Recorded Better-back's C1 sign-off and C5 PlainP donor-only ruling (#104–#105), plus proposed implementation, Unicode pipeline, and runner decisions (#101–#103). |
 | 2026-11-03 | Added #106 for full Unicode 17.0.0 normalization corpus result: 20,034 rows, 200,340 assertions, zero failures. |
 | 2026-11-03 | Added #107 as an unverified hypothesis for five computed UTS #39 internalSkeleton candidates; all bidi-aware results remain untested. |
-| 2026-11-03 | Recorded owner selections on C2 import and A-* revisions as #108–#109; both actions remain unresolved pending book source and exact proposal changes. Total 109 rows. |
+| 2026-11-03 | Recorded owner selections on C2 import and A-* revisions as #108–#109; both actions remain unresolved pending book source and exact proposal changes. |
+| 2026-11-03 | Added #110 as a proposed A-46 dependency gap: Script value aliases need a further pinned input; owner amendment pending. |
+| 2026-11-03 | Added #111 for six property-accessor smoke tests; raw output is saved. Total 111 rows. |
