@@ -3,8 +3,8 @@
 | Field | Detail |
 |---|---|
 | **Document** | The running register of every claim the project makes |
-| **Version** | 1.0 (created at Gate 0) |
-| **Date** | 2026-11-02 |
+| **Version** | 1.1 (Phase 1 audit) |
+| **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 (deliverable: "Evidence register, populated with all claims made so far") |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
 | **Status** | Active — reviewed in full at Gate 12 (Evidence Gate) |
@@ -106,7 +106,7 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 | # | Claim (exact wording) | Label | Source / experiment | Phase | Date added | Status |
 |---|---|---|---|---|---|---|
 | 056 | "Other post-browser application platforms already exist and ship (Electron, Tauri, Flutter, React Native, PWAs)." | E | Electron docs [A]; Tauri docs [A]; Flutter docs [A]; WebKit blog [A] | 0 | 2026-11-02 | Confirmed |
-| 057 | "No existing system reviewed combines one co-designed language, a capability-only authority model, no DOM, and accessibility release-gating." | H | Orientation-depth survey only; Phase 1 deep review | 0 → 1 | 2026-11-02 | Open — the strongest burden of proof in the project |
+| 057 | "No existing system reviewed combines one co-designed language, a capability-only authority model, no DOM, and accessibility release-gating." | H | Orientation-depth survey only; Phase 1 deep review | 0 → 1 | 2026-11-02 | **Retracted 2026-11-03** — universal negative not supportable; replaced by bounded #074 and record 04 |
 | 058 | "The owner's `PlainP` repository is an adjacent, separate platform, not the ZEMA research book." | E | Repository inspection via GitHub API [A] | 0 | 2026-11-02 | Confirmed |
 | 059 | "ZEMA's relationship to `PlainP` (superseded, donor, or eventual home) is an open owner decision." | P | [`../research/phase-00-04-prior-art.md`](../research/phase-00-04-prior-art.md) §5, OQ-1 | 0 → 1 | 2026-11-02 | Open |
 
@@ -123,30 +123,63 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 
 | # | Claim (exact wording) | Label | Source / experiment | Phase | Date added | Status |
 |---|---|---|---|---|---|---|
-| 064 | "A language with no exception primitives and no null, carrying failure and absence in its types, can ship production applications." | E | Elm's own documentation ("no runtime exceptions") [A] | 1 | 2026-11-02 | Confirmed **for Elm**; not evidence about Plain |
-| 065 | "Kotlin's `when` has statement and expression forms, so whether a missing case is an error depends on form and version." | H | Kotlin docs for the expression form [A]; statement-form gap reported by a C-grade source [C] | 1 | 2026-11-02 | Open — **verify against Kotlin docs before Gate 1** |
-| 066 | "Plain's core can be specified completely in four documents, yielding 26 derived ambiguities and 18 recorded deferrals." | E | This repository: [`./plain/`](./plain/) | 1 | 2026-11-02 | Confirmed as an observation (not a quality claim) |
-| 067 | "Requiring NFC for identifiers prevents visually identical, byte-different names from aliasing." | P | Unicode normalization + UAX #31/UTS #39 (adopted rule L-04) | 1 | 2026-11-02 | Open — design rule, not measured |
-| 068 | "Same-scope UTS #39 skeleton collision detection catches homoglyph identifier spoofing in code review." | P | UTS #39 (adopted rule L-10); the standard says the mechanism is a floor | 1 | 2026-11-02 | Open — **bounded** claim; sequence-level spoofing is out of scope |
+| 064 | "A language with no exception primitives and no null, carrying failure and absence in its types, can ship production applications." | E | Elm homepage “No Runtime Exceptions” and ports/guide [A] | 1 | 2026-11-02 | Confirmed **for Elm**; not evidence about Plain |
+| 065 | "Kotlin's `when` has statement and expression forms, so whether a missing case is an error depends on form and version." | H | Kotlin docs for the expression form [A]; statement-form gap reported by a C-grade source [C] | 1 | 2026-11-02 | **Superseded 2026-11-03 by #078** — Kotlin 1.7 closes the enum/sealed/Boolean statement gap |
+| 066 | "Plain's core can be specified completely in four documents, yielding 26 derived ambiguities and 18 recorded deferrals." | E | This repository: [`./plain/`](./plain/) | 1 | 2026-11-02 | **Superseded 2026-11-03 by #082** — “completely” was false; v0.2 has 43 ambiguities, 20 deferrals, and open items |
+| 067 | "Requiring NFC for identifiers prevents visually identical, byte-different names from aliasing." | P | Unicode normalization + UAX #31/UTS #39/UTS #55 (rule L-04) | 1 | 2026-11-02 | Open — identifiers only; text literals are not normalized (A-28); NFC does not stop all confusables |
+| 068 | "Same-scope UTS #39 skeleton collision detection catches homoglyph identifier spoofing in code review." | P | UTS #39/UTS #55 (rule L-10); skeleton is a versioned sequence-aware mitigation | 1 | 2026-11-02 | Open — **bounded**; visible-name scope and version pin still matter (A-27/A-41) |
 | 069 | "Checking integer arithmetic in every build profile eliminates build-mode-dependent program behavior." | P | Decision 0006, rules E-05/E-36 | 1 | 2026-11-02 | Open — conformance fixture required (both profiles) |
 | 070 | "Checked arithmetic costs measurable performance in hot loops." | H | E1/E2 (Phase 2, Phase 4) | 1 | 2026-11-02 | Open — must be measured, and must not be traded for a silent semantic switch |
 | 071 | "Capturing immutable bindings by value and rejecting `mut` capture prevents late-binding closure bugs by construction." | P | Rule E-17 | 1 | 2026-11-02 | Open |
 | 072 | "Expression-only exhaustive matching prevents missing-case runtime bugs." | P | Rule E-23 (sealed unions, T-10) | 1 | 2026-11-02 | Open — conformance fixture required |
-| 073 | "IEEE 754 binary64 cannot supply a reflexive equality (NaN ≠ NaN, ±0), so `Float` must not be an `Eq` type." | E | IEEE 754 binary64 semantics as specified in rule E-08; IEEE 754-2019 [A] | 1 | 2026-11-02 | Confirmed (mathematical/standard) |
+| 073 | "IEEE 754 binary64 cannot supply a reflexive equality (NaN ≠ NaN, ±0), so `Float` must not be an `Eq` type." | E | IEEE 754 binary64 semantics as specified in rule E-08; IEEE 754-2019 [A] | 1 | 2026-11-02 | **Retracted as overclaim 2026-11-03** — IEEE fact retained in #079; Plain’s design choice is #080 |
+
+## H. Phase 1 audit and primary-source corrections (2026-11-03)
+
+| # | Claim (exact wording) | Label | Source / experiment | Phase | Date added | Status |
+|---|---|---|---|---|---|---|
+| 074 | "The reviewed prior art already demonstrates language/UI integration, capability discipline, typed full-stack app seams, default-deny permissions, typed effects/content addressing, and derived accessibility semantics in separate systems and partial combinations; no reviewed source establishes ZEMA's measured superiority." | E | Research record 04: Newspeak/Hopscotch, Monte, Unison, Lamdera, Dark, Flutter, PlainP | 1 | 2026-11-03 | Confirmed as a bounded prior-art observation |
+| 075 | "The 2025 Newspeak tutorial states that the current prototype provides no security guarantees and that types are annotations rather than enforced checks." | E | Newspeak 2025 tutorial §§1.5/2, pinned URL | 1 | 2026-11-03 | Confirmed |
+| 076 | "In the inspected PlainP commit, authority is enforced through parsed `needs` declarations plus checker/runtime host checks, not through opaque non-forgeable host-issued capability handles." | E | PlainP `ast_nodes.py`, `checker.py`, `runtime.py` at `af5ad2e…`; record 04 PP-03/PP-04 | 1 | 2026-11-03 | Confirmed **bounded to inspected code** |
+| 077 | "The inspected PlainP accessibility module derives role/label metadata from scene nodes; the inspected artifacts do not establish an OS assistive-technology bridge or AT-user release evidence." | E | PlainP `a11y.py` and docs; record 04 PP-06 | 1 | 2026-11-03 | Confirmed **bounded**; not a claim about every possible file |
+| 078 | "Kotlin 1.7 made non-exhaustive `when` statements over enum, sealed, and Boolean subjects an error." | E | JetBrains Kotlin 1.7 compatibility guide, pinned commit | 1 | 2026-11-03 | Confirmed; supersedes #065 |
+| 079 | "IEEE 754 binary64 equality is not reflexive for NaN and conflates -0.0 with +0.0." | E | IEEE 754-2019 semantics; Plain rule E-08 | 1 | 2026-11-03 | Confirmed (standard fact only) |
+| 080 | "Plain excludes `Float` from structural `Eq` and defers Map/Set until key laws are resolved." | P | Rules E-08, T-26, D-19, A-38 | 1 | 2026-11-03 | Superseded by decision 0009: Eq/Ord laws proposed; Map/Set remain deferred |
+| 081 | "UTS #55 recommends normalized identifiers for case-sensitive languages but says programming languages should not silently normalize string-literal contents." | E | UTS #55 revision 5 §3.1.1 | 1 | 2026-11-03 | Confirmed; adopted in L-04/A-28 |
+| 082 | "Plain v0.1 contained 98 rules, 26 ambiguities, 18 deferrals, a 275-fixture planning sum mislabeled ≈285, grammar/prose contradictions, and no small-step semantics; v0.2 records 100 rules, 43 ambiguities, 20 deferrals, and 3 open pre-Gate-1 questions at that audit snapshot." | E | Repository audit record 05 and docs/plain v0.2 | 1 | 2026-11-03 | Confirmed as repository observation; not a quality claim |
+| 083 | "The v0.2 operational-semantics document is a non-normative research draft, not an implementation, conformance result, or proof." | E | docs/plain/06-operational-semantics.md | 1 | 2026-11-03 | Confirmed |
+| 084 | "The hermetic Plain core is deterministic and well-typed programs either produce a value or a defined fault." | H | Operational-semantics conjectures H-OS-1/H-OS-2; no proof or run yet | 1 | 2026-11-03 | Open — requires proof/review and conformance |
+| 085 | "Lamdera's official fit page documents SaaS lock-in, no external database, vertical scaling limits, and restricted backend JavaScript." | E | Lamdera *Is it for me?* official page | 1 | 2026-11-03 | Confirmed as vendor-documented limits |
+| 086 | "PlainP's GitHub Actions CI run at commit `af5ad2e…` completed successfully." | E | Actions run 41319261463 | 1 | 2026-11-03 | Confirmed raw CI observation; not a local rerun or benchmark |
 
 ---
 
-## Register summary (2026-11-02)
+| 087 | "Plain’s initial source/identifier profile pins Unicode 17.0.0, UAX #31 rev43, UAX #15 rev57, UAX #9 rev51, UTS #39 rev32, and UTS #55 rev5; data upgrades require a reviewed diff and conformance rerun." | P | Decisions 0009/0011; research records 03/05 and pinned source manifest | 1 | 2026-11-03 | Proposed language policy; owner/reviewer ratification pending |
+| 088 | "In Plain, Eq is derived/sealed; Ord requires Eq and equality-consistent total-order laws; Float is neither Eq nor Ord; ordered collection keys will require Ord." | P | Decision 0009; T-26; E-08/E-09; D-19 | 1 | 2026-11-03 | Proposed language policy; laws are not statically proven |
+| 089 | "Gate 1 is proposed to evaluate only the hermetic Plain core; success does not waive or establish later platform obligations." | P | Decision 0010; Master Prompt Phase 1; docs/plain/05-conformance-plan.md §5 | 1 | 2026-11-03 | Proposed gate boundary; owner/reviewer ratification pending |
+
+| 090 | "Featherweight Java is presented as a small calculus that omits many full-Java features to make rigorous type-safety arguments easier." | E | ACM publisher abstract for Igarashi, Pierce & Wadler, OOPSLA 1999, DOI 10.1145/320384.320395; record 05 [S1], grade B | 1 | 2026-11-03 | Confirmed as a statement of the paper’s abstract; not evidence for Plain’s feature scope or safety argument |
+
+| 091 | "UTS #55 revision 5 defines identifier chunks through explicit Camel, HAT, and punctuation boundaries, and requires diagnosis of chunks meeting its mixed-script confusability test (C4)." | E | Unicode UTS #55 rev5 §§5.1.2.1–5.1.2.2 and C4, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed as standard requirements; severity and Plain adoption remain separate design choices |
+| 092 | "UTS #55 revision 5 recommends warning mechanisms for identifiers outside UTS #39's General Security Profile and recommends contextual treatment of ZWNJ/ZWJ." | E | Unicode UTS #55 rev5 §5.1.3 and UTS #39 rev32 §3.1.1, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed as recommendation, not a claim that Plain already implements it |
+| 093 | "Plain proposes exact UTS #55 C4 chunk warnings (`PL1101`) plus an independent out-of-profile warning (`PL1104`); neither converts the source-profile check into rejection." | P | Decision 0011; proposed L-10/L-11; UTS #55 rev5 §§5.1.1–5.1.3 | 1 | 2026-11-03 | Owner/reviewer ratification and implementation/conformance remain pending |
+| 094 | "Fifteen Unicode 17.0.0 UCD/security data and conformance files are pinned by immutable repository commit, Git blob IDs, byte lengths, and SHA-256 in the Phase 1 source manifest." | E | `research/data/phase-01-source-manifest.json`; Unicode Consortium's `unicode-org/unicodetools` repository, commit `3ff0e2bb2ff8253831cb243d2d8e26a7f9534b1c`; source grade A for the Unicode data, repository hash computation observation | 1 | 2026-11-03 | Confirmed; all 15 byte lengths and SHA-256 values rechecked against immutable GitHub blobs. No file bytes vendored and no conformance suite run |
+
+| 095 | "UAX #9 revision 51 is the Unicode 17.0.0 annex; revision 52 is the Unicode 18.0.0 annex." | E | Unicode UAX #9 revision pages, fetched 2026-11-03; grade A | 1 | 2026-11-03 | Confirmed; revision 51 is the profile pin in decision 0011 |
+| 096 | "Plain’s bidi skeleton baseline should use UAX #9 revision 51 so the algorithm revision aligns with the pinned Unicode 17.0.0 UCD/security data." | P | Decision 0011; UTS #39 rev32 skeleton definition; UAX #9 rev51; source manifest | 1 | 2026-11-03 | Proposed, not implemented or conformance-tested |
+
+## Register summary (2026-11-03)
 
 | Count | Value |
 |---|---|
-| Total rows | 73 (63 at Gate 0 + 10 added in Phase 1) |
-| Established (E) | 30 |
-| Proposed (P) | 15 |
-| Hypothesis (H) | 28 (two of them since retracted) |
-| Retracted | 2 — #001 and #062 |
+| Total rows | 96 (63 at Gate 0 + 10 Phase 1 draft + 23 Phase 1 audit/decision) |
+| Established (E) | 46 |
+| Proposed (P) | 21 |
+| Hypothesis (H) | 29 |
+| Retracted | 4 — #001, #057, #062, #073 |
+| Superseded | 3 — #065, #066, #080 |
 | Blocked | 3 — #060, #061, #063 |
-| Open headline claims that may **not** ship (Gate 12 rule) | #002, #003, #006, #007, #008, #023, #057, #070 |
+| Open headline claims that may **not** ship (Gate 12 rule) | #002, #003, #006, #007, #008, #023, #070 |
 
 ## Rules (copied from the template — do not weaken)
 
@@ -164,3 +197,4 @@ and [`decisions/0001-source-grading.md`](./decisions/0001-source-grading.md).
 |---|---|
 | 2026-11-02 | Register created at Gate 0 with 63 rows covering every claim in the founding documents, the Phase 0 research records, and the planned decisions. #001 retracted; #062 closed as unattested; #060/#061/#063 blocked pending the research book. |
 | 2026-11-02 | Phase 1 added rows #064–#073 for the language specification's claims (no-null/no-exceptions posture, identifier normalization and confusables, checked arithmetic, capture rule, exhaustiveness, `Float`/`Eq`, and the specification-completeness observation). #065 and #070 flagged as unverified. |
+| 2026-11-03 | Phase 1 audit added #074–#086; retracted #057 universal negative and #073 overclaim; superseded #065/#066; corrected Elm/Kotlin/Unicode sources; summary recomputed. |

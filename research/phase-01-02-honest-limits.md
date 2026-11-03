@@ -3,8 +3,8 @@
 | Field | Detail |
 |---|---|
 | **Document** | Research record `research/phase-01-02-honest-limits.md` |
-| **Version** | 1.0 |
-| **Date** | 2026-11-02 |
+| **Version** | 1.1 |
+| **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 1 → Gate 1 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner |
 | **Status** | Complete for Gate 1 research |
@@ -43,6 +43,7 @@
 | H8 | **Domain knowledge** | An accounting rule, a clinical constraint, or a tax schedule is not made simple by notation | The language can only avoid *adding* accidental complexity |
 | H9 | **Migration of existing apps** | Rewriting is a cost no syntax eliminates | Adoption risk (Gate 11) |
 | H10 | **Tooling** | LSP, debugger, formatter, profiler, package manager are products with their own roadmaps | Phase 13; explicitly "not a free consequence of unification" |
+| H11 | **Prior-art integration** | Newspeak/Hopscotch, Monte, Lamdera, Unison, Flutter, and browser platforms already combine pieces of the proposed intersection | Gate 0 stopping condition stays alive; Phase 12/13 must compare against real integrated baselines, not a fragmented caricature |
 
 ## 3. The specific promises Plain must not make
 
@@ -54,6 +55,8 @@
 | "One language means one mental model" | H1–H4 each have their own model | Concern 2's honest limit |
 | "You can't write a security bug" | H5 — authority is the host's | Gate 5 audit |
 | "Rewrite once, never migrate again" | H9 — schema and data outlive syntax | Phase 9 review |
+| "No existing system combines these properties" | H11 — bounded prior-art review already found close overlaps | Gate 0/12; evidence register #074 |
+| "Capabilities prevent denial of service" | Authority restriction is not a resource quota | Phase 3/5; Monte tutorial |
 
 ## 4. How the limits are carried into the design
 
@@ -76,9 +79,11 @@
 | S1 | Master Prompt v1.1, Phase 1 research tasks (honest limits) and Phase 7/8/12 obligations: [`../docs/zema-master-prompt/ZEMA-Master-Research-and-Build-Prompt.md`](../docs/zema-master-prompt/ZEMA-Master-Research-and-Build-Prompt.md) | A (project record) |
 | S2 | Core Concerns v1.1, Concern 2 ("one language removes *seams*; it does not make those problems disappear") and Concern 15 (tooling is not free): [`../docs/zema-master-prompt/00-Core-Concerns.md`](../docs/zema-master-prompt/00-Core-Concerns.md) | A (project record) |
 | S3 | Unicode UAX #9 (bidi), #14 (line breaking), #29 (segmentation) — referenced as the algorithm family Phase 7 must integrate; exact versions to be pinned in Phase 7: <https://www.unicode.org/reports/> | A |
+| S4 | Research record 04, integrated systems and PlainP audit: [`phase-01-04-integrated-systems-and-plainp.md`](./phase-01-04-integrated-systems-and-plainp.md) | Mixed, per row |
 
 ## 6. Change log
 
 | Date | Version | Change |
 |---|---|---|
 | 2026-11-02 | 1.0 | Record created: 5 removed seams, 10 irreducible domains, 6 forbidden promises, 4 hand-offs. |
+| 2026-11-03 | 1.1 | Added H11 prior-art integration and two forbidden promises after the deep prior-art pass. |

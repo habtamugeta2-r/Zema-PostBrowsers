@@ -3,8 +3,8 @@
 | Field | Detail |
 |---|---|
 | **Document** | Research record index (`research/`) |
-| **Version** | 1.0 |
-| **Date** | 2026-11-02 |
+| **Version** | 1.1 |
+| **Date** | 2026-11-03 |
 | **Phase / gate** | Phase 0 → Gate 0 |
 | **Author** | ZEMA research agent (Arena.ai Agent Mode) on behalf of the project owner (Better-back) |
 | **Status** | Active — one index for all phases |
@@ -28,7 +28,12 @@ that folder navigable and states the rules the records follow.
 | 0 | [`phase-00-04-prior-art.md`](./phase-00-04-prior-art.md) | Who has tried to leave the browser, what did they ship, and what does their existence do to ZEMA's headline claim? |
 | 0 | [`phase-00-05-book-import-audit.md`](./phase-00-05-book-import-audit.md) | Where is the research book (Ch. 1–13)? What happens to experiments E1–E5 and Decisions A/B/D while it is missing? |
 | 1 | [`phase-01-01-language-prior-art.md`](./phase-01-01-language-prior-art.md) | What have Elm, Rust, Kotlin, Swift, Unison, and Unicode already settled about "easy" — and what must Plain refuse? |
-| 1 | [`phase-01-02-honest-limits.md`](./phase-01-02-honest-limits.md) | Which seams does one language actually remove, and which ten domains stay hard no matter what? |
+| 1 | [`phase-01-02-honest-limits.md`](./phase-01-02-honest-limits.md) | Which seams does one language actually remove, and which domains stay hard no matter what? |
+| 1 | [`phase-01-03-primary-source-audit.md`](./phase-01-03-primary-source-audit.md) | Which v0.1 language claims survive primary-source checking, and what Unicode source-handling profile should Plain use? |
+| 1 | [`phase-01-04-integrated-systems-and-plainp.md`](./phase-01-04-integrated-systems-and-plainp.md) | Which integrated systems are closest to ZEMA’s intersection, and what does a read-only PlainP audit establish? |
+| 1 | [`phase-01-05-specification-audit.md`](./phase-01-05-specification-audit.md) | What blocks Plain v0.1 from being implementation-ready, what changed in v0.2, and which citation/scope/Unicode-diagnostic issues were refined through v0.2.3? |
+| 1 | [`data/phase-01-source-manifest.json`](./data/phase-01-source-manifest.json) | Pinned source bytes/URLs, versions, hashes, and retrieval method for the Phase 1 audit |
+| 1 | [`data/phase-01-document-audit.json`](./data/phase-01-document-audit.json) | Machine-recomputed counts, link check, specification cross-reference check, grammar production closure, source-manifest structure check, and generated diagnostic-code registry (`python3 tools/audit_phase01.py --check`) |
 
 Phase 1 and later get their own `phase-NN-*.md` records; do not create
 them before the phase begins.
@@ -91,8 +96,10 @@ Stated plainly so no reader over-reads this folder:
   repository and was not found in the owner's ten public repositories;
   see [`phase-00-05-book-import-audit.md`](./phase-00-05-book-import-audit.md).
   Therefore experiments **E3** and **Decision C** remain undefined.
-- **It did not audit the adjacent `PlainP` repository's code.** Its
-  existence is recorded as prior art; its claims are not adopted.
+- **It did not audit the adjacent `PlainP` repository's code.** Phase 0
+  recorded its existence only. Phase 1 later performed a read-only code
+  audit ([record 04](./phase-01-04-integrated-systems-and-plainp.md));
+  no code was adopted.
 - **It ran no benchmark and no build.** Phase 0 has no build task by
   design. Every performance sentence in these records belongs to
   somebody else's measurement, cited as such.
@@ -111,3 +118,8 @@ Stated plainly so no reader over-reads this folder:
    `docs/evidence-register.md` first.
 4. Re-check phase-0 numbers at Gate 12: page-weight and browser-share
    figures age quickly and must be refreshed before any external use.
+
+- [`../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md`](../docs/decisions/0009-unicode-pin-and-eq-ord-laws.md) — proposed A-27/A-38 resolutions.
+- [`../docs/decisions/0010-gate-1-core-scope.md`](../docs/decisions/0010-gate-1-core-scope.md) — proposed A-42 resolution.
+
+- [`../docs/decisions/0011-unicode-diagnostic-profile.md`](../docs/decisions/0011-unicode-diagnostic-profile.md) — exact UTS #55 chunk diagnostics and hash-locked Unicode data profile (proposed).
