@@ -1418,8 +1418,8 @@
   },
   "broken_relative_links": [],
   "measured_facts": {
-    "markdown_files": 57,
-    "python_files": 10,
+    "markdown_files": 59,
+    "python_files": 11,
     "normative_rules_L_T_E": 100,
     "sugar_ids": 6,
     "ambiguities": 47,
